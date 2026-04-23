@@ -15,7 +15,7 @@ This skill pulls the latest skills, commands, and agents from the LindaAI update
 
 ## What it does
 1. Reads the user's license key from `~/.claude/lindaai/license.json`
-2. Validates the license against the LindaAI API: `POST https://api.lindaai.com/v1/licenses/validate`
+2. Validates the license against the LindaAI API: `POST https://lindaai-api-production.up.railway.app/v1/licenses/validate`
 3. Fetches the current manifest: `GET https://wisesaucy.github.io/lindaai-updates/manifest.json`
 4. Compares local skill versions against the manifest
 5. For each skill the license allows AND is newer on the server:
@@ -34,7 +34,7 @@ When this skill triggers:
 
 2. **Validate with server (POST):**
    ```
-   POST https://api.lindaai.com/v1/licenses/validate
+   POST https://lindaai-api-production.up.railway.app/v1/licenses/validate
    Headers: Content-Type: application/json
    Body: { "license_key": "<key>", "machine_id": "<machine_id>" }
    ```
