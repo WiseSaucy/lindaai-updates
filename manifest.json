@@ -2,9 +2,9 @@
   "manifest_version": "1.0.0",
   "generated": "2026-04-21",
   "product": "LindaAI",
-  "update_base_url": "https://wisesaucy.github.io/lindaai-updates",
+  "update_base_url": "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main",
   "copyright": "\u00a9 2026 LindaAI \u2014 Built by Daniel Wise",
-  "notes": "This file is served at https://wisesaucy.github.io/lindaai-updates/manifest.json. Customers' /lindaai-update skill reads it to know which skills/versions are available. To ship an update: bump the version here, push the updated skill file to the CDN, and customers get it on next /lindaai-update run.",
+  "notes": "This file is served at https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json. Customers' /lindaai-update skill reads it to know which skills/versions are available. To ship an update: bump the version here, push the updated skill file to the CDN, and customers get it on next /lindaai-update run.",
   "skills": {
     "linda-brief": {
       "version": "1.0.0",

@@ -3,9 +3,9 @@
 Static host for `/lindaai-update`. Customers' LindaAI installs pull from here.
 
 ## URLs customers will hit
-- `GET https://updates.lindaai.com/manifest.json` — the version ledger
-- `GET https://updates.lindaai.com/skills/<name>.md` — raw skill file
-- `GET https://updates.lindaai.com/agents/<name>.md` — raw agent file
+- `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json` — the version ledger
+- `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/skills/<name>.md` — raw skill file
+- `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/agents/<name>.md` — raw agent file
 
 ## How to publish this to GitHub Pages (free hosting)
 

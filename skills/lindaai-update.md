@@ -16,7 +16,7 @@ This skill pulls the latest skills, commands, and agents from the LindaAI update
 ## What it does
 1. Reads the user's license key from `~/.claude/lindaai/license.json`
 2. Validates the license against the LindaAI API: `POST https://lindaai-api-production.up.railway.app/v1/licenses/validate`
-3. Fetches the current manifest: `GET https://wisesaucy.github.io/lindaai-updates/manifest.json`
+3. Fetches the current manifest: `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json`
 4. Compares local skill versions against the manifest
 5. For each skill the license allows AND is newer on the server:
    - Downloads the SKILL.md from the updates CDN
@@ -50,7 +50,7 @@ When this skill triggers:
    ```
 
 3. **Fetch update manifest:**
-   `GET https://wisesaucy.github.io/lindaai-updates/manifest.json`
+   `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json`
 
 4. **Compute diff:** For each skill in the manifest where `tier_requirement <= user_tier` AND `(not in allowed_skills OR local_version < remote_version)`:
    - Queue for install or removal
@@ -68,8 +68,8 @@ When this skill triggers:
 ## Hosting notes (for Boss47)
 
 The update server is two static endpoints:
-- `https://wisesaucy.github.io/lindaai-updates/manifest.json` — version ledger
-- `https://wisesaucy.github.io/lindaai-updates/skills/<name>/SKILL.md` — raw skill files
+- `https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json` — version ledger
+- `https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/skills/<name>/SKILL.md` — raw skill files
 
 Easiest hosting: GitHub public repo with GitHub Pages OR Cloudflare Pages. When a skill changes in LindaAI-Master, bump its version in `updates/manifest.json` and push. Customers' next `/lindaai-update` pulls the change.
 
