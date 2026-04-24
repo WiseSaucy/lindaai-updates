@@ -1,97 +1,90 @@
 ---
 name: lindaai-update
-description: Check LindaAI servers for new skills, commands, or agents and install any updates for the customer's tier. Use when the user says "update LindaAI", "/lindaai-update", "check for updates", "new skills", "update my skills", "pull updates", "refresh LindaAI".
+description: Check LindaAI servers for new skills, commands, or agents and install any updates for the customer's tier. Honors picker selections. Use when the user says "update LindaAI", "/lindaai-update", "/linda-sync", "check for updates", "new skills", "update my skills", "pull updates", "refresh LindaAI", "sync LindaAI".
 tier: all
 ---
 
-# /lindaai-update — LindaAI Auto-Update
+# /linda-sync — LindaAI Auto-Update
 
-This skill pulls the latest skills, commands, and agents from the LindaAI update server and installs only what the user's tier and license allow.
+Pulls the latest skills, commands, and agents from the LindaAI servers and installs **only** what the user's tier and picker selections allow.
 
 ## When to run
-- User types `/lindaai-update` or asks to update LindaAI
+- User types `/linda-sync` or asks to update
 - First run of the day (optional auto-trigger via hook)
-- After a fresh install, to ensure the customer has the latest bundle
+- After a fresh install, to ensure correct bundle
+- After the user picks skills in the web picker
 
 ## What it does
+
 1. Reads the user's license key from `~/.claude/lindaai/license.json`
-2. Validates the license against the LindaAI API: `POST https://lindaai-api-production.up.railway.app/v1/licenses/validate`
-3. Fetches the current manifest: `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json`
-4. Compares local skill versions against the manifest
-5. For each skill the license allows AND is newer on the server:
-   - Downloads the SKILL.md from the updates CDN
-   - Writes to `~/.claude/skills/<skill-name>/SKILL.md`
-6. For skills the license NO LONGER allows (trial expired, picker changed):
-   - Removes the skill folder from `~/.claude/skills/`
-7. Prints a changelog of what was added, updated, or removed
+2. Calls the LindaAI API's `allowed-skills` endpoint — **the API is the source of truth**
+3. Compares local `~/.claude/skills/` against allowed_skills:
+   - **Missing skills that ARE allowed** → download + install
+   - **Installed skills that are NOT allowed** (picker changed, trial expired) → remove
+4. Reports added / removed / updated to the user
 
 ## Workflow for the assistant
 
-When this skill triggers:
+### Step 1 — Read local license
 
-1. **Read license:** `cat ~/.claude/lindaai/license.json`
-   - If missing, tell user: "No LindaAI license found. Run /lindaai-activate first."
+```bash
+cat ~/.claude/lindaai/license.json
+```
 
-2. **Validate with server (POST):**
-   ```
-   POST https://lindaai-api-production.up.railway.app/v1/licenses/validate
-   Headers: Content-Type: application/json
-   Body: { "license_key": "<key>", "machine_id": "<machine_id>" }
-   ```
-   Expected response:
-   ```json
-   {
-     "valid": true,
-     "tier": "platinum",
-     "selected_skills": ["..."],
-     "expires_at": "2027-04-21T00:00:00Z",
-     "locked": true
-   }
-   ```
+If missing, tell user: "No LindaAI license found. Run the bootstrap install or enter your key."
 
-3. **Fetch update manifest:**
-   `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json`
+### Step 2 — Call the allowed-skills endpoint
 
-4. **Compute diff:** For each skill in the manifest where `tier_requirement <= user_tier` AND `(not in allowed_skills OR local_version < remote_version)`:
-   - Queue for install or removal
+```
+GET https://lindaai-api-production.up.railway.app/v1/licenses/{key}/allowed-skills
+```
 
-5. **Apply changes:** Download new/updated skill files, remove revoked ones.
+Response:
+```json
+{
+  "valid": true,
+  "tier": "gold",
+  "allowed_skills": ["linda-brief", "linda-mail", "linda-deals", ...],
+  "selected_skills": ["linda-deals", "linda-rents", ...],
+  "locked": false,
+  "locks_at": "2026-05-07T12:00:00"
+}
+```
 
-6. **Report to user:**
-   ```
-   LindaAI Update Complete
-   ✅ Added: <skill-name> (v<version>)
-   🔄 Updated: <skill-name> (v<old> → v<new>)
-   🗑️  Removed: <skill-name> (no longer in your plan)
-   ```
+If `valid: false` → tell user the reason (expired, not found) and exit.
 
-## Hosting notes (for Boss47)
+### Step 3 — Compute diff
 
-The update server is two static endpoints:
-- `https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json` — version ledger
-- `https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/skills/<name>/SKILL.md` — raw skill files
+- Get currently installed skill folder names from `~/.claude/skills/`
+- Any skill in `allowed_skills` but NOT installed → download from CDN:
+  ```
+  GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/skills/{skill}.md
+  ```
+  Save to `~/.claude/skills/{skill}/SKILL.md` (create folder first).
 
-Easiest hosting: GitHub public repo with GitHub Pages OR Cloudflare Pages. When a skill changes in LindaAI-Master, bump its version in `updates/manifest.json` and push. Customers' next `/lindaai-update` pulls the change.
+- Any skill installed but NOT in `allowed_skills` (and starts with `linda-`) → remove its folder.
+  Don't touch non-linda skills (user's personal stuff).
+
+### Step 4 — Report
+
+```
+🤠 LindaAI Sync — Tier: GOLD
+✅ Installed: linda-telegram-setup, linda-discord-setup
+🗑️  Removed: linda-weekly (no longer in your selection)
+⚠ Lock countdown: selections lock on 2026-05-07
+
+Done. 3 changes applied.
+```
+
+## Locked keys behavior
+
+If `locked: true`, tell the user: "Your skill selections are permanently locked. To swap, upgrade to Platinum for full access."
 
 ## Error handling
-- Network failure → "Couldn't reach LindaAI servers. Check your internet and try again."
-- Invalid license → "License expired or revoked. Contact support@lindaai.com."
-- Trial expired → "Your 5-day trial ended. Upgrade at wisecertified.gumroad.com to keep your skills."
 
-## Example run
-
-User: `/lindaai-update`
-
-Output:
-```
-Howdy Boss47 — checking for updates...
-
-✅ Added: bandit agent (v1.0.0)
-🔄 Updated: deal-analyzer (v2.1.0 → v2.2.0)
-🔄 Updated: morning-briefing (v1.3.0 → v1.4.0)
-
-All set — 3 changes applied. Yeee Hawww! 🤠
-```
+- Network failure → "Couldn't reach LindaAI servers. Check internet and try again."
+- Invalid license → "License inactive. Contact support@lindaai.com."
+- Picker URL: If user asks how to change skills, point them to `https://wisesaucy.github.io/lindaai-updates/picker/`
 
 ---
 
