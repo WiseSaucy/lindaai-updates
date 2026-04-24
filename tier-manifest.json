@@ -1,0 +1,139 @@
+{
+  "version": "2.0.0",
+  "updated": "2026-04-21",
+  "product": "LindaAI",
+  "copyright": "\u00a9 2026 LindaAI \u2014 Built by Daniel Wise",
+  "tiers": {
+    "bronze": {
+      "display_name": "LindaAI Bronze",
+      "tagline": "Entry tier \u2014 the essentials",
+      "price_hint": "Entry level",
+      "skill_count": 10,
+      "skills": [
+        "morning-briefing",
+        "email-drafter",
+        "follow-up",
+        "inbox-triage",
+        "brain-dump",
+        "invoice-generator",
+        "content-batch",
+        "lead-tracker",
+        "project-pulse",
+        "weekly-review"
+      ],
+      "agents": [],
+      "customer_pickable": false
+    },
+    "silver": {
+      "display_name": "LindaAI Silver",
+      "tagline": "Growth tier \u2014 scale your operation",
+      "skill_count": 20,
+      "skills_include_bronze": true,
+      "additional_skills": [
+        "competitor-analysis",
+        "market-research",
+        "content-repurpose",
+        "social-media-calendar",
+        "meeting-prep",
+        "meeting-to-actions",
+        "client-onboarding",
+        "deep-research",
+        "financial-snapshot",
+        "sop-builder"
+      ],
+      "agents": [],
+      "customer_pickable": true,
+      "picker_note": "Silver customers can swap up to 3 Silver skills for any other Silver-tier skill within 14 days of purchase. After day 14, selections lock."
+    },
+    "gold": {
+      "display_name": "LindaAI Gold",
+      "tagline": "Pro tier \u2014 real estate + finance power",
+      "skill_count": 30,
+      "skills_include_silver": true,
+      "additional_skills": [
+        "deal-analyzer",
+        "rental-analysis",
+        "property-research",
+        "deal-marketing-package",
+        "seller-outreach-drafter",
+        "investment-calculator",
+        "negotiation-prep",
+        "kpi-dashboard",
+        "hiring-screener",
+        "pipeline-sync"
+      ],
+      "agents": [],
+      "customer_pickable": true,
+      "picker_note": "Gold customers can swap up to 5 Gold skills for any other Gold-tier skill within 14 days of purchase. After day 14, selections lock."
+    },
+    "platinum": {
+      "display_name": "LindaAI Platinum \u2726",
+      "tagline": "Full access \u2014 every LindaAI skill + 19 AI agents + Voice Pack included free",
+      "skill_count": "50+",
+      "bundled_addons": [
+        "voice-pack"
+      ],
+      "bundle_note": "Platinum includes the $19.99 LindaAI Voice Pack FREE \u2014 pick from 6 voice personalities (Country / Hiphop-Slang / Regular \u00d7 Male or Female) and toggle speaking with /voice anytime.",
+      "skills_include_gold": true,
+      "additional_skills": [
+        "swot-analysis",
+        "contract-review",
+        "networking-intel",
+        "travel-plan",
+        "personal-brand-audit",
+        "airbnb-underwriting",
+        "coliving-underwriting",
+        "voice-to-contract",
+        "grant-writer",
+        "grant-finder",
+        "grant-tracker",
+        "grant-budget-builder",
+        "grant-eligibility",
+        "sam-gov-setup",
+        "negotiation-prep",
+        "linda-license-manager",
+        "kajabi-scraper",
+        "lindaai-update",
+        "gumroad-upload"
+      ],
+      "agents": [
+        "bandit",
+        "inkslinger",
+        "sheriff",
+        "doc",
+        "drawl",
+        "wrangler",
+        "tally",
+        "mercantile",
+        "closer",
+        "grit",
+        "scout",
+        "compass",
+        "holler",
+        "ranger",
+        "pony",
+        "mender",
+        "ledger",
+        "bullhorn",
+        "rooster"
+      ],
+      "customer_pickable": false,
+      "picker_note": "Platinum gets everything. No picker needed."
+    },
+    "trial": {
+      "display_name": "LindaAI 5-Day Trial",
+      "tagline": "Pick 3 skills. 5 days. See the magic.",
+      "duration_days": 5,
+      "max_skills": 3,
+      "allowed_skill_pool": [
+        "bronze",
+        "silver"
+      ],
+      "converts_to": "upgrade_gated",
+      "upgrade_email_day": 4
+    }
+  },
+  "engine_only": [
+    "voice"
+  ]
+}
