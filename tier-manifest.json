@@ -60,9 +60,13 @@
         "negotiation-prep",
         "kpi-dashboard",
         "hiring-screener",
-        "pipeline-sync"
+        "pipeline-sync",
+        "telegram-setup",
+        "discord-setup"
       ],
       "agents": [],
+      "bundled_addons": ["bridges"],
+      "bundle_note": "Gold includes the LindaAI Mobile Bridges \u2014 set up Telegram and Discord to chat with your LindaAI from your phone anywhere.",
       "customer_pickable": true,
       "picker_note": "Gold customers can swap up to 5 Gold skills for any other Gold-tier skill within 14 days of purchase. After day 14, selections lock."
     },
@@ -71,9 +75,10 @@
       "tagline": "Full access \u2014 every LindaAI skill + 19 AI agents + Voice Pack included free",
       "skill_count": "50+",
       "bundled_addons": [
-        "voice-pack"
+        "voice-pack",
+        "bridges"
       ],
-      "bundle_note": "Platinum includes the $19.99 LindaAI Voice Pack FREE \u2014 pick from 6 voice personalities (Country / Hiphop-Slang / Regular \u00d7 Male or Female) and toggle speaking with /voice anytime.",
+      "bundle_note": "Platinum includes: Voice Pack (6 personality voices, $19.99 value) + Mobile Bridges (Telegram + Discord) \u2014 all FREE with Platinum.",
       "skills_include_gold": true,
       "additional_skills": [
         "swot-analysis",

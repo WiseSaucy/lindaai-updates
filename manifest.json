@@ -197,6 +197,14 @@
     "linda-gumroad": {
       "version": "1.0.0",
       "min_tier": "platinum"
+    },
+    "linda-telegram-setup": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "linda-discord-setup": {
+      "version": "1.0.0",
+      "min_tier": "gold"
     }
   },
   "agents": {
