@@ -210,30 +210,43 @@ function toggleSkill(skill, div) {
   document.getElementById("submit-btn").disabled = selected.size === 0;
 }
 
-function submitPicks() {
+async function submitPicks() {
   const key = document.getElementById("licenseKey").value.trim();
   const email = document.getElementById("email").value.trim();
-  const picks = [...selected].join(", ");
   const msg = document.getElementById("submit-msg");
+  const btn = document.getElementById("submit-btn");
 
-  const subject = encodeURIComponent(`LindaAI Skill Picker — ${currentTier.toUpperCase()} tier`);
-  const body = encodeURIComponent(
-`LindaAI Skill Selection Request
+  btn.disabled = true;
+  btn.textContent = "Locking in...";
+  msg.innerHTML = '<div style="color:#f59e0b; margin-top:16px;">Saving your selections to LindaAI servers...</div>';
 
-Tier: ${currentTier.toUpperCase()}
-License Key: ${key}
-Email: ${email}
+  try {
+    const res = await fetch(`${API}/v1/licenses/${encodeURIComponent(key)}/pick-skills`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ skills: [...selected], email: email })
+    });
+    const data = await res.json();
 
-Selected Skills (${selected.size}/${maxPicks}):
-${[...selected].map(s => `  - /${s} — ${SKILL_LABELS[s] || s}`).join("\n")}
-
-Please activate these skills on my LindaAI install within 24 hours.
-
-© 2026 LindaAI`
-  );
-  window.location.href = `mailto:support@lindaai.com?subject=${subject}&body=${body}`;
-
-  msg.innerHTML = `<div class="success">✅ Your email app opened with your selections. Send the email and we'll activate within 24 hours. LindaAI has your back!</div>`;
+    if (data.success) {
+      const locksDate = data.locks_at ? new Date(data.locks_at).toLocaleDateString() : "—";
+      msg.innerHTML = `<div class="success">
+        ✅ <strong>Locked in!</strong> ${data.selected_skills.length} skills saved.<br>
+        Selection locks permanently on: <strong>${locksDate}</strong><br><br>
+        Next: run <code>/linda-sync</code> in your LindaAI and your selected skills will install automatically.<br><br>
+        <em>LindaAI has your back, partner.</em> 🤠
+      </div>`;
+      btn.style.display = "none";
+    } else {
+      msg.innerHTML = `<div class="error">❌ ${data.reason || "Couldn't save selections."}</div>`;
+      btn.disabled = false;
+      btn.textContent = "Lock In My Selections →";
+    }
+  } catch (e) {
+    msg.innerHTML = `<div class="error">Network error: ${e.message}. Try again or email support@lindaai.com.</div>`;
+    btn.disabled = false;
+    btn.textContent = "Lock In My Selections →";
+  }
 }
 </script>
 </body>
