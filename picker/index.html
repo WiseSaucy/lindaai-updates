@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LindaAI — Pick Your Skills</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a0a;
+    color: #f5f1e8;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px;
+    line-height: 1.6;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { color: #f59e0b; font-size: 42px; letter-spacing: -1px; margin-bottom: 8px; }
+  .tagline { color: #b91c1c; font-size: 18px; margin-bottom: 40px; }
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 24px;
+  }
+  label { display: block; margin-bottom: 8px; color: #f59e0b; font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  input[type="text"], input[type="email"] {
+    width: 100%; padding: 14px 18px; font-size: 16px;
+    background: #0a0a0a; border: 1px solid #444; border-radius: 8px;
+    color: #f5f1e8; margin-bottom: 16px; font-family: inherit;
+  }
+  input[type="text"]:focus, input[type="email"]:focus { outline: none; border-color: #f59e0b; }
+  button {
+    background: #b91c1c; color: white; border: none; padding: 14px 32px;
+    font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer;
+    transition: background 0.2s; font-family: inherit;
+  }
+  button:hover { background: #dc2626; }
+  button:disabled { background: #444; cursor: not-allowed; }
+  .skill-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+  .skill {
+    display: flex; align-items: center; padding: 12px 16px;
+    background: #0a0a0a; border: 1px solid #333; border-radius: 8px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .skill:hover { border-color: #f59e0b; }
+  .skill input[type="checkbox"] { margin-right: 12px; accent-color: #f59e0b; }
+  .skill.selected { border-color: #f59e0b; background: #1f1408; }
+  .skill.disabled { opacity: 0.4; cursor: not-allowed; }
+  .tier-badge {
+    display: inline-block; padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .tier-bronze { background: #92400e; }
+  .tier-silver { background: #525252; }
+  .tier-gold { background: #a16207; }
+  .tier-platinum { background: #581c87; }
+  .tier-trial { background: #b91c1c; }
+  .counter { color: #f59e0b; font-weight: 700; font-size: 18px; }
+  .error { color: #ef4444; padding: 16px; background: #1c0606; border-radius: 8px; margin: 16px 0; }
+  .success { color: #22c55e; padding: 16px; background: #051c08; border-radius: 8px; margin: 16px 0; }
+  .footer { text-align: center; color: #666; font-size: 13px; margin-top: 48px; }
+  @media (max-width: 600px) { .skill-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🤠 LindaAI Skill Picker</h1>
+  <p class="tagline">Pick the skills that fit YOUR business. Lock 'em in within 14 days.</p>
+
+  <div id="step-1" class="card">
+    <label>Your License Key</label>
+    <input id="licenseKey" type="text" placeholder="WISE-GOLD-XXXX-XXXX-XXXX or LINDA-2026-XXXX-XXXX">
+    <label>Your Email (for confirmation)</label>
+    <input id="email" type="email" placeholder="you@example.com">
+    <button onclick="validateLicense()">Validate License →</button>
+    <div id="validation-msg"></div>
+  </div>
+
+  <div id="step-2" class="card" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <div>
+        <div id="tier-badge" class="tier-badge">BRONZE</div>
+        <h2 style="margin-top:12px; color:#f5f1e8;">Your Tier Details</h2>
+      </div>
+      <div>
+        Selected: <span class="counter"><span id="selected-count">0</span>/<span id="max-picks">3</span></span>
+      </div>
+    </div>
+    <p id="tier-note" style="color:#999; margin-bottom:20px;"></p>
+    <div id="skill-grid" class="skill-grid"></div>
+    <button id="submit-btn" onclick="submitPicks()" disabled>Lock In My Selections →</button>
+    <div id="submit-msg"></div>
+  </div>
+
+  <div class="footer">
+    © 2026 LindaAI — Built by Daniel Wise · <a href="mailto:support@lindaai.com" style="color:#f59e0b;">support@lindaai.com</a>
+  </div>
+</div>
+
+<script>
+const API = "https://lindaai-api-production.up.railway.app";
+const CDN = "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main";
+
+let currentTier = null;
+let maxPicks = 0;
+let pickPool = [];
+let selected = new Set();
+
+const TIER_SKILLS = {
+  bronze: ["linda-brief","linda-mail","linda-followup","linda-inbox","linda-capture","linda-invoice","linda-posts","linda-leads","linda-pulse","linda-weekly"],
+  silver: ["linda-compete","linda-market","linda-remix","linda-calendar","linda-meeting","linda-actions","linda-onboard","linda-research","linda-finance","linda-sop"],
+  gold: ["linda-deals","linda-rents","linda-property","linda-dealpack","linda-outreach","linda-invest","linda-negotiate","linda-kpi","linda-hire","linda-pipeline","linda-telegram-setup","linda-discord-setup"]
+};
+
+const SKILL_LABELS = {
+  "linda-brief":"Morning Briefing","linda-mail":"Email Drafter","linda-followup":"Follow-ups","linda-inbox":"Inbox Triage",
+  "linda-capture":"Brain Dump","linda-invoice":"Invoice Generator","linda-posts":"Content Batch","linda-leads":"Lead Tracker",
+  "linda-pulse":"Project Pulse","linda-weekly":"Weekly Review","linda-compete":"Competitor Analysis","linda-market":"Market Research",
+  "linda-remix":"Content Repurpose","linda-calendar":"Social Calendar","linda-meeting":"Meeting Prep","linda-actions":"Meeting Actions",
+  "linda-onboard":"Client Onboarding","linda-research":"Deep Research","linda-finance":"Financial Snapshot","linda-sop":"SOP Builder",
+  "linda-deals":"Deal Analyzer","linda-rents":"Rental Analysis","linda-property":"Property Research","linda-dealpack":"Deal Marketing",
+  "linda-outreach":"Seller Outreach","linda-invest":"Investment Calculator","linda-negotiate":"Negotiation Prep","linda-kpi":"KPI Dashboard",
+  "linda-hire":"Hiring Package","linda-pipeline":"Pipeline Sync","linda-telegram-setup":"Telegram Bridge","linda-discord-setup":"Discord Bridge"
+};
+
+async function validateLicense() {
+  const key = document.getElementById("licenseKey").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const msg = document.getElementById("validation-msg");
+  if (!key || !email) { msg.innerHTML = '<div class="error">Fill in both fields.</div>'; return; }
+
+  msg.innerHTML = '<div style="color:#f59e0b; margin-top:16px;">Validating...</div>';
+  try {
+    const res = await fetch(`${API}/v1/licenses/validate/${encodeURIComponent(key)}`);
+    const data = await res.json();
+    if (!data.valid) {
+      msg.innerHTML = `<div class="error">❌ ${data.reason || "Invalid license."}</div>`;
+      return;
+    }
+    // Pull tier from download endpoint
+    const infoRes = await fetch(`${API}/v1/licenses/download/${encodeURIComponent(key)}`);
+    const info = await infoRes.json();
+    const tier = (info.tier || "").toLowerCase();
+    setupPicker(tier, key, email);
+  } catch (e) {
+    msg.innerHTML = `<div class="error">Network error: ${e.message}. Check your internet.</div>`;
+  }
+}
+
+function setupPicker(tier, key, email) {
+  currentTier = tier;
+  if (tier === "bronze") {
+    alert("Bronze tier includes all 10 essential skills — no picker needed, partner! All skills are already unlocked.");
+    return;
+  }
+  if (tier === "platinum") {
+    alert("Platinum gets EVERYTHING — 50+ skills, 19 agents, Voice Pack, Bridges. No picker needed. LindaAI has your back!");
+    return;
+  }
+
+  document.getElementById("step-1").style.display = "none";
+  document.getElementById("step-2").style.display = "block";
+
+  const badge = document.getElementById("tier-badge");
+  badge.textContent = tier.toUpperCase();
+  badge.className = `tier-badge tier-${tier}`;
+
+  if (tier === "silver") {
+    maxPicks = 3;
+    pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver];
+    document.getElementById("tier-note").textContent = `Silver tier: swap up to 3 skills from any within the Silver+Bronze pool. Locks in 14 days.`;
+  } else if (tier === "gold") {
+    maxPicks = 5;
+    pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver, ...TIER_SKILLS.gold];
+    document.getElementById("tier-note").textContent = `Gold tier: swap up to 5 skills from the Gold+Silver+Bronze pool. Locks in 14 days.`;
+  } else if (tier === "trial") {
+    maxPicks = 3;
+    pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver];
+    document.getElementById("tier-note").textContent = `5-day trial: pick any 3 skills to test. After 5 days, upgrade to keep them.`;
+  }
+
+  document.getElementById("max-picks").textContent = maxPicks;
+  renderSkills();
+}
+
+function renderSkills() {
+  const grid = document.getElementById("skill-grid");
+  grid.innerHTML = "";
+  pickPool.forEach(skill => {
+    const div = document.createElement("div");
+    div.className = "skill";
+    div.innerHTML = `<input type="checkbox" id="chk-${skill}" value="${skill}"><label for="chk-${skill}" style="cursor:pointer; flex:1; text-transform:none; letter-spacing:0; font-weight:500; color:#f5f1e8;">/${skill} — ${SKILL_LABELS[skill] || skill}</label>`;
+    div.onclick = (e) => { if (e.target.tagName !== "INPUT") { const chk = div.querySelector('input'); chk.checked = !chk.checked; toggleSkill(skill, div); } else { toggleSkill(skill, div); } };
+    grid.appendChild(div);
+  });
+}
+
+function toggleSkill(skill, div) {
+  const chk = div.querySelector('input');
+  if (chk.checked && selected.size >= maxPicks) {
+    chk.checked = false;
+    alert(`You can only pick ${maxPicks} skills on this tier. Uncheck one to swap.`);
+    return;
+  }
+  if (chk.checked) { selected.add(skill); div.classList.add("selected"); }
+  else { selected.delete(skill); div.classList.remove("selected"); }
+  document.getElementById("selected-count").textContent = selected.size;
+  document.getElementById("submit-btn").disabled = selected.size === 0;
+}
+
+function submitPicks() {
+  const key = document.getElementById("licenseKey").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const picks = [...selected].join(", ");
+  const msg = document.getElementById("submit-msg");
+
+  const subject = encodeURIComponent(`LindaAI Skill Picker — ${currentTier.toUpperCase()} tier`);
+  const body = encodeURIComponent(
+`LindaAI Skill Selection Request
+
+Tier: ${currentTier.toUpperCase()}
+License Key: ${key}
+Email: ${email}
+
+Selected Skills (${selected.size}/${maxPicks}):
+${[...selected].map(s => `  - /${s} — ${SKILL_LABELS[s] || s}`).join("\n")}
+
+Please activate these skills on my LindaAI install within 24 hours.
+
+© 2026 LindaAI`
+  );
+  window.location.href = `mailto:support@lindaai.com?subject=${subject}&body=${body}`;
+
+  msg.innerHTML = `<div class="success">✅ Your email app opened with your selections. Send the email and we'll activate within 24 hours. LindaAI has your back!</div>`;
+}
+</script>
+</body>
+</html>
