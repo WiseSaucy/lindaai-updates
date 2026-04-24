@@ -6,195 +6,195 @@
   "copyright": "\u00a9 2026 LindaAI \u2014 Built by Daniel Wise",
   "notes": "This file is served at https://wisesaucy.github.io/lindaai-updates/manifest.json. Customers' /lindaai-update skill reads it to know which skills/versions are available. To ship an update: bump the version here, push the updated skill file to the CDN, and customers get it on next /lindaai-update run.",
   "skills": {
-    "morning-briefing": {
+    "linda-brief": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "email-drafter": {
+    "linda-mail": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "follow-up": {
+    "linda-followup": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "inbox-triage": {
+    "linda-inbox": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "brain-dump": {
+    "linda-capture": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "invoice-generator": {
+    "linda-invoice": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "content-batch": {
+    "linda-posts": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "lead-tracker": {
+    "linda-leads": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "project-pulse": {
+    "linda-pulse": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "weekly-review": {
+    "linda-weekly": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "competitor-analysis": {
+    "linda-compete": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "market-research": {
+    "linda-market": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "content-repurpose": {
+    "linda-remix": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "social-media-calendar": {
+    "linda-calendar": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "meeting-prep": {
+    "linda-meeting": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "meeting-to-actions": {
+    "linda-actions": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "client-onboarding": {
+    "linda-onboard": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "deep-research": {
+    "linda-research": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "financial-snapshot": {
+    "linda-finance": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "sop-builder": {
+    "linda-sop": {
       "version": "1.0.0",
       "min_tier": "silver"
     },
-    "deal-analyzer": {
+    "linda-deals": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "rental-analysis": {
+    "linda-rents": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "property-research": {
+    "linda-property": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "deal-marketing-package": {
+    "linda-dealpack": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "seller-outreach-drafter": {
+    "linda-outreach": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "investment-calculator": {
+    "linda-invest": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "negotiation-prep": {
+    "linda-negotiate": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "kpi-dashboard": {
+    "linda-kpi": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "hiring-screener": {
+    "linda-hire": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "pipeline-sync": {
+    "linda-pipeline": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
-    "swot-analysis": {
+    "linda-swot": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "contract-review": {
+    "linda-contract": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "networking-intel": {
+    "linda-network": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "travel-plan": {
+    "linda-travel": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "personal-brand-audit": {
+    "linda-brand": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "airbnb-underwriting": {
+    "linda-airbnb": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "coliving-underwriting": {
+    "linda-coliving": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "voice-to-contract": {
+    "linda-voicedeal": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "grant-writer": {
+    "linda-grantwrite": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "grant-finder": {
+    "linda-granthunt": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "grant-tracker": {
+    "linda-granttrack": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "grant-budget-builder": {
+    "linda-grantbudget": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "grant-eligibility": {
+    "linda-grantfit": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "sam-gov-setup": {
+    "linda-samgov": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "linda-license-manager": {
+    "linda-licenses": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "kajabi-scraper": {
+    "linda-kajabi": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "lindaai-update": {
+    "linda-sync": {
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "gumroad-upload": {
+    "linda-gumroad": {
       "version": "1.0.0",
       "min_tier": "platinum"
     }
