@@ -166,8 +166,6 @@ for s in skills:
 print(" ".join(out))
 PY
 )
-PY
-)
 
 # Agents (Platinum only)
 AGENTS=""
