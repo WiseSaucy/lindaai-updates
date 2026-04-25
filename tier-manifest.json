@@ -62,10 +62,13 @@
         "hiring-screener",
         "pipeline-sync",
         "telegram-setup",
-        "discord-setup"
+        "discord-setup",
+        "iron-horse"
       ],
       "agents": [],
-      "bundled_addons": ["bridges"],
+      "bundled_addons": [
+        "bridges"
+      ],
       "bundle_note": "Gold includes the LindaAI Mobile Bridges \u2014 set up Telegram and Discord to chat with your LindaAI from your phone anywhere.",
       "customer_pickable": true,
       "picker_note": "Gold customers can swap up to 5 Gold skills for any other Gold-tier skill within 14 days of purchase. After day 14, selections lock."
