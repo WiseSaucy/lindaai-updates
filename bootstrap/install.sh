@@ -55,25 +55,37 @@ if [ -z "$VALIDATE_RESP" ]; then
   exit 1
 fi
 
-# Parse valid/tier via python
-VALID=$(echo "$VALIDATE_RESP" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('valid', False))" 2>/dev/null)
-if [ "$VALID" != "True" ] && [ "$VALID" != "true" ]; then
-  REASON=$(echo "$VALIDATE_RESP" | python3 -c "import sys,json; print(json.load(sys.stdin).get('reason','unknown'))" 2>/dev/null)
-  echo "❌ License rejected: $REASON"
-  echo "   Contact support@lindaai.com if you believe this is an error."
-  exit 1
-fi
-
-# --- Download full license info (tier + allowed skills) ---
-echo "📜 Fetching your license details..."
-LICENSE_JSON=$(curl -sL "$API/v1/licenses/download/$LICENSE_KEY")
-
-# Extract tier (lowercase)
-TIER=$(echo "$LICENSE_JSON" | python3 -c "
+# Parse valid/tier via python — be defensive against non-JSON responses
+VALID=$(echo "$VALIDATE_RESP" | python3 -c "
 import sys, json
 try:
     d = json.load(sys.stdin)
-    t = d.get('tier', '').lower()
+    print(d.get('valid', False))
+except Exception:
+    print('false')
+" 2>/dev/null)
+VALID="${VALID:-false}"
+if [ "$VALID" != "True" ] && [ "$VALID" != "true" ]; then
+  REASON=$(echo "$VALIDATE_RESP" | python3 -c "
+import sys, json
+try:
+    print(json.load(sys.stdin).get('reason', 'unknown reason'))
+except Exception:
+    print('Server returned an unparseable response. Try again or email support@lindaai.com.')
+" 2>/dev/null)
+  echo "❌ License rejected: $REASON"
+  echo ""
+  echo "   Need help? Email support@lindaai.com with your license key and we'll fix it."
+  exit 1
+fi
+
+# --- Extract tier directly from the validate response (it's right there) ---
+echo "📜 Reading your license details..."
+TIER=$(echo "$VALIDATE_RESP" | python3 -c "
+import sys, json
+try:
+    d = json.load(sys.stdin)
+    t = (d.get('tier') or d.get('plan') or 'bronze').lower()
     if t in ('bronze','silver','gold','platinum','trial'):
         print(t)
     else:
@@ -81,6 +93,7 @@ try:
 except Exception:
     print('bronze')
 " 2>/dev/null)
+TIER="${TIER:-bronze}"
 
 echo "✅ Tier: $TIER"
 echo ""
