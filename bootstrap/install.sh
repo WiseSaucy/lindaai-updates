@@ -106,15 +106,20 @@ if [ -z "$TIER_MANIFEST" ]; then
 fi
 
 # Build the skill list for this tier (customer names — linda-*)
-SKILLS=$(echo "$TIER_MANIFEST" | python3 <<PY
-import sys, json
-m = json.load(sys.stdin)
-rename_url = "$CDN/bootstrap/rename-map.json"
-# Fallback: use raw skills list (tier-manifest skills are internal names, but updates server uses customer linda-* names)
-tiers = m.get("tiers", {})
-tier = "$TIER"
+# IMPORTANT: pass JSON via env-var, not stdin (heredoc owns stdin)
+export TIER_MANIFEST_JSON="$TIER_MANIFEST"
+export USER_TIER="$TIER"
+SKILLS=$(python3 <<'PY'
+import os, json, sys
+try:
+    m = json.loads(os.environ.get("TIER_MANIFEST_JSON", "{}"))
+except Exception as e:
+    print("", end="")
+    sys.exit(0)
 
-# Collect skills walking up the tier chain
+tier = os.environ.get("USER_TIER", "bronze").lower()
+tiers = m.get("tiers", {})
+
 skills = list(tiers.get("bronze", {}).get("skills", []))
 if tier in ("silver","gold","platinum"):
     skills += tiers.get("silver", {}).get("additional_skills", [])
@@ -123,13 +128,44 @@ if tier in ("gold","platinum"):
 if tier == "platinum":
     skills += tiers.get("platinum", {}).get("additional_skills", [])
 
-# Dedupe
+# Dedupe + apply linda- rename for customer-facing skill names
 seen, out = set(), []
+RENAME_OVERRIDES = {
+    "morning-briefing": "linda-brief", "email-drafter": "linda-mail",
+    "follow-up": "linda-followup", "inbox-triage": "linda-inbox",
+    "brain-dump": "linda-capture", "invoice-generator": "linda-invoice",
+    "content-batch": "linda-posts", "lead-tracker": "linda-leads",
+    "project-pulse": "linda-pulse", "weekly-review": "linda-weekly",
+    "competitor-analysis": "linda-compete", "market-research": "linda-market",
+    "content-repurpose": "linda-remix", "social-media-calendar": "linda-calendar",
+    "meeting-prep": "linda-meeting", "meeting-to-actions": "linda-actions",
+    "client-onboarding": "linda-onboard", "deep-research": "linda-research",
+    "financial-snapshot": "linda-finance", "sop-builder": "linda-sop",
+    "deal-analyzer": "linda-deals", "rental-analysis": "linda-rents",
+    "property-research": "linda-property", "deal-marketing-package": "linda-dealpack",
+    "seller-outreach-drafter": "linda-outreach", "investment-calculator": "linda-invest",
+    "negotiation-prep": "linda-negotiate", "kpi-dashboard": "linda-kpi",
+    "hiring-screener": "linda-hire", "pipeline-sync": "linda-pipeline",
+    "swot-analysis": "linda-swot", "contract-review": "linda-contract",
+    "networking-intel": "linda-network", "travel-plan": "linda-travel",
+    "personal-brand-audit": "linda-brand", "airbnb-underwriting": "linda-airbnb",
+    "coliving-underwriting": "linda-coliving", "voice-to-contract": "linda-voicedeal",
+    "grant-writer": "linda-grantwrite", "grant-finder": "linda-granthunt",
+    "grant-tracker": "linda-granttrack", "grant-budget-builder": "linda-grantbudget",
+    "grant-eligibility": "linda-grantfit", "sam-gov-setup": "linda-samgov",
+    "linda-license-manager": "linda-licenses", "kajabi-scraper": "linda-kajabi",
+    "lindaai-update": "linda-sync", "gumroad-upload": "linda-gumroad",
+    "voice": "linda-voice", "telegram-setup": "linda-telegram-setup",
+    "discord-setup": "linda-discord-setup", "iron-horse": "linda-loi",
+}
 for s in skills:
+    s = RENAME_OVERRIDES.get(s, s)
     if s not in seen:
         seen.add(s)
         out.append(s)
 print(" ".join(out))
+PY
+)
 PY
 )
 
