@@ -84,7 +84,7 @@ If `locked: true`, tell the user: "Your skill selections are permanently locked.
 
 - Network failure → "Couldn't reach LindaAI servers. Check internet and try again."
 - Invalid license → "License inactive. Contact support@lindaai.com."
-- Picker URL: If user asks how to change skills, point them to `https://wisesaucy.github.io/lindaai-updates/picker/`
+- Picker URL: If user asks how to change skills, point them to `https://app.lindaai-brain.com/picker/`
 
 ---
 

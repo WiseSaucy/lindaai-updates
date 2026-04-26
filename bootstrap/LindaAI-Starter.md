@@ -38,13 +38,43 @@ irm https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/bootstrap/i
 
 Replace `USER_LICENSE_KEY_HERE` with whatever the user pasted. Execute via Bash tool.
 
-### Step 3: Confirm success
+### Step 3: Confirm success + meet the avatars
 
-The installer will output a success box showing tier, skill count, and agent count. Tell the user:
+The installer will output a success box showing tier, skill count, and agent count.
 
-*"You're all set, partner! LindaAI [TIER] is installed. Restart Claude Code once, then type any LindaAI command like `/linda-brief` for your morning briefing. Run `/linda-sync` anytime to pull the latest updates. LindaAI has your back."*
+Then read `avatar-map.json` (shipped in the package root) and print a tidy list
+of every command they unlocked, with the LindaAI agent (avatar) that powers it.
+Format each line:
 
-Offer to run `/linda-brief` or `/voicesetup` (Platinum only) as their first command.
+```
+  /<skill>                    ▸  <Agent> (<Role>)
+```
+
+Examples to surface during the welcome (use the real names from avatar-map.json):
+- `/email-drafter            ▸  Pony (Email Marketer)`
+- `/inbox-triage             ▸  Sheriff (Inbox Sentinel)`
+- `/deal-analyzer            ▸  Bandit (Deal Hunter)`
+- `/contract-review          ▸  Ledger (Tax & Finance)`
+
+Then tell the user:
+
+*"You're all set, partner! LindaAI [TIER] is installed with [N] skills, each
+powered by one of LindaAI's agents. The full avatar gallery is in the package
+under `avatars/` (or `agents/avatars/` on Platinum) — go meet your team.*
+
+*Silver/Gold/Trial customers: run `python3 skill-picker.py` from the package
+folder to swap skills inside your 14-day window (Silver = 3 swaps, Gold = 5).
+Trial = pick 3 of 33 Gold skills.*
+
+*Restart Claude Code once, then type any LindaAI command like `/linda-brief`
+for your morning briefing. Run `/linda-sync` anytime to pull the latest
+updates. LindaAI has your back."*
+
+Offer to:
+1. Open the avatar gallery (run `open avatars/` or `open agents/avatars/`)
+2. Run `/linda-brief` as their first command
+3. Run `python3 skill-picker.py` (if Silver/Gold/Trial)
+4. Run `/voicesetup` (Platinum only)
 
 ### Step 4: If license validation fails
 

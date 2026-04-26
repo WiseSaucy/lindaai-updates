@@ -55,7 +55,7 @@ The master license directory (for tracking all issued licenses) lives at: `brain
 | `bronze` | Basic skills (brain-dump, email-drafter, follow-up, content-batch, meeting-to-actions) | $500/yr — Entry-level, good for individual users getting started |
 | `silver` | All skills except grant suite and advanced underwriting | $1,000/yr — Professional tier, covers most business needs |
 | `gold` | All skills | $1,500/yr — Full access for businesses and power users |
-| `platinum` | All skills + license management | $4,000 one-time — Owner-level, can generate and manage other licenses |
+| `platinum` | All skills + license management | $3,000 one-time — Owner-level, can generate and manage other licenses |
 
 ## How It Works
 
