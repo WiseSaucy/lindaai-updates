@@ -63,7 +63,7 @@ Drives a Chrome browser via Playwright to create products on Gumroad automatical
 User: "/gumroad-upload"
 Assistant:
 1. Reads manifest from Desktop
-2. Confirms 5 products to upload: Bronze $500, Silver $1000, Gold $1500, Platinum $4000, Voice Pack $19.99
+2. Confirms 5 products to upload: Bronze $500, Silver $1000, Gold $1500, Platinum $3000, Voice Pack $19.99
 3. Launches Chrome
 4. User logs in once
 5. Script uploads all 5 products to draft state
