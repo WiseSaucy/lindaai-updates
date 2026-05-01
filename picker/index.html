@@ -109,7 +109,7 @@ let pickPool = [];
 let selected = new Set();
 
 const TIER_SKILLS = {
-  bronze: ["linda-brief","linda-mail","linda-followup","linda-inbox","linda-capture","linda-invoice","linda-posts","linda-leads","linda-pulse","linda-weekly"],
+  bronze: ["linda-brief","linda-mail","linda-followup","linda-inbox","linda-capture","linda-invoice","linda-posts","linda-leads","linda-pulse","linda-weekly","linda-quote","linda-cold","linda-ad","linda-onepage","linda-remind"],
   silver: ["linda-compete","linda-market","linda-remix","linda-calendar","linda-meeting","linda-actions","linda-onboard","linda-research","linda-finance","linda-sop"],
   gold: ["linda-deals","linda-rents","linda-property","linda-dealpack","linda-outreach","linda-invest","linda-negotiate","linda-kpi","linda-hire","linda-pipeline","linda-telegram-setup","linda-discord-setup"]
 };
@@ -117,7 +117,9 @@ const TIER_SKILLS = {
 const SKILL_LABELS = {
   "linda-brief":"Morning Briefing","linda-mail":"Email Drafter","linda-followup":"Follow-ups","linda-inbox":"Inbox Triage",
   "linda-capture":"Brain Dump","linda-invoice":"Invoice Generator","linda-posts":"Content Batch","linda-leads":"Lead Tracker",
-  "linda-pulse":"Project Pulse","linda-weekly":"Weekly Review","linda-compete":"Competitor Analysis","linda-market":"Market Research",
+  "linda-pulse":"Project Pulse","linda-weekly":"Weekly Review",
+  "linda-quote":"Price Quote","linda-cold":"Cold Outreach","linda-ad":"Ad Copy","linda-onepage":"One-Pager","linda-remind":"Reminders",
+  "linda-compete":"Competitor Analysis","linda-market":"Market Research",
   "linda-remix":"Content Repurpose","linda-calendar":"Social Calendar","linda-meeting":"Meeting Prep","linda-actions":"Meeting Actions",
   "linda-onboard":"Client Onboarding","linda-research":"Deep Research","linda-finance":"Financial Snapshot","linda-sop":"SOP Builder",
   "linda-deals":"Deal Analyzer","linda-rents":"Rental Analysis","linda-property":"Property Research","linda-dealpack":"Deal Marketing",
@@ -151,10 +153,6 @@ async function validateLicense() {
 
 function setupPicker(tier, key, email) {
   currentTier = tier;
-  if (tier === "bronze") {
-    alert("Bronze tier includes all 10 essential skills — no picker needed, partner! All skills are already unlocked.");
-    return;
-  }
   if (tier === "platinum") {
     alert("Platinum gets EVERYTHING — 50+ skills, 19 agents, Voice Pack, Bridges. No picker needed. LindaAI has your back!");
     return;
@@ -167,10 +165,14 @@ function setupPicker(tier, key, email) {
   badge.textContent = tier.toUpperCase();
   badge.className = `tier-badge tier-${tier}`;
 
-  if (tier === "silver") {
+  if (tier === "bronze") {
+    maxPicks = 10;
+    pickPool = [...TIER_SKILLS.bronze]; // 15 skills, pick any 10
+    document.getElementById("tier-note").textContent = `Bronze tier: pick any 10 of these 15 essential skills. Custom-fit to YOUR business. Locks in 14 days.`;
+  } else if (tier === "silver") {
     maxPicks = 3;
     pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver];
-    document.getElementById("tier-note").textContent = `Silver tier: swap up to 3 skills from any within the Silver+Bronze pool. Locks in 14 days.`;
+    document.getElementById("tier-note").textContent = `Silver tier: swap up to 3 skills from the Silver+Bronze pool. Locks in 14 days.`;
   } else if (tier === "gold") {
     maxPicks = 5;
     pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver, ...TIER_SKILLS.gold];
@@ -178,7 +180,7 @@ function setupPicker(tier, key, email) {
   } else if (tier === "trial") {
     maxPicks = 3;
     pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver];
-    document.getElementById("tier-note").textContent = `5-day trial: pick any 3 skills to test. After 5 days, upgrade to keep them.`;
+    document.getElementById("tier-note").textContent = `7-day trial: pick any 3 skills to test. After 7 days, upgrade to keep them.`;
   }
 
   document.getElementById("max-picks").textContent = maxPicks;
