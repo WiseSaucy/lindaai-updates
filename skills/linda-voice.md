@@ -1,6 +1,6 @@
 ---
 name: linda-voice
-description: Toggle LindaAI's voice-speak-every-response hook on or off. Use when Boss47 says "turn voice on", "turn voice off", "mute LindaAI", "unmute LindaAI", "stop talking", "start talking", "/voice on", "/voice off", or just "/voice" to flip the current state.
+description: Toggle LindaAI's voice-speak-every-response hook on or off. Use when the user says "turn voice on", "turn voice off", "mute LindaAI", "unmute LindaAI", "stop talking", "start talking", "/voice on", "/voice off", or just "/voice" to flip the current state.
 ---
 
 # Voice Toggle
@@ -19,7 +19,7 @@ This skill turns the Stop hook in `~/.claude/settings.json` on or off. The hook 
    - **"off" / "mute" / "stop talking"** → Remove the entire `Stop` entry from `hooks`. If `hooks` becomes empty, remove the `hooks` key entirely.
    - **No argument (just `/voice`)** → Flip the current state.
 4. Write the updated JSON back. Preserve all other settings (especially `extraKnownMarketplaces`).
-5. Confirm to Boss47 in country voice whether voice is now ON or OFF.
+5. Confirm to the user in country voice whether voice is now ON or OFF.
 6. Remind him: "Run `/hooks` or restart Claude Code once for the change to take effect mid-session."
 
 ## Important
