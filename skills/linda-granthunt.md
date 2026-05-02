@@ -8,7 +8,7 @@ version: 1.0.0
 
 ## Overview
 
-Grant Finder — powered by LindaAI — searches federal, state, and private grant databases for funding opportunities that match Daniel Wise's (Boss47's) two active businesses: **Real Estate Investing (MHP/RV parks)** and **LindaAI (AI OS product)**. It filters by eligibility, deadline, and fit score, then outputs a ranked shortlist saved to `brain/grants/opportunities/`.
+Grant Finder — powered by LindaAI — searches federal, state, and private grant databases for funding opportunities that match Daniel Wise's (the user's) two active businesses: **Real Estate Investing (MHP/RV parks)** and **LindaAI (AI OS product)**. It filters by eligibility, deadline, and fit score, then outputs a ranked shortlist saved to `brain/grants/opportunities/`.
 
 This is NOT random Googling. LindaAI runs a structured sweep of the best-known grant sources with AI-powered fit scoring.
 
@@ -50,7 +50,7 @@ Before proceeding, verify the LindaAI license:
 
 ### Step 1: Confirm Scope
 
-Ask Boss47 (only if not specified):
+Ask the user (only if not specified):
 
 1. **Which business?** Real Estate (MHP/RV), LindaAI, or both?
 2. **Geography?** Federal only, or specific state(s)?
@@ -70,7 +70,7 @@ Use WebSearch and WebFetch to pull from these primary sources:
 | Source | URL | Best For |
 |---|---|---|
 | Grants.gov | grants.gov | All federal grants — master database |
-| USDA Rural Development | rd.usda.gov | MHP/RV parks in rural areas — HUGE for Boss47 |
+| USDA Rural Development | rd.usda.gov | MHP/RV parks in rural areas — HUGE for the user |
 | SBA | sba.gov/funding-programs/grants | Small business grants |
 | SBIR/STTR | sbir.gov | AI/tech R&D — LindaAI fit |
 | HUD | hud.gov/grants | Affordable housing, community development |
@@ -108,7 +108,7 @@ For each source, pull open opportunities and extract:
 
 ### Step 4: Fit Score Each Opportunity
 
-Score each grant 1–10 for Boss47 based on:
+Score each grant 1–10 for the user based on:
 
 | Factor | Weight |
 |---|---|
@@ -158,7 +158,7 @@ Save to `brain/grants/opportunities/YYYY-MM-DD-grant-sweep.md` with this structu
 ## ❌ Disqualified
 [Brief list of ones that don't fit and why, so we don't research them again]
 
-## 📝 Prerequisites Boss47 Needs
+## 📝 Prerequisites the user Needs
 [Things he must have before applying — SAM.gov registration, UEI, EIN verification, audited financials, etc.]
 ```
 
@@ -171,9 +171,9 @@ End with a clear CTA:
 
 ## Important Notes
 
-- **Never auto-submit applications.** This skill only FINDS grants. Drafting = `/grant-writer`. Submitting = Boss47 himself.
-- **Always check SAM.gov registration status.** Federal grants require an active UEI (replaced DUNS in 2022). If Boss47 isn't registered, flag it as prerequisite #1.
-- **Tone:** country, direct, pumped up — that LindaAI way. Call him Boss47. Kick off with "Let's gooooooo!" Wrap up with "Yeeee Hawww! 🤠" when you've got a good list.
+- **Never auto-submit applications.** This skill only FINDS grants. Drafting = `/grant-writer`. Submitting = the user himself.
+- **Always check SAM.gov registration status.** Federal grants require an active UEI (replaced DUNS in 2022). If the user isn't registered, flag it as prerequisite #1.
+- **Tone:** country, direct, pumped up — that LindaAI way. Call him the user. Kick off with "Let's gooooooo!" Wrap up with "Yeeee Hawww! 🤠" when you've got a good list.
 - **Deduplicate across runs** — check prior sweeps in `brain/grants/opportunities/` so we don't surface the same grant twice.
 - **Rural Development (USDA)** is probably his #1 source given MHP/RV park focus. Always check it, even if not asked.
 
