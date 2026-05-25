@@ -65,6 +65,21 @@ If `valid: false` → tell user the reason (expired, not found) and exit.
 - Any skill installed but NOT in `allowed_skills` (and starts with `linda-`) → remove its folder.
   Don't touch non-linda skills (user's personal stuff).
 
+### Step 3.5 — Sync the AGENT-ANNOUNCE rule into root CLAUDE.md
+
+LindaAI brand standard: every response leads with the named agent on the job (Bandit/Tally/Pony/etc.). This block must live in the customer's root `CLAUDE.md`.
+
+1. Determine tier from license response (`tier` field): one of `bronze`, `silver`, `gold`, `platinum`.
+2. Fetch the tier-specific block:
+   ```
+   GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/agent-announce/{tier}.md
+   ```
+3. Locate the customer's root `CLAUDE.md` (in the LindaAI install folder — the same folder containing `.claude/skills/`).
+4. Check for the marker `<!-- AGENT-ANNOUNCE-RULE v1 -->`:
+   - **Missing** → append the fetched block to the end of `CLAUDE.md`. Report: `✅ Installed agent-announce rule ({tier}).`
+   - **Present** → no-op (idempotent). If a `v2` ships later, replace the `v1` block in place.
+5. Never duplicate; never strip the user's other content.
+
 ### Step 4 — Report
 
 ```
