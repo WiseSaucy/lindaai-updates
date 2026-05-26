@@ -33,7 +33,34 @@ cat ~/.claude/lindaai/license.json
 
 If missing, tell user: "No LindaAI license found. Run the bootstrap install or enter your key."
 
+### Step 1.5 — Founder bypass (LindaAI owner only)
+
+Before calling the server, check for founder status. The bypass fires **only if BOTH** of these are true:
+
+- `license.json` contains `"founder": true`, AND
+- `license.json` `email` field equals `wisecertifiedinc@gmail.com`
+
+When the bypass fires, skip Step 2 and treat the user as having full Platinum-equivalent access:
+
+- `tier` = whatever is in `license.json` (default to `platinum` if absent)
+- `allowed_skills` = the full skill catalog (every file in this repo's `skills/` folder)
+- `selected_skills` = same as `allowed_skills`
+- `locked` = `false`
+- Jump to Step 3 with that synthetic response.
+
+Discover the full skill catalog by listing the `lindaai-updates` repo's `skills/` directory:
+```
+GET https://api.github.com/repos/WiseSaucy/lindaai-updates/contents/skills
+```
+Each `.md` file in the result corresponds to one skill (filename without `.md` is the skill name).
+
+Print a short note when the bypass fires: `🔑 Founder bypass active — installing full catalog.` Do not call the Railway API at all in this path.
+
+**Additive-only under bypass:** NEVER remove a locally installed `linda-*` skill just because it's missing from the catalog. Skip the removal half of Step 3 when bypass is active — the owner's machine commonly has dev skills not in the public catalog.
+
 ### Step 2 — Call the allowed-skills endpoint
+
+(Only reached if Step 1.5 did not fire.)
 
 ```
 GET https://lindaai-api-production.up.railway.app/v1/licenses/{key}/allowed-skills
