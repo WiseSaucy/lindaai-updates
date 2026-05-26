@@ -1,28 +1,44 @@
 #!/usr/bin/env python3
 """
-LindaAI Telegram Bridge — generic customer-ready bot.
+LindaAI Telegram Bridge — customer-ready, zero-friction.
 
-Reads TELEGRAM_BOT_TOKEN + TELEGRAM_ALLOWED_USER_ID from ~/.claude/lindaai/telegram.env
-Forwards owner messages to the local `claude` CLI and returns responses.
+Reads from ~/.claude/lindaai/telegram.env:
+  TELEGRAM_BOT_TOKEN          (required) — bot token from @BotFather
+  ANTHROPIC_API_KEY           (required) — customer's API key from console.anthropic.com
+  TELEGRAM_ALLOWED_USER_ID    (required) — only this Telegram user can talk to the bot
+  ANTHROPIC_MODEL             (optional) — defaults to claude-sonnet-4-5
+
+LESSONS BAKED IN (from the Isaac Discord incident 2026-05-25):
+  - ANTHROPIC API DIRECT — no local `claude` CLI dependency. The Cowork desktop
+    app stores claude binary in places the bot can't find; even when found, it's
+    not callable as a CLI. We call the Anthropic API directly.
+  - No hardcoded paths — content inbox lives in ~/.claude/lindaai/content-inbox.md
+    (works on every customer's machine).
 
 © 2026 LindaAI — Built by Daniel Wise
 """
+import asyncio
 import os
-import shutil
-import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
+# ─── DEPS ──────────────────────────────────────────────────────────────────
 try:
     from telegram import Update
     from telegram.ext import Application, MessageHandler, filters, ContextTypes, CommandHandler
 except ImportError:
-    print("ERROR: python-telegram-bot not installed.")
-    print("  Run: pip3 install python-telegram-bot")
+    print("ERROR: python-telegram-bot not installed. Run:  pip3 install python-telegram-bot")
+    sys.exit(1)
+
+try:
+    from anthropic import Anthropic
+except ImportError:
+    print("ERROR: anthropic SDK not installed. Run:  pip3 install anthropic")
     sys.exit(1)
 
 
-# Load env
+# ─── ENV LOAD ──────────────────────────────────────────────────────────────
 ENV_FILE = Path.home() / ".claude" / "lindaai" / "telegram.env"
 if ENV_FILE.exists():
     for line in ENV_FILE.read_text().splitlines():
@@ -32,37 +48,87 @@ if ENV_FILE.exists():
         k, v = line.split("=", 1)
         os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
 
-TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
-ALLOWED_USER_ID = os.environ.get("TELEGRAM_ALLOWED_USER_ID", "")
+TOKEN          = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
+ANTHROPIC_KEY  = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+ALLOWED_USER   = os.environ.get("TELEGRAM_ALLOWED_USER_ID", "").strip()
+MODEL          = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929").strip()
 
-if not TOKEN:
-    print("ERROR: TELEGRAM_BOT_TOKEN not set in ~/.claude/lindaai/telegram.env")
-    print("       Run /telegram-setup to configure.")
+
+# ─── PRE-FLIGHT ────────────────────────────────────────────────────────────
+def die(msg: str) -> None:
+    print(f"ERROR: {msg}")
     sys.exit(1)
 
-# Find claude CLI — handle launchd/cron PATH weirdness
-CLAUDE_BIN = shutil.which("claude")
-if not CLAUDE_BIN:
-    for candidate in [
-        Path.home() / ".npm-global" / "bin" / "claude",
-        Path.home() / ".local" / "bin" / "claude",
-        Path.home() / ".claude" / "local" / "claude",
-        Path("/opt/homebrew/bin/claude"),
-        Path("/usr/local/bin/claude"),
-    ]:
-        if candidate.exists():
-            CLAUDE_BIN = str(candidate)
+if not TOKEN:
+    die("TELEGRAM_BOT_TOKEN not set. Run /telegram-setup to configure.")
+if not ANTHROPIC_KEY:
+    die("ANTHROPIC_API_KEY not set. Get one at console.anthropic.com, then add to ~/.claude/lindaai/telegram.env")
+if not ALLOWED_USER:
+    die("TELEGRAM_ALLOWED_USER_ID not set. Run /telegram-setup or DM the bot, then run /whoami.")
+
+
+# ─── PATHS ─────────────────────────────────────────────────────────────────
+LINDA_DIR     = Path.home() / ".claude" / "lindaai"
+LINDA_DIR.mkdir(parents=True, exist_ok=True)
+CONTENT_INBOX = LINDA_DIR / "content-inbox.md"
+
+
+# ─── PERSONALITY ───────────────────────────────────────────────────────────
+CLAUDE_MD = ""
+for candidate in (Path.cwd() / "CLAUDE.md",
+                  Path(__file__).resolve().parent.parent.parent / "CLAUDE.md"):
+    if candidate.is_file():
+        try:
+            CLAUDE_MD = candidate.read_text()
             break
+        except Exception:
+            pass
+
+DEFAULT_SYSTEM = (
+    "You are LindaAI, the personal AI Operating System for business owners. "
+    "You are warm, direct, action-oriented, country in tone. "
+    "Greet your partner with 'Howdy!' when the conversation starts. "
+    "Keep replies tight — 2-5 sentences unless they ask for depth."
+)
+SYSTEM_PROMPT = CLAUDE_MD or DEFAULT_SYSTEM
 
 
+# ─── CLIENTS ───────────────────────────────────────────────────────────────
+anthropic = Anthropic(api_key=ANTHROPIC_KEY)
+
+
+async def ask_claude(prompt: str) -> str:
+    """Call Anthropic API directly — no local CLI dependency."""
+    def _call():
+        msg = anthropic.messages.create(
+            model=MODEL,
+            max_tokens=2048,
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return "".join(b.text for b in msg.content if b.type == "text")
+    return await asyncio.to_thread(_call)
+
+
+def append_to_content_inbox(text: str) -> int:
+    """Append a content idea to ~/.claude/lindaai/content-inbox.md. Returns total count."""
+    if not CONTENT_INBOX.exists():
+        CONTENT_INBOX.write_text(
+            "# Content Inbox\n\n"
+            "Drop ideas here from anywhere. Captured via Telegram `/content` or `c:` prefix.\n\n"
+            "---\n\n"
+        )
+    ts = datetime.now().strftime("%Y-%m-%d %H:%M")
+    with CONTENT_INBOX.open("a") as f:
+        f.write(f"- **{ts}** — {text}\n")
+    return sum(1 for line in CONTENT_INBOX.read_text().splitlines() if line.startswith("- **"))
+
+
+# ─── HANDLERS ──────────────────────────────────────────────────────────────
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
-
-    # Security: owner-only unless ALLOWED_USER_ID is empty (unbound)
-    if ALLOWED_USER_ID and user_id != ALLOWED_USER_ID:
-        await update.message.reply_text(
-            "🔒 This LindaAI is bound to its owner only. Your ID has been logged."
-        )
+    if user_id != ALLOWED_USER:
+        await update.message.reply_text("🔒 This LindaAI is bound to its owner only.")
         print(f"[SECURITY] Rejected message from Telegram user {user_id}")
         return
 
@@ -70,28 +136,26 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not user_msg:
         return
 
+    # Content channel — "c: idea" → straight to inbox
+    stripped = user_msg.strip()
+    lower = stripped.lower()
+    for prefix in ("c:", "content:", "📝"):
+        if lower.startswith(prefix):
+            idea = stripped[len(prefix):].strip()
+            if not idea:
+                await update.message.reply_text("📝 Add the idea after the prefix, partner.\nExample: `c: reel idea — Linda writes my taxes`")
+                return
+            total = append_to_content_inbox(idea)
+            await update.message.reply_text(f"📝 Captured. Content inbox now has {total} idea{'s' if total != 1 else ''}. 🤠")
+            return
+
     await update.message.chat.send_action(action="typing")
-
-    if not CLAUDE_BIN:
-        await update.message.reply_text(
-            "❌ Claude CLI not found. Install Claude Code on your machine first."
-        )
-        return
-
     try:
-        result = subprocess.run(
-            [CLAUDE_BIN, "-p", user_msg],
-            capture_output=True,
-            text=True,
-            timeout=180,
-        )
-        response = result.stdout.strip() or result.stderr.strip() or "LindaAI had trouble — try again, partner."
-    except subprocess.TimeoutExpired:
-        response = "⏳ That took too long. LindaAI timed out — try a shorter question."
+        response = await ask_claude(user_msg)
     except Exception as e:
-        response = f"❌ Error: {e}"
+        response = f"❌ Anthropic API error: {e}"
 
-    # Telegram caps at 4096 chars per message
+    # Telegram caps at 4096 chars
     CHUNK = 4000
     for i in range(0, len(response), CHUNK):
         await update.message.reply_text(response[i:i + CHUNK])
@@ -99,35 +163,75 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def cmd_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
-    if ALLOWED_USER_ID and user_id != ALLOWED_USER_ID:
-        await update.message.reply_text(
-            "🔒 This LindaAI is bound to its owner. You are not authorized."
-        )
+    if user_id != ALLOWED_USER:
+        await update.message.reply_text("🔒 This LindaAI is bound to its owner. You are not authorized.")
         return
     await update.message.reply_text(
         "🤠 Howdy, partner! LindaAI is online via Telegram.\n\n"
-        "Just send me any message and I'll forward it to your LindaAI.\n"
-        "Ask me to run any skill, draft an email, analyze a deal — anything.\n\n"
-        "LindaAI has your back."
+        "Just send me any message and I'll answer.\n"
+        "Ask me to draft an email, analyze a deal, run any skill — anything.\n\n"
+        "📝 *Content channel:*\n"
+        "• `c: your idea` → captures to content inbox\n"
+        "• `/content your idea` → same thing\n"
+        "• `/ideas` → read back last 20\n\n"
+        "LindaAI has your back.",
+        parse_mode="Markdown",
     )
+
+
+async def cmd_content(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.effective_user.id)
+    if user_id != ALLOWED_USER:
+        await update.message.reply_text("🔒 Owner-only command.")
+        return
+    idea = " ".join(context.args).strip() if context.args else ""
+    if not idea:
+        await update.message.reply_text(
+            "📝 *Content Inbox*\n\nUsage:\n• `/content your idea here`\n• Or just send `c: your idea here`",
+            parse_mode="Markdown",
+        )
+        return
+    total = append_to_content_inbox(idea)
+    await update.message.reply_text(f"📝 Captured. Inbox now has {total} idea{'s' if total != 1 else ''}. 🤠")
+
+
+async def cmd_ideas(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = str(update.effective_user.id)
+    if user_id != ALLOWED_USER:
+        await update.message.reply_text("🔒 Owner-only command.")
+        return
+    if not CONTENT_INBOX.exists():
+        await update.message.reply_text("📝 Content inbox is empty. Send `c: your first idea` to start.")
+        return
+    entries = [line for line in CONTENT_INBOX.read_text().splitlines() if line.startswith("- **")]
+    if not entries:
+        await update.message.reply_text("📝 Content inbox is empty.")
+        return
+    last_20 = entries[-20:]
+    msg = f"📝 *Last {len(last_20)} content ideas* (of {len(entries)} total)\n\n" + "\n".join(last_20)
+    CHUNK = 4000
+    for i in range(0, len(msg), CHUNK):
+        await update.message.reply_text(msg[i:i + CHUNK], parse_mode="Markdown")
 
 
 async def cmd_whoami(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         f"Your Telegram user ID: `{update.effective_user.id}`\n"
-        f"Use this in TELEGRAM_ALLOWED_USER_ID to lock the bot to you.",
+        f"Put this in TELEGRAM_ALLOWED_USER_ID inside ~/.claude/lindaai/telegram.env to lock the bot to you.",
         parse_mode="Markdown",
     )
 
 
 def main():
     print(f"✓ LindaAI Telegram Bridge starting...")
-    print(f"  Bound to user ID: {ALLOWED_USER_ID or '(open — unbound)'}")
-    print(f"  Claude CLI: {CLAUDE_BIN or 'NOT FOUND'}")
+    print(f"  Owner Telegram ID: {ALLOWED_USER}")
+    print(f"  Anthropic model:   {MODEL}")
 
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", cmd_start))
     app.add_handler(CommandHandler("whoami", cmd_whoami))
+    app.add_handler(CommandHandler("content", cmd_content))
+    app.add_handler(CommandHandler("ideas", cmd_ideas))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     print("✓ Bot online. Waiting for messages on Telegram...")

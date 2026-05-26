@@ -19,6 +19,11 @@ if ! python3 -c "import discord" 2>/dev/null; then
   pip3 install -q discord.py || pip3 install --user -q discord.py
 fi
 
+if ! python3 -c "import anthropic" 2>/dev/null; then
+  echo "Installing anthropic SDK..."
+  pip3 install -q anthropic || pip3 install --user -q anthropic
+fi
+
 cd "$BRIDGE_DIR" || { echo "ERROR: $BRIDGE_DIR not found. Run /discord-setup first."; exit 1; }
 nohup python3 bot.py > "$LOG" 2>&1 &
 echo $! > "$PID_FILE"

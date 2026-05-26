@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-05-20",
+  "description": "Files/folders to DELETE from every customer's LindaAI folder on /linda-sync. Paths are relative to the customer's LindaAI-{Tier}/ folder root.",
+  "remove": [
+    { "path": "packs/credit-repair", "reason": "Reserved for MGL Family Solutions — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/agents/mender.md", "reason": "Credit Repair agent — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/agents/avatars/mender.png", "reason": "Mender avatar — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/agents/ledger.md", "reason": "Tax Filing agent — internal only (liability)", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/agents/avatars/ledger.png", "reason": "Ledger avatar — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/skills/linda-taxprep", "reason": "Tax prep — internal only (CPA liability)", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/skills/linda-deductions", "reason": "Tax deductions — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/skills/linda-dispute", "reason": "Credit dispute — internal only (FCRA)", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/skills/linda-bureauping", "reason": "Bureau response — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/skills/linda-creditcoach", "reason": "Credit coaching — internal only", "deprecated_at": "2026-05-20" },
+    { "path": ".claude/skills/linda-creditclient", "reason": "Credit client tracker — internal only", "deprecated_at": "2026-05-20" }
+  ],
+  "notes_for_boss47": "Add new entries here whenever you want to retroactively remove something from customer installs. The customer's next /linda-sync will delete these paths. To restore, REMOVE the entry from here and re-sync."
+}
