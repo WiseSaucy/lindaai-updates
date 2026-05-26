@@ -17,10 +17,15 @@ if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null; then
   sleep 2
 fi
 
-# Install dependency if needed
+# Install dependencies if needed
 if ! python3 -c "import telegram" 2>/dev/null; then
   echo "Installing python-telegram-bot..."
   pip3 install -q python-telegram-bot || pip3 install --user -q python-telegram-bot
+fi
+
+if ! python3 -c "import anthropic" 2>/dev/null; then
+  echo "Installing anthropic SDK..."
+  pip3 install -q anthropic || pip3 install --user -q anthropic
 fi
 
 # Start bot
