@@ -271,4 +271,4 @@ If `brain/research/` does not exist, create it.
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

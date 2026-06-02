@@ -31,7 +31,7 @@ if (-not $LicenseKey) {
 }
 
 if (-not $LicenseKey) {
-    Write-Host "❌ No license key provided. Check your Gumroad email." -ForegroundColor Red
+    Write-Host "❌ No license key provided. Check your purchase confirmation email." -ForegroundColor Red
     exit 1
 }
 
@@ -53,7 +53,7 @@ try {
 
 if (-not $ValidateResp.valid) {
     Write-Host "❌ License rejected: $($ValidateResp.reason)" -ForegroundColor Red
-    Write-Host "   Contact support@lindaai.com"
+    Write-Host "   Contact support@send.lindaai-brain.com"
     exit 1
 }
 

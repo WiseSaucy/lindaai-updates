@@ -101,8 +101,7 @@
         "negotiation-prep",
         "linda-license-manager",
         "kajabi-scraper",
-        "lindaai-update",
-        "gumroad-upload"
+        "lindaai-update"
       ],
       "agents": [
         "bandit",

@@ -23,14 +23,15 @@ if ! python3 -c "import telegram" 2>/dev/null; then
   pip3 install -q python-telegram-bot || pip3 install --user -q python-telegram-bot
 fi
 
-if ! python3 -c "import anthropic" 2>/dev/null; then
-  echo "Installing anthropic SDK..."
-  pip3 install -q anthropic || pip3 install --user -q anthropic
-fi
+# anthropic SDK is no longer required — bot uses claude CLI subprocess via Max sub.
+# (Kept fallback install for backwards compat with the API-key path.)
+# if ! python3 -c "import anthropic" 2>/dev/null; then
+#   pip3 install --user -q anthropic
+# fi
 
-# Start bot
+# Start bot (unbuffered so startup logs flush immediately)
 cd "$BRIDGE_DIR" || { echo "ERROR: $BRIDGE_DIR not found. Run /telegram-setup first."; exit 1; }
-nohup python3 bot.py > "$LOG" 2>&1 &
+nohup python3 -u bot.py > "$LOG" 2>&1 &
 echo $! > "$PID_FILE"
 sleep 2
 
