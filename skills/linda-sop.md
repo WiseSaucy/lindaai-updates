@@ -307,4 +307,4 @@ A complete SOP file in markdown, saved to `brain/sops/` and indexed in `brain/so
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

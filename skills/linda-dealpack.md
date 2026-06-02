@@ -429,4 +429,4 @@ All saved to `~/Desktop/lindaai/output/deal-marketing/2847-westfield-blvd-indian
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

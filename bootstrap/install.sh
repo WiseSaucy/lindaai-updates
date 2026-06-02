@@ -29,7 +29,7 @@ if [ -z "$LICENSE_KEY" ]; then
   echo "❌ No license key provided."
   echo ""
   echo "   Usage: bash install.sh <your-license-key>"
-  echo "   Lost your key? Check your Gumroad email or contact support@lindaai.com"
+  echo "   Lost your key? Check your purchase confirmation email or contact support@send.lindaai-brain.com"
   echo ""
   exit 1
 fi
@@ -71,11 +71,11 @@ import sys, json
 try:
     print(json.load(sys.stdin).get('reason', 'unknown reason'))
 except Exception:
-    print('Server returned an unparseable response. Try again or email support@lindaai.com.')
+    print('Server returned an unparseable response. Try again or email support@send.lindaai-brain.com.')
 " 2>/dev/null)
   echo "❌ License rejected: $REASON"
   echo ""
-  echo "   Need help? Email support@lindaai.com with your license key and we'll fix it."
+  echo "   Need help? Email support@send.lindaai-brain.com with your license key and we'll fix it."
   exit 1
 fi
 
@@ -154,7 +154,7 @@ RENAME_OVERRIDES = {
     "grant-tracker": "linda-granttrack", "grant-budget-builder": "linda-grantbudget",
     "grant-eligibility": "linda-grantfit", "sam-gov-setup": "linda-samgov",
     "linda-license-manager": "linda-licenses", "kajabi-scraper": "linda-kajabi",
-    "lindaai-update": "linda-sync", "gumroad-upload": "linda-gumroad",
+    "lindaai-update": "linda-sync", "lindaai-brain.com-upload": "linda-lindaai-brain.com",
     "voice": "linda-voice", "telegram-setup": "linda-telegram-setup",
     "discord-setup": "linda-discord-setup", "iron-horse": "linda-loi",
 }

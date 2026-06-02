@@ -14,7 +14,7 @@ This skill turns the Stop hook in `~/.claude/settings.json` on or off. The hook 
 3. Based on the user's request:
    - **"on" / "unmute" / "start talking"** → Add the Stop hook block if missing:
      ```json
-     "Stop": [{ "hooks": [{ "type": "command", "command": "/Users/jowise/.claude/speak-last-response.sh", "async": true }] }]
+     "Stop": [{ "hooks": [{ "type": "command", "command": "/Users/Saucy/.claude/speak-last-response.sh", "async": true }] }]
      ```
    - **"off" / "mute" / "stop talking"** → Remove the entire `Stop` entry from `hooks`. If `hooks` becomes empty, remove the `hooks` key entirely.
    - **No argument (just `/voice`)** → Flip the current state.
@@ -25,11 +25,11 @@ This skill turns the Stop hook in `~/.claude/settings.json` on or off. The hook 
 ## Important
 
 - Never touch `extraKnownMarketplaces` or any other settings key.
-- Always validate the resulting JSON (`python3 -c "import json; json.load(open('/Users/jowise/.claude/settings.json'))"`) before finishing.
+- Always validate the resulting JSON (`python3 -c "import json; json.load(open('/Users/Saucy/.claude/settings.json'))"`) before finishing.
 - Speak the confirmation aloud via `say -v Samantha "..."` country-style.
 
 
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

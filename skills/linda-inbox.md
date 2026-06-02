@@ -353,4 +353,4 @@ A CEO's time is worth $500-$2,000/hour. Spending 45 minutes sorting through emai
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

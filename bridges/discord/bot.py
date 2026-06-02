@@ -1,27 +1,32 @@
-#!/usr/bin/env python3
 """
-LindaAI Discord Bridge — customer-ready, zero-friction.
+LindaAI Discord Bridge — Claude Max subscription edition.
+
+Mirrors the Telegram bridge pattern: calls the local `claude` CLI as a
+subprocess (Claude Code headless), stripping ANTHROPIC_API_KEY from the
+child env so authentication falls through to the user's Claude.ai Max
+subscription. NO Anthropic API credits consumed.
 
 Reads from ~/.claude/lindaai/discord.env:
   DISCORD_BOT_TOKEN          (required) — bot token from Discord developer portal
-  ANTHROPIC_API_KEY          (required) — customer's API key from console.anthropic.com
   DISCORD_ALLOWED_USER_ID    (required) — only this Discord user can talk to the bot
   DISCORD_GUILD_ID           (optional) — server ID for INSTANT slash-command sync
-                                          (falls back to global sync if not set)
+  CLAUDE_BIN                 (optional) — path to claude CLI (auto-detected if not set)
+  CLAUDE_PROJECT_DIR         (optional) — where claude runs (default: ~/Desktop/LindaAI-OG)
+  CLAUDE_MODEL               (optional) — model id (default: claude-opus-4-7)
 
-THREE LESSONS BAKED IN (Isaac 2026-05-25 incident):
-  1. SLASH COMMANDS ONLY — no on_message, no privileged intents. Customer doesn't
-     have to flip "Message Content Intent" in the Discord portal.
-  2. ANTHROPIC API DIRECT — no local `claude` CLI dependency. The Cowork desktop
-     app stores claude binary in places the bot can't find; even when found, it's
-     not callable as a CLI. We call the Anthropic API directly.
-  3. INSTANT GUILD SYNC — first run also syncs to the customer's specific server
-     so slash commands appear immediately (no 1-hour global-sync wait).
+Design rules (locked in 2026-05-29):
+  1. SLASH COMMANDS ONLY — no on_message, no privileged intents
+  2. CLAUDE CLI SUBPROCESS — uses Claude Max subscription (no API billing)
+  3. INSTANT GUILD SYNC — slash commands appear immediately on the target server
+  4. STRIP ANTHROPIC_API_KEY from child env so CLI falls through to Max auth
+  5. SESSION RESUME — conversation memory persists across messages
 
 © 2026 LindaAI — Built by Daniel Wise
 """
 import asyncio
+import json
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -30,13 +35,7 @@ try:
     import discord
     from discord import app_commands
 except ImportError:
-    print("ERROR: discord.py not installed. Run:  pip3 install discord.py")
-    sys.exit(1)
-
-try:
-    from anthropic import Anthropic
-except ImportError:
-    print("ERROR: anthropic SDK not installed. Run:  pip3 install anthropic")
+    print("ERROR: discord.py not installed. Run:  pip3 install --user discord.py", flush=True)
     sys.exit(1)
 
 
@@ -48,98 +47,137 @@ if ENV_FILE.exists():
         if not line or line.startswith("#") or "=" not in line:
             continue
         k, v = line.split("=", 1)
-        os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+        key = k.strip()
+        val = v.strip().strip('"').strip("'")
+        # File wins over empty/missing shell env. Customers often have
+        # ANTHROPIC_API_KEY="" set from prior installs and setdefault would
+        # silently skip the file value.
+        if not os.environ.get(key, "").strip():
+            os.environ[key] = val
+        else:
+            os.environ.setdefault(key, val)
 
 TOKEN          = os.environ.get("DISCORD_BOT_TOKEN", "").strip()
-ANTHROPIC_KEY  = os.environ.get("ANTHROPIC_API_KEY", "").strip()
 ALLOWED_USER   = os.environ.get("DISCORD_ALLOWED_USER_ID", "").strip()
 GUILD_ID_RAW   = os.environ.get("DISCORD_GUILD_ID", "").strip()
-MODEL          = os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-5-20250929").strip()
+MODEL          = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-5").strip()
+PROJECT_DIR    = os.environ.get("CLAUDE_PROJECT_DIR", str(Path.home() / "Desktop" / "LindaAI-OG"))
+
+# Auto-detect claude CLI
+CLAUDE_BIN = os.environ.get("CLAUDE_BIN", "").strip()
+if not CLAUDE_BIN:
+    for candidate in [
+        Path.home() / ".npm-global" / "bin" / "claude",
+        Path("/usr/local/bin/claude"),
+        Path("/opt/homebrew/bin/claude"),
+    ]:
+        if candidate.exists():
+            CLAUDE_BIN = str(candidate)
+            break
+    if not CLAUDE_BIN:
+        which = shutil.which("claude")
+        if which:
+            CLAUDE_BIN = which
 
 GUILD_ID = None
 if GUILD_ID_RAW.isdigit():
     GUILD_ID = int(GUILD_ID_RAW)
 
-# CLAUDE.md from current working folder (the LindaAI personality)
-CLAUDE_MD = ""
-for candidate in (Path.cwd() / "CLAUDE.md",
-                  Path(__file__).resolve().parent.parent.parent / "CLAUDE.md"):
-    if candidate.is_file():
-        try:
-            CLAUDE_MD = candidate.read_text()
-            break
-        except Exception:
-            pass
-
-DEFAULT_SYSTEM = (
-    "You are LindaAI, the personal AI Operating System for business owners. "
-    "You are warm, direct, action-oriented, and country in tone. "
-    "Greet your partner with 'Howdy!' when the conversation starts. "
-    "Keep replies tight — 2-5 sentences unless they ask for depth."
-)
-SYSTEM_PROMPT = CLAUDE_MD or DEFAULT_SYSTEM
-
-
-# ─── PRE-FLIGHT ────────────────────────────────────────────────────────────
-def die(msg: str) -> None:
-    print(f"ERROR: {msg}")
+# ─── VALIDATE ──────────────────────────────────────────────────────────────
+if not TOKEN:
+    print("ERROR: DISCORD_BOT_TOKEN not set in ~/.claude/lindaai/discord.env", flush=True)
     sys.exit(1)
 
-if not TOKEN:
-    die("DISCORD_BOT_TOKEN not set. Run /discord-setup to configure.")
-if not ANTHROPIC_KEY:
-    die("ANTHROPIC_API_KEY not set. Get one at console.anthropic.com, then add to ~/.claude/lindaai/discord.env")
-if not ALLOWED_USER:
-    die("DISCORD_ALLOWED_USER_ID not set. Run /discord-setup to set it.")
-if not ALLOWED_USER.isdigit():
-    die(f"DISCORD_ALLOWED_USER_ID must be numeric (got: {ALLOWED_USER!r})")
+if not ALLOWED_USER or not ALLOWED_USER.isdigit():
+    print("ERROR: DISCORD_ALLOWED_USER_ID not set or not a valid Discord user ID.", flush=True)
+    sys.exit(1)
+
+if not CLAUDE_BIN or not Path(CLAUDE_BIN).exists():
+    print(f"ERROR: claude CLI not found. Tried CLAUDE_BIN={CLAUDE_BIN!r}", flush=True)
+    print("  Install Claude Code: npm install -g @anthropic-ai/claude-code", flush=True)
+    sys.exit(1)
+
+ALLOWED_USER_ID = int(ALLOWED_USER)
 
 
-# ─── CLIENTS ───────────────────────────────────────────────────────────────
-anthropic = Anthropic(api_key=ANTHROPIC_KEY)
-
-# NO PRIVILEGED INTENTS — pure slash-command bot
-intents = discord.Intents.default()  # default has NO message_content / members
-bot = discord.Client(intents=intents)
-tree = app_commands.CommandTree(bot)
+# ─── SESSION MEMORY ────────────────────────────────────────────────────────
+# Conversation continuity — keeps memory across /linda messages.
+session_id: str | None = None
 
 
-# ─── HELPERS ───────────────────────────────────────────────────────────────
-async def ask_claude(prompt: str) -> str:
-    """Call Anthropic API directly — no local CLI dependency."""
-    def _call():
-        msg = anthropic.messages.create(
-            model=MODEL,
-            max_tokens=2048,
-            system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return "".join(b.text for b in msg.content if b.type == "text")
-    return await asyncio.to_thread(_call)
+# ─── CLAUDE CLI CALL ───────────────────────────────────────────────────────
+async def run_claude(prompt: str) -> str:
+    """Invoke claude CLI in headless mode. Uses Max subscription (NOT API)."""
+    global session_id
+
+    cmd = [
+        CLAUDE_BIN,
+        "-p", prompt,
+        "--output-format", "json",
+        "--model", MODEL,
+        "--setting-sources", "user,project,local",
+        "--dangerously-skip-permissions",
+    ]
+    if session_id:
+        cmd += ["--resume", session_id]
+
+    # CRITICAL: strip ANTHROPIC_API_KEY so claude CLI uses Max subscription auth.
+    child_env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
+
+    proc = await asyncio.create_subprocess_exec(
+        *cmd,
+        cwd=PROJECT_DIR,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+        env=child_env,
+    )
+    stdout, stderr = await proc.communicate()
+
+    if proc.returncode != 0:
+        err = stderr.decode("utf-8", errors="replace")[:1500]
+        out = stdout.decode("utf-8", errors="replace")[:1500]
+        print(f"[bot.py] claude exit {proc.returncode} | stderr={err!r} | stdout={out!r}", flush=True)
+        raise RuntimeError(f"claude exit {proc.returncode}: {err or out or '(no output)'}")
+
+    raw = stdout.decode("utf-8", errors="replace").strip()
+    try:
+        data = json.loads(raw)
+        # Persist session_id for follow-up resume
+        sid = data.get("session_id")
+        if sid:
+            session_id = sid
+        # Extract the assistant text
+        return data.get("result") or data.get("text") or raw[:4000] or "(empty)"
+    except json.JSONDecodeError:
+        return raw[:4000] or "(empty response)"
 
 
-async def send_chunked(interaction_or_resp, text: str, first_call=None):
-    """Discord caps messages at 2000 chars. Chunk and send."""
+# ─── DISCORD CHUNKING ──────────────────────────────────────────────────────
+async def send_chunked(interaction: discord.Interaction, text: str):
+    """Discord caps messages at 2000 chars. Chunk and send via followup."""
     CHUNK = 1900
     chunks = [text[i:i + CHUNK] for i in range(0, len(text), CHUNK)] or ["(empty reply)"]
     first = True
     for c in chunks:
         if first:
-            if first_call is not None:
-                await first_call(c)
-            else:
-                await interaction_or_resp.send(c)
+            await interaction.followup.send(c)
             first = False
         else:
-            await interaction_or_resp.followup.send(c)
+            await interaction.followup.send(c)
+
+
+# ─── DISCORD CLIENT ────────────────────────────────────────────────────────
+intents = discord.Intents.default()
+bot = discord.Client(intents=intents)
+tree = app_commands.CommandTree(bot)
 
 
 def authorized(interaction: discord.Interaction) -> bool:
-    return str(interaction.user.id) == ALLOWED_USER
+    return interaction.user.id == ALLOWED_USER_ID
 
 
 # ─── SLASH COMMANDS ────────────────────────────────────────────────────────
-@tree.command(name="linda", description="Ask LindaAI anything — your AI Operating System")
+@tree.command(name="linda", description="Ask LindaAI anything")
 @app_commands.describe(message="What do you want to ask LindaAI?")
 async def linda(interaction: discord.Interaction, message: str):
     if not authorized(interaction):
@@ -149,52 +187,56 @@ async def linda(interaction: discord.Interaction, message: str):
         return
     await interaction.response.defer(thinking=True)
     try:
-        reply = await ask_claude(message)
+        reply = await run_claude(message)
     except Exception as e:
-        reply = f"❌ Anthropic API error: {e}"
-    await send_chunked(
-        interaction,
-        reply,
-        first_call=interaction.followup.send,
-    )
+        await interaction.followup.send(f"⚠️ LindaAI hit a snag: {e}")
+        return
+    await send_chunked(interaction, reply)
 
 
-@tree.command(name="howdy", description="Get a Howdy from LindaAI")
+@tree.command(name="howdy", description="Quick LindaAI greeting test")
 async def howdy(interaction: discord.Interaction):
     if not authorized(interaction):
         await interaction.response.send_message(
             "🔒 This LindaAI is bound to its owner only.", ephemeral=True
         )
         return
-    await interaction.response.send_message("🤠 Howdy! Use `/linda` to ask me anything.")
+    await interaction.response.defer(thinking=True)
+    try:
+        reply = await run_claude("Howdy! Quick greeting check from Discord — say hi and confirm you're online.")
+    except Exception as e:
+        await interaction.followup.send(f"⚠️ LindaAI hit a snag: {e}")
+        return
+    await send_chunked(interaction, reply)
 
 
 # ─── READY / SYNC ──────────────────────────────────────────────────────────
 @bot.event
 async def on_ready():
-    print(f"✓ LindaAI Discord Bridge online as {bot.user}")
-    print(f"  Owner Discord ID: {ALLOWED_USER}")
-    print(f"  Anthropic model:  {MODEL}")
+    print(f"✓ LindaAI Discord Bridge online as {bot.user}", flush=True)
+    print(f"  Owner Discord ID: {ALLOWED_USER}", flush=True)
+    print(f"  Claude bin:       {CLAUDE_BIN}", flush=True)
+    print(f"  Project dir:      {PROJECT_DIR}", flush=True)
+    print(f"  Model:            {MODEL}", flush=True)
+    print(f"  Auth:             Claude Max subscription (ANTHROPIC_API_KEY stripped)", flush=True)
 
-    # INSTANT sync to the customer's specific guild (no 1-hour wait)
     if GUILD_ID:
         try:
             guild_obj = discord.Object(id=GUILD_ID)
             tree.copy_global_to(guild=guild_obj)
             synced = await tree.sync(guild=guild_obj)
-            print(f"  ✓ Synced {len(synced)} commands to guild {GUILD_ID} (instant)")
+            print(f"  ✓ Synced {len(synced)} commands to guild {GUILD_ID} (instant)", flush=True)
         except Exception as e:
-            print(f"  ⚠ Guild sync failed for {GUILD_ID}: {e}")
+            print(f"  ⚠ Guild sync failed for {GUILD_ID}: {e}", flush=True)
 
-    # Also global sync (for DMs and other servers — up to 1hr propagation)
     try:
         synced = await tree.sync()
-        print(f"  ✓ Synced {len(synced)} commands globally (may take up to 1hr for DMs)")
+        print(f"  ✓ Synced {len(synced)} commands globally (may take up to 1hr for DMs)", flush=True)
     except Exception as e:
-        print(f"  ⚠ Global sync failed: {e}")
+        print(f"  ⚠ Global sync failed: {e}", flush=True)
 
     if not GUILD_ID:
-        print("  ℹ️  TIP: Set DISCORD_GUILD_ID in discord.env for INSTANT slash-command sync on your server.")
+        print("  ℹ️  TIP: Set DISCORD_GUILD_ID in discord.env for INSTANT slash-command sync.", flush=True)
 
 
 # ─── RUN ───────────────────────────────────────────────────────────────────
