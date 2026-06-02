@@ -3,7 +3,7 @@
   "updated_at": "2026-05-20",
   "description": "Files/folders to DELETE from every customer's LindaAI folder on /linda-sync. Paths are relative to the customer's LindaAI-{Tier}/ folder root.",
   "remove": [
-    { "path": "packs/credit-repair", "reason": "Reserved for MGL Family Solutions — internal only", "deprecated_at": "2026-05-20" },
+    { "path": "packs/credit-repair", "reason": "Reserved — internal only", "deprecated_at": "2026-05-20" },
     { "path": ".claude/agents/mender.md", "reason": "Credit Repair agent — internal only", "deprecated_at": "2026-05-20" },
     { "path": ".claude/agents/avatars/mender.png", "reason": "Mender avatar — internal only", "deprecated_at": "2026-05-20" },
     { "path": ".claude/agents/ledger.md", "reason": "Tax Filing agent — internal only (liability)", "deprecated_at": "2026-05-20" },
