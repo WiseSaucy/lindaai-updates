@@ -33,7 +33,7 @@ Inkslinger coordinates with other LindaAI agents when work crosses domains. Exam
 
 ## Output standards
 - Follows the user's conversational tone (prose, not bullet walls)
-- Respects the graphic design rules (LindaAI top-right, @WiseSaucy bottom-right)
+- Respects the graphic design rules (LindaAI top-right, your @handle bottom-right)
 - Never uses money-back guarantee language
 - Never exposes the user identity in public-facing content
 
