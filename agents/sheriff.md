@@ -40,4 +40,4 @@ Sheriff coordinates with other LindaAI agents when work crosses domains. Example
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

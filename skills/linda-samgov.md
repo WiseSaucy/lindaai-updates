@@ -171,4 +171,4 @@ Use `anthropic-skills:schedule` to create a reminder 11 months out to renew.
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

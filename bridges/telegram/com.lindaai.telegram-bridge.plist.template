@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LindaAI Telegram Bridge — launchd plist TEMPLATE.
+
+  TO ACTIVATE (one-time setup):
+    1. Build a venv for the bot (launchd's python needs python-telegram-bot
+       installed in a venv — system python3 doesn't see --user pip installs):
+         python3 -m venv ~/.claude/lindaai/telegram-bridge/venv
+         ~/.claude/lindaai/telegram-bridge/venv/bin/pip install python-telegram-bot
+
+    2. Copy this template:
+         cp com.lindaai.telegram-bridge.plist.template \
+            ~/Library/LaunchAgents/com.lindaai.telegram-bridge.plist
+
+    3. Edit the plist below:
+       - REPLACE PASTE_YOUR_OAUTH_TOKEN_HERE with token from `claude setup-token`
+       - REPLACE every `/Users/Saucy` with `/Users/yourname` (your macOS username)
+         (Tip: in TextEdit, Cmd+F -> find `/Users/Saucy` -> replace with your home dir)
+
+    4. Load it:
+         launchctl load ~/Library/LaunchAgents/com.lindaai.telegram-bridge.plist
+
+    5. Bot now auto-starts at login + auto-restarts on crash.
+       Logs: ~/.claude/lindaai/telegram-bridge.out.log
+
+  TO STOP / DISABLE:
+    launchctl unload ~/Library/LaunchAgents/com.lindaai.telegram-bridge.plist
+
+  This matches the Discord bridge plist setup.
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.lindaai.telegram-bridge</string>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<!-- REPLACE with token from `claude setup-token` -->
+		<key>CLAUDE_CODE_OAUTH_TOKEN</key>
+		<string>PASTE_YOUR_OAUTH_TOKEN_HERE</string>
+
+		<!-- REPLACE /Users/Saucy with your macOS home directory -->
+		<key>HOME</key>
+		<string>/Users/Saucy</string>
+
+		<key>PATH</key>
+		<string>/Users/Saucy/.npm-global/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+	</dict>
+
+	<!-- Uses the venv's python (which has python-telegram-bot installed) -->
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Users/Saucy/.claude/lindaai/telegram-bridge/venv/bin/python3</string>
+		<string>-u</string>
+		<string>/Users/Saucy/.claude/lindaai/telegram-bridge/bot.py</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>/Users/Saucy/.claude/lindaai/telegram-bridge</string>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>KeepAlive</key>
+	<dict>
+		<key>NetworkState</key>
+		<true/>
+		<key>SuccessfulExit</key>
+		<false/>
+	</dict>
+
+	<key>ProcessType</key>
+	<string>Background</string>
+
+	<key>ThrottleInterval</key>
+	<integer>15</integer>
+
+	<key>StandardOutPath</key>
+	<string>/Users/Saucy/.claude/lindaai/telegram-bridge.out.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>/Users/Saucy/.claude/lindaai/telegram-bridge.err.log</string>
+</dict>
+</plist>

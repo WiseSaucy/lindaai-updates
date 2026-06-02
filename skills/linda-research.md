@@ -261,4 +261,4 @@ A single comprehensive markdown file (typically 1,000-3,000 words for a deep div
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com

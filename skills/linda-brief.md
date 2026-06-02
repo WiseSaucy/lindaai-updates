@@ -271,4 +271,4 @@ That's a $180K/year chief of staff doing a 30-minute morning routine. This skill
 ---
 
 © 2026 LindaAI — Built by Daniel Wise
-All rights reserved · support@lindaai.com · wisecertified.gumroad.com
+All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com
