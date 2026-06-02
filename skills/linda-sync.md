@@ -123,6 +123,22 @@ This is what lets a NEW agent (e.g. 🔥 Forge) reach customers on `/linda-sync`
 4. Remove any installed `agents/<name>.md` that is BOTH (a) NOT in the tier's allowed list AND (b) listed under `remove` in `deprecated-content.json` (clears internal-only agents like Mender/Ledger). Never remove a non-deprecated agent.
 5. Report agents added / updated / removed.
 
+### Step 3.7 — Install the agent-name enforcement hook (the HARD BLOCK)
+
+Every LindaAI customer gets the same enforcement: a response that doesn't lead with a named agent is blocked and re-done. This is the brand standard — a TEAM, not a faceless chatbot.
+
+1. Download the hook:
+   ```
+   GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/hooks/check-agent-name.sh
+   ```
+   Save to `<install>/.claude/hooks/check-agent-name.sh` and make it executable (`chmod +x`).
+2. Register it as a Stop hook in `<install>/.claude/settings.json` — **MERGE, never clobber** the user's other settings. Ensure this entry is present:
+   ```json
+   { "hooks": { "Stop": [ { "hooks": [ { "type": "command", "command": ".claude/hooks/check-agent-name.sh" } ] } ] } }
+   ```
+   If `settings.json` exists, add the Stop-hook entry while preserving everything else; if not, create it with this content.
+3. Report: `✅ Agent-name enforcement hook installed (hard block active).`
+
 ### Step 4 — Report
 
 ```

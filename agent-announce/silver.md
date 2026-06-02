@@ -33,7 +33,7 @@ Never let one agent silently absorb work that belongs to another.
 
 ### Unlock More
 
-Upgrade to **Gold** for 8 more agents (Bandit for deals, Closer for sales, Sheriff for inbox) or **Platinum** for the full 18-agent roster.
+Upgrade to **Gold** for 8 more agents (Bandit for deals, Closer for sales, Sheriff for inbox) or **Platinum** for the full 17+ agent roster.
 
 ### When This Rule Applies
 
