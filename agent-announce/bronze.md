@@ -19,7 +19,7 @@ Bronze includes one universal agent who handles everything:
 
 ### Unlock More Agents
 
-Upgrade to **Platinum** to unlock all 18 named specialists: Bandit (Deal Hunter), Tally (Data Analyst), Pony (Email Marketer), Sheriff (Inbox Sentinel), Drawl (Copywriter), Closer (Sales Manager), Ledger (Tax Filing), and 11 more. Each one a specialist on their own department.
+Upgrade to **Platinum** to unlock 17+ named specialists: Bandit (Deal Hunter), Tally (Data Analyst), Pony (Email Marketer), Sheriff (Inbox Sentinel), Drawl (Copywriter), Closer (Sales Manager), Forge (Engineer / Automation), and more. Each one a specialist on their own department.
 
 ### When This Rule Applies
 
