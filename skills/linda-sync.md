@@ -82,7 +82,7 @@ If `valid: false` → tell user the reason (expired, not found) and exit.
 ### Step 3 — Compute diff
 
 - Get currently installed skill folder names from `~/.claude/skills/`
-- Any skill in `allowed_skills` but NOT installed → download from CDN:
+- For EVERY skill in `allowed_skills` → download the latest from CDN and save it (OVERWRITE if it already exists). This makes `/linda-sync` a true refresh — the customer always gets the newest version of every skill they're entitled to, not just brand-new ones:
   ```
   GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/skills/{skill}.md
   ```
@@ -105,6 +105,23 @@ LindaAI brand standard: every response leads with the named agent on the job (Ba
    - **Missing** → append the fetched block to the end of `CLAUDE.md`. Report: `✅ Installed agent-announce rule ({tier}).`
    - **Present** → no-op (idempotent). If a `v2` ships later, replace the `v1` block in place.
 5. Never duplicate; never strip the user's other content.
+
+### Step 3.6 — Sync agent files (agents flow through the CDN now, just like skills)
+
+This is what lets a NEW agent (e.g. 🔥 Forge) reach customers on `/linda-sync` — no re-install, no re-baked zip.
+
+1. Fetch the tier → agents map from the CDN:
+   ```
+   GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/tier-manifest.json
+   ```
+   Read `tiers.<tier>.agents` — the agent names this tier receives. (Founder bypass = every `.md` in the repo's `agents/` folder.)
+2. The customer's agents live in `<install>/.claude/agents/` (same install folder as `.claude/skills/`).
+3. For EVERY agent name in the tier's list:
+   - Download `agents/<name>.md` from the CDN → save to `<install>/.claude/agents/<name>.md` (overwrite — keeps it current).
+   - Best-effort: download `agents/avatars/<name>.png` → `<install>/.claude/agents/avatars/<name>.png` (skip on 404).
+   - Refresh the roster: download `agents/_AGENT_ROSTER.md` → `<install>/.claude/agents/_AGENT_ROSTER.md`.
+4. Remove any installed `agents/<name>.md` that is BOTH (a) NOT in the tier's allowed list AND (b) listed under `remove` in `deprecated-content.json` (clears internal-only agents like Mender/Ledger). Never remove a non-deprecated agent.
+5. Report agents added / updated / removed.
 
 ### Step 4 — Report
 
