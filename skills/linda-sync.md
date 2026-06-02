@@ -35,10 +35,9 @@ If missing, tell user: "No LindaAI license found. Run the bootstrap install or e
 
 ### Step 1.5 — Founder bypass (LindaAI owner only)
 
-Before calling the server, check for founder status. The bypass fires **only if BOTH** of these are true:
+Before calling the server, check for founder status. The bypass fires when:
 
-- `license.json` contains `"founder": true`, AND
-- `license.json` `email` field equals `wisecertifiedinc@gmail.com`
+- `license.json` contains `"founder": true` (this flag is set only on the owner's own machine — no email or other PII is checked)
 
 When the bypass fires, skip Step 2 and treat the user as having full Platinum-equivalent access:
 
