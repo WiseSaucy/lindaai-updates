@@ -38,7 +38,7 @@ Never let one agent silently absorb work that belongs to another.
 
 ### Unlock More
 
-Upgrade to **Platinum** for all 19 agents — including Bandit (Deal Hunter), Inkslinger (Content), Sheriff (Inbox), Doc (Support), Drawl (Copywriter), Wrangler (BD), Tally (Analytics), Mercantile (Ecom), Closer (Sales), Grit (Mindset), Scout (Recruiter), Compass (SEO), Holler (Social), Ranger (VA), Pony (Email), Bullhorn (Ads), Rooster (Motivation), Sentry (Compliance), and Audit-Auditor (Quality).
+Upgrade to **Platinum** for 17+ agents — including Bandit (Deal Hunter), Inkslinger (Content), Sheriff (Inbox), Doc (Support), Drawl (Copywriter), Wrangler (BD), Tally (Analytics), Mercantile (Ecom), Closer (Sales), Grit (Mindset), Scout (Recruiter), Compass (SEO), Holler (Social), Ranger (VA), Pony (Email), Bullhorn (Ads), Rooster (Motivation), Sentry (Compliance), and Audit-Auditor (Quality).
 
 ### When This Rule Applies
 
