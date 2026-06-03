@@ -12,7 +12,7 @@ tier: platinum
 > LindaAI's Customer Support agent. Call on Doc when you need customer support work done right.
 
 ## What Doc does
-Handles LindaAI customer support tickets with care. Answers product questions, troubleshoots install issues, routes escalations.
+Handles your customer support tickets with care. Answers product questions, troubleshoots issues, processes refunds, and routes escalations.
 
 ## How to call Doc
 In any LindaAI conversation, invoke by name or by the work needed:
