@@ -27,8 +27,8 @@ Each agent has a country-coded LindaAI name, a primary role, and an `avatar:` fi
 
 ## How to invoke
 In any LindaAI chat, call an agent by name or role. Examples:
-- "Bandit, find me 5 MHP deals in Texas under $2M"
-- "Inkslinger, batch 10 LinkedIn posts about mobile home park investing"
+- "Bandit, find me 5 deals in Texas under $2M"
+- "Inkslinger, batch 10 LinkedIn posts for my business"
 - "Tally, pull the KPIs for last month"
 
 ## Adding avatars (future)
