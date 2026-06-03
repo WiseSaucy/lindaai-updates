@@ -14,7 +14,7 @@ Reads from ~/.claude/lindaai/telegram.env:
                                               uses Max sub (NO API charges)
   ANTHROPIC_API_KEY           (fallback only) — pay-per-message if no Max sub
   CLAUDE_BIN                  (optional) — path to claude CLI (auto-detected)
-  CLAUDE_PROJECT_DIR          (optional) — claude cwd (default: ~/Desktop/LindaAI-OG)
+  CLAUDE_PROJECT_DIR          (optional) — claude cwd (default: the LindaAI folder this bridge lives in)
   CLAUDE_MODEL                (optional) — defaults to claude-opus-4-7
 
 Design rules (locked 2026-05-29):
@@ -64,7 +64,7 @@ if ENV_FILE.exists():
 TOKEN          = os.environ.get("TELEGRAM_BOT_TOKEN", "").strip()
 ALLOWED_USER   = os.environ.get("TELEGRAM_ALLOWED_USER_ID", "").strip()
 MODEL          = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-5").strip()
-PROJECT_DIR    = os.environ.get("CLAUDE_PROJECT_DIR", str(Path.home() / "Desktop" / "LindaAI-OG"))
+PROJECT_DIR    = os.environ.get("CLAUDE_PROJECT_DIR", str(Path(__file__).resolve().parents[2]))
 
 # Auto-detect claude CLI
 CLAUDE_BIN = os.environ.get("CLAUDE_BIN", "").strip()

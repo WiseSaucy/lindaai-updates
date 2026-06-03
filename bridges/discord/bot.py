@@ -11,7 +11,7 @@ Reads from ~/.claude/lindaai/discord.env:
   DISCORD_ALLOWED_USER_ID    (required) — only this Discord user can talk to the bot
   DISCORD_GUILD_ID           (optional) — server ID for INSTANT slash-command sync
   CLAUDE_BIN                 (optional) — path to claude CLI (auto-detected if not set)
-  CLAUDE_PROJECT_DIR         (optional) — where claude runs (default: ~/Desktop/LindaAI-OG)
+  CLAUDE_PROJECT_DIR         (optional) — where claude runs (default: the LindaAI folder this bridge lives in)
   CLAUDE_MODEL               (optional) — model id (default: claude-opus-4-7)
 
 Design rules (locked in 2026-05-29):
@@ -61,7 +61,7 @@ TOKEN          = os.environ.get("DISCORD_BOT_TOKEN", "").strip()
 ALLOWED_USER   = os.environ.get("DISCORD_ALLOWED_USER_ID", "").strip()
 GUILD_ID_RAW   = os.environ.get("DISCORD_GUILD_ID", "").strip()
 MODEL          = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-5").strip()
-PROJECT_DIR    = os.environ.get("CLAUDE_PROJECT_DIR", str(Path.home() / "Desktop" / "LindaAI-OG"))
+PROJECT_DIR    = os.environ.get("CLAUDE_PROJECT_DIR", str(Path(__file__).resolve().parents[2]))
 
 # Auto-detect claude CLI
 CLAUDE_BIN = os.environ.get("CLAUDE_BIN", "").strip()

@@ -153,7 +153,7 @@ RENAME_OVERRIDES = {
     "grant-writer": "linda-grantwrite", "grant-finder": "linda-granthunt",
     "grant-tracker": "linda-granttrack", "grant-budget-builder": "linda-grantbudget",
     "grant-eligibility": "linda-grantfit", "sam-gov-setup": "linda-samgov",
-    "linda-license-manager": "linda-licenses", "kajabi-scraper": "linda-kajabi",
+    "kajabi-scraper": "linda-kajabi",
     "lindaai-update": "linda-sync", "lindaai-brain.com-upload": "linda-lindaai-brain.com",
     "voice": "linda-voice", "telegram-setup": "linda-telegram-setup",
     "discord-setup": "linda-discord-setup", "iron-horse": "linda-loi",
