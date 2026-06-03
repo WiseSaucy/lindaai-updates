@@ -91,7 +91,7 @@ If `valid: false` → tell user the reason (expired, not found) and exit.
 - Any skill installed but NOT in `allowed_skills` (and starts with `linda-`) → remove its folder.
   Don't touch non-linda skills (user's personal stuff).
 
-- **Deprecated-skill sweep (retroactive removal):** fetch `deprecated-content.json` and remove any installed skill whose `remove[].path` matches a `.claude/skills/<name>` entry — **even if it still appears in `allowed_skills`**. This clears internal-only / operator tooling (e.g. `.claude/skills/linda-licenses`) that should never have shipped. Mirrors the agent-removal pass in Step 3.6. Never remove a skill that isn't listed under `remove`.
+- **Deprecated-skill sweep (retroactive removal):** fetch `deprecated-content.json` and remove any installed skill whose `remove[].path` matches a `.claude/skills/<name>` entry — **even if it still appears in `allowed_skills`**. This clears internal-only / operator tooling (e.g. `.claude/skillsthe in-app picker`) that should never have shipped. Mirrors the agent-removal pass in Step 3.6. Never remove a skill that isn't listed under `remove`.
   ```
   GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/deprecated-content.json
   ```
