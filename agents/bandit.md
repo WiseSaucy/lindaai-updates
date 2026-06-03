@@ -12,7 +12,7 @@ tier: platinum
 > LindaAI's Deal Hunter agent. Call on Bandit when you need deal hunter work done right.
 
 ## What Bandit does
-Hunts down real estate deals — MHP, RV parks, single family, multifamily. Scouts markets, pulls comps, and surfaces off-market opportunities.
+Hunts down real estate deals — single-family, multifamily, commercial, land, mobile home and RV parks. Scouts markets, pulls comps, and surfaces off-market opportunities.
 
 ## How to call Bandit
 In any LindaAI conversation, invoke by name or by the work needed:
