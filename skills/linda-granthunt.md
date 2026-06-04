@@ -52,13 +52,13 @@ Before proceeding, verify the LindaAI license:
 
 Ask the user (only if not specified):
 
-1. **Which business?** Real Estate (MHP/RV), LindaAI, or both?
+1. **What does your business do?** Tell me your industry/focus (e.g., real estate, services, ecommerce, AI/tech, hospitality).
 2. **Geography?** Federal only, or specific state(s)?
 3. **Grant type?** Startup capital, expansion, R&D, rural development, infrastructure, innovation?
 4. **Deadline window?** Next 30/60/90 days, or all open?
 5. **Minimum amount?** Skip tiny $1K grants or include them?
 
-If he says "just find me grants," default to: **both businesses, federal + Texas/his state, all types, next 90 days, minimum $10K**.
+If they say "just find me grants," default to: **federal + their state, all types, next 90 days, minimum $10K**.
 
 ### Step 2: Source Sweep
 
@@ -70,9 +70,9 @@ Use WebSearch and WebFetch to pull from these primary sources:
 | Source | URL | Best For |
 |---|---|---|
 | Grants.gov | grants.gov | All federal grants — master database |
-| USDA Rural Development | rd.usda.gov | MHP/RV parks in rural areas — HUGE for the user |
+| USDA Rural Development | rd.usda.gov | Rural-area businesses, agriculture, MHP/RV parks |
 | SBA | sba.gov/funding-programs/grants | Small business grants |
-| SBIR/STTR | sbir.gov | AI/tech R&D — LindaAI fit |
+| SBIR/STTR | sbir.gov | AI/tech R&D |
 | HUD | hud.gov/grants | Affordable housing, community development |
 | EDA | eda.gov | Economic development, infrastructure |
 | NSF | nsf.gov | Tech research grants |
@@ -88,7 +88,7 @@ Use WebSearch and WebFetch to pull from these primary sources:
 - Kauffman Foundation — entrepreneurship
 - Opportunity Zone incentive programs
 
-**AI / Tech Specific (for LindaAI):**
+**AI / Tech Specific:**
 - NSF SBIR AI programs
 - DARPA open solicitations
 - State innovation funds
@@ -108,19 +108,19 @@ For each source, pull open opportunities and extract:
 
 ### Step 4: Fit Score Each Opportunity
 
-Score each grant 1–10 for the user based on:
+Score each grant 1–10 based on:
 
 | Factor | Weight |
 |---|---|
-| Eligibility match (does he qualify?) | 30% |
+| Eligibility match (does the customer qualify?) | 30% |
 | Amount vs. effort | 20% |
 | Deadline feasibility (enough time to apply?) | 15% |
 | Competition level | 15% |
 | Match requirement burden | 10% |
-| Strategic fit (does it advance his goals?) | 10% |
+| Strategic fit (does it advance their goals?) | 10% |
 
 **Disqualify immediately if:**
-- He doesn't meet eligibility (wrong entity type, wrong location, etc.)
+- Customer doesn't meet eligibility (wrong entity type, wrong location, etc.)
 - Deadline is <7 days away (not enough time unless urgent)
 - Requires 3+ years audited financials he may not have
 - Is actually a loan or tax credit, not a grant
