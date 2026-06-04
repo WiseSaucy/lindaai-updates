@@ -96,7 +96,7 @@ Create the budget in this structure:
 ### Category 1: Personnel
 | Position | Annual Salary | % Time on Project | Duration | Cost |
 |---|---|---|---|---|
-| Project Director (Daniel Wise) | $X | 25% | 12 mo | $X |
+| Project Director ([Your Name]) | $X | 25% | 12 mo | $X |
 | [Role] | $X | X% | X mo | $X |
 | **Subtotal Personnel** | | | | **$X** |
 
@@ -152,7 +152,7 @@ For EVERY line item, write a 1–3 sentence narrative explaining:
 - **How** the cost was calculated
 
 Example:
-> **Project Director (25% FTE, $15,000):** Daniel Wise, owner of [entity], will serve as Project Director, providing overall leadership, grant compliance, and stakeholder coordination. Salary based on $60,000 annual × 25% time × 12 months. This role is essential to ensure project deliverables are met on schedule and in compliance with federal regulations.
+> **Project Director (25% FTE, $15,000):** [Your Name], owner of [entity], will serve as Project Director, providing overall leadership, grant compliance, and stakeholder coordination. Salary based on $60,000 annual × 25% time × 12 months. This role is essential to ensure project deliverables are met on schedule and in compliance with federal regulations.
 
 ### Step 5: Validate Against Funder Rules
 
@@ -178,7 +178,7 @@ Save:
 
 ### Step 7: Flag Placeholders
 
-Wherever the user needs to verify a number, use `[BOSS47: CONFIRM — suggested $X]` so nothing fake gets submitted.
+Wherever the user needs to verify a number, use `[CONFIRM — suggested $X]` so nothing fake gets submitted.
 
 ## Important Notes
 

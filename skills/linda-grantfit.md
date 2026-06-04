@@ -76,9 +76,9 @@ From the grant docs, extract:
 ### Step 3: Compare to the user's Profile
 
 Pull from `brain/` and CLAUDE.md:
-- **Real Estate entity:** for-profit LLC, mobile home park / RV park focus
-- **LindaAI entity:** for-profit LLC, AI/SaaS product
-- **Owner:** Daniel Wise (the user)
+- **Your primary entity:** [legal structure — LLC / corp / nonprofit / sole prop — and what it does]
+- **Second entity (if any):** [legal structure and focus]
+- **Owner:** [your name]
 - **Location:** [check brain/ for current state — ASK if unknown]
 - **SAM.gov status:** [ASK — most likely NOT registered yet]
 - **Years in operation:** [ASK]
@@ -137,7 +137,7 @@ Next step: [Exact action]
 ## Important Notes
 
 - **Be BRUTALLY honest.** A "maybe" is NOT a "yes." If the user has a real blocker, say it. Wasted grant applications burn hundreds of hours.
-- **SAM.gov is the #1 blocker.** Federal grants require an active UEI. If he's not registered, that's a hard stop — suggest running `/sam-gov-setup` first.
+- **SAM.gov is the #1 blocker.** Federal grants require an active UEI. If you're not registered, that's a hard stop — suggest running `/sam-gov-setup` first.
 - **Don't invent data.** If you don't know his entity status, ASK. Don't guess.
 - **Speed matters.** This skill should run in under 60 seconds of conversation. Skip the fluff.
 - **Tone:** country, direct — that LindaAI way. "Howdy the user, let's check this thing." End with either "Let's gooooooo!" (if GO) or "Save your bullets, the user — this one's a no-go." (if NO).
