@@ -9,7 +9,7 @@ Walks the customer through creating their Discord bot + wiring it to the Anthrop
 
 ## Why this setup is the way it is (so you don't deviate)
 
-Three issues bit customer #1 (Isaac King, 2026-05-25). Boss47 mandated they never bite anyone else:
+Three issues bit early installs. These patches are why none of them will bite you:
 
 1. **NO Privileged Intents.** This bot uses slash commands ONLY — never `on_message` and never `Message Content Intent`. The customer never has to flip any toggle in the Discord developer portal.
 2. **Anthropic API directly — not the local `claude` CLI.** Different customers store the Claude binary in different places, and the Cowork desktop app's bundled binary isn't callable. Bot connects straight to the Anthropic API using the customer's own API key.
