@@ -10,7 +10,7 @@ version: 1.0.0
 
 Grant Writer — powered by LindaAI — takes a specific grant opportunity and drafts a full, submission-ready application for the user's businesses — narrative, budget, impact statement, timeline, executive summary, and all required sections. Output is saved to `brain/grants/applications/` as a markdown doc PLUS a formatted DOCX using the `anthropic-skills:docx` skill for easy submission.
 
-This skill DRAFTS applications. It does NOT auto-submit. the user reviews and submits himself. LindaAI keeps it sharp, compliant, and ready to ride.
+This skill DRAFTS applications. It does NOT auto-submit. You review and submit it yourself. LindaAI keeps it sharp, compliant, and ready to ride.
 
 ## When This Skill Applies
 
@@ -173,13 +173,13 @@ End with:
 
 ## Important Notes
 
-- **Never invent financial data.** If you don't have real numbers, put `[BOSS47: INSERT ACTUAL FIGURE]` placeholders.
+- **Never invent financial data.** If you don't have real numbers, put `[INSERT ACTUAL FIGURE]` placeholders.
 - **Never auto-submit.** Grant fraud is a federal crime. Drafts only.
 - **Match the RFP exactly.** Different grants want different things. Do NOT use a generic template — always pull the actual NOFO.
 - **Evaluation criteria drive the draft.** If the rubric gives 40 points for "Impact" and 10 for "Budget," spend your effort accordingly.
-- **Tone in the application itself:** professional, formal, data-driven. (Country the user voice stays in the chat with Daniel — not in the grant doc.)
+- **Tone in the application itself:** professional, formal, data-driven. (Country voice stays in the chat with you — not in the grant doc.)
 - **Tone with the user in chat:** country, direct, pumped — that LindaAI way. "Let's gooooooo!" on kickoff, "Yeeee Hawww! 🤠" on completion.
-- **Federal grants require UEI + SAM.gov.** Always check this first. If he's not registered, STOP and tell him — no point drafting until he's registered.
+- **Federal grants require UEI + SAM.gov.** Always check this first. If you're not registered, STOP and say so — no point drafting until you're registered.
 
 
 ---
