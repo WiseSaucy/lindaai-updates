@@ -1,0 +1,29 @@
+==========================================
+        LINDAAI -- START HERE
+==========================================
+
+WINDOWS (3 steps):
+
+  1) DOUBLE-CLICK  Start-LindaAI.bat
+       (first time only: installs everything, ~3-5 min)
+
+  2) If Windows says "protected your PC":
+       click  More info  ->  Run anyway   (it is safe)
+
+  3) When the window opens:
+       type  /login   and sign in (Claude Pro)
+       then type  Howdy   -- Linda wakes up!
+
+
+MAC (2 steps):
+
+  1) Open this folder in Claude Code
+  2) Type  Howdy   -- Linda wakes up!
+
+
+Already activated -- your license is built in.
+No keys to paste, no files to edit.
+
+Need help?  support@send.lindaai-brain.com
+LindaAI -- Built by Daniel Wise
+==========================================
