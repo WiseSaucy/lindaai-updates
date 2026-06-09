@@ -201,6 +201,226 @@
     "linda-loi": {
       "version": "1.4.0",
       "min_tier": "gold"
+    },
+    "airbnb-underwriting": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "brain-dump": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "client-onboarding": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "coliving-underwriting": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "competitor-analysis": {
+      "version": "1.0.0",
+      "min_tier": "silver"
+    },
+    "content-batch": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "content-repurpose": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "contract-review": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "deal-analyzer": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "deal-marketing-package": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "deep-research": {
+      "version": "1.0.0",
+      "min_tier": "silver"
+    },
+    "discord-setup": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "email-drafter": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "financial-snapshot": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "follow-up": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "grant-budget-builder": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "grant-eligibility": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "grant-finder": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "grant-tracker": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "grant-writer": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "healthcheck": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "hiring-screener": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "inbox-triage": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "investment-calculator": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "invoice-generator": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "iron-horse": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "kajabi-scraper": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "kpi-dashboard": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "lead-tracker": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "linda-post-walkthrough": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "linda-postiz-post": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "linda-social-post": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "market-research": {
+      "version": "1.0.0",
+      "min_tier": "silver"
+    },
+    "meeting-prep": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "meeting-to-actions": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "morning-briefing": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "negotiation-prep": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "networking-intel": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "personal-brand-audit": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "pipeline-sync": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "project-pulse": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "property-research": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "rental-analysis": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "rooster-setup": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "sam-gov-setup": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "seller-outreach-drafter": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "social-media-calendar": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "sop-builder": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "swot-analysis": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "telegram-setup": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "travel-plan": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "update-manager": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "voice": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
+    },
+    "voice-to-contract": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "weekly-review": {
+      "version": "1.0.0",
+      "min_tier": "bronze"
     }
   },
   "agents": {
