@@ -1,6 +1,6 @@
 # LindaAI Agent Roster
 
-The LindaAI Platinum tier ships with **18 specialized agents**. Rooster crows first — he's your daily motivator and opens every morning. After him, the team handles the work.
+The LindaAI Platinum tier ships with **17+ specialized agents**. Rooster crows first — he's your daily motivator and opens every morning. After him, the team handles the work.
 
 Each agent has a country-coded LindaAI name, a primary role, and an `avatar:` field in its frontmatter so you can drop a PNG into `agents/avatars/<name>.png` later and have it wire up automatically.
 
