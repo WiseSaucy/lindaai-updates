@@ -1,0 +1,43 @@
+# LindaAI Updates Server — Jekyll config
+#
+# This repo is a CONTENT CDN. Customers pull files via:
+#   https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/...
+#
+# GitHub Pages doesn't need to render the content folders — it would just
+# choke on Liquid template conflicts in skill SKILL.md files (e.g. {customer_handle}
+# placeholders trip Jekyll's parser).
+#
+# This config keeps Pages working for the landing page (README.md) but skips
+# everything else.
+
+title: LindaAI Updates Server
+description: LindaAI customer update CDN. Built by Daniel Wise.
+
+# Exclude content folders from Jekyll processing — they're not webpages,
+# they're files customers pull via raw.githubusercontent.com
+exclude:
+  - skills
+  - agents
+  - agent-announce
+  - packs
+  - bootstrap
+  - install
+  - claude-ai-setup
+  - customer-guides
+  - hooks
+  - bridges
+  - picker
+  - deprecated-content.json
+  - manifest.json
+  - tier-manifest.json
+  - LindaAI-Final-MASTER.zip
+  - "*.log"
+  - "*.bak"
+
+# Use minimal theme for the landing page
+theme: jekyll-theme-primer
+
+# Don't break on Liquid template chars inside markdown
+markdown: kramdown
+kramdown:
+  input: GFM
