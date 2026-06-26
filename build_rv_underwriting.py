@@ -403,10 +403,39 @@ def build_grid(top, title_text, metric, fmt):
             cell.number_format=fmt; cell.alignment=Alignment(horizontal="right")
     return hdr+1+len(price_factors)
 
-end1=build_grid(4, "CASH-ON-CASH RETURN  (Year 1)", "coc", PCT)
-end2=build_grid(end1+2, "DEBT SERVICE COVERAGE (DSCR)", "dscr", MULT)
-sn[f"A{end2+1}"]="NOTE: NOI is held constant; these tables isolate price & financing risk."
+end1=build_grid(4, "CASH-ON-CASH RETURN  —  Price x Interest Rate", "coc", PCT)
+end2=build_grid(end1+2, "DEBT SERVICE COVERAGE (DSCR)  —  Price x Interest Rate", "dscr", MULT)
+sn[f"A{end2+1}"]="NOTE: the two tables above hold NOI constant to isolate price & financing risk."
 sn[f"A{end2+1}"].font=NOTE
+
+# ---- rent x vacancy grid (operational risk; recomputes NOI) ----------------
+rent_deltas=[-100,-50,0,50,100]
+vac_values=[0.05,0.10,0.15,0.20,0.25]
+top=end2+3
+sec(sn, top, "CASH-ON-CASH RETURN  —  Monthly Rent x Vacancy", "A:F")
+hdr=top+1
+sn[f"A{hdr}"]="Rent \\ Vacancy"; sn[f"A{hdr}"].font=BOLD; sn[f"A{hdr}"].fill=TOTAL_FILL
+sn[f"A{hdr}"].alignment=Alignment(horizontal="center")
+for j,v in enumerate(vac_values):
+    col=get_column_letter(2+j); c=sn[f"{col}{hdr}"]
+    c.value=v; c.number_format=PCT; c.font=BOLD; c.fill=TOTAL_FILL
+    c.alignment=Alignment(horizontal="center")
+for i,d in enumerate(rent_deltas):
+    row=hdr+1+i; c=sn[f"A{row}"]
+    c.value=f"={uref('rent')}+{d}"; c.number_format=CUR2; c.font=BOLD
+    c.fill=TOTAL_FILL; c.alignment=Alignment(horizontal="right")
+    for j,v in enumerate(vac_values):
+        col=get_column_letter(2+j); cell=sn[f"{col}{row}"]
+        rent=f"$A{row}"; vac=f"{col}${hdr}"
+        egi=f"({uref('sites')}*{rent}*12*(1-{vac})+{uref('other_a')})"
+        # opex excl. mgmt is fixed; mgmt scales with EGI
+        opex=f"(({uref('opex')}-{uref('mgmt')})+{uref('mgmt_pct')}*{egi})"
+        noi=f"({egi}-{opex})"
+        cell.value=f"=({noi}-{uref('ads')})/{uref('cash')}"
+        cell.number_format=PCT; cell.alignment=Alignment(horizontal="right")
+endR=hdr+1+len(rent_deltas)
+sn[f"A{endR+1}"]="NOTE: this table recomputes NOI (management fee scales with EGI). Uses sites x rent income, not the Income Detail build."
+sn[f"A{endR+1}"].font=NOTE
 
 # =============================================================================
 # SHEET — DEAL SUMMARY (one-page, lender-friendly)
@@ -463,6 +492,71 @@ ds["A24"]="Screening tool only — not investment advice. Verify every figure ag
 ds["A24"].font=NOTE
 
 # =============================================================================
+# SHEET — LOAN SIZING (max purchase price at target DSCR / debt yield)
+# =============================================================================
+ls = wb.create_sheet("Loan Sizing")
+ls.sheet_view.showGridLines=False
+ls.column_dimensions["A"].width=40
+ls.column_dimensions["B"].width=18
+ls.column_dimensions["C"].width=34
+merge_title(ls, "A1:C1", "LOAN SIZING — MAX PRICE AT TARGET DSCR")
+ls["A2"]=("Works backward from how much debt the NOI supports. NOI is held at the Underwriting Year-1 figure; "
+          "rate, amortization and LTV come from the Underwriting tab.")
+ls["A2"].font=NOTE
+
+def ls_input(row, label, val, fmt, note="", key=None):
+    ls[f"A{row}"]=label; ls[f"A{row}"].font=LABEL
+    c=ls[f"B{row}"]; c.value=val; c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER
+    c.number_format=fmt; c.alignment=Alignment(horizontal="right")
+    if note: ls[f"C{row}"]=note; ls[f"C{row}"].font=NOTE
+    if key: LS[key]=f"B{row}"
+def ls_calc(row, label, formula, fmt, note="", bold=False, fill=None, key=None):
+    ls[f"A{row}"]=label; ls[f"A{row}"].font=BOLD if bold else LABEL
+    c=ls[f"B{row}"]; c.value=formula; c.font=BOLD if bold else LABEL
+    c.number_format=fmt; c.alignment=Alignment(horizontal="right")
+    if fill: c.fill=fill
+    if note: ls[f"C{row}"]=note; ls[f"C{row}"].font=NOTE
+    if key: LS[key]=f"B{row}"
+LS={}
+
+sec(ls, 4, "TARGETS  (your / the lender's limits)", "A:C")
+ls_input(5, "Target DSCR", 1.25, MULT, "minimum coverage lender requires", key="tdscr")
+ls_input(6, "Target Debt Yield", 0.10, PCT, "NOI / loan floor (often 9-10%)", key="tdy")
+ls_input(7, "Max LTV %", 0.75, PCT, "lender's loan-to-value cap", key="maxltv")
+
+sec(ls, 9, "LOAN INPUTS  (from Underwriting)", "A:C")
+ls_calc(10, "Year-1 NOI", f"=Underwriting!{R['noi']}", CUR2, key="noi")
+ls_calc(11, "Interest Rate", f"=Underwriting!{R['intr']}", PCT2, key="rate")
+ls_calc(12, "Amortization (yrs)", f"=Underwriting!{R['amort']}", CUR, key="amort")
+ls_calc(13, "Annual Debt Constant (per $1 loan)",
+        f"=PMT({LS['rate']}/12,{LS['amort']}*12,-1)*12", '0.0000',
+        "= annual debt service per $1 borrowed", key="k")
+
+sec(ls, 15, "MAXIMUM SUPPORTABLE LOAN", "A:C")
+ls_calc(16, "Max Annual Debt Service (DSCR)", f"={LS['noi']}/{LS['tdscr']}", CUR2,
+        "= NOI / target DSCR", key="maxads")
+ls_calc(17, "Max Loan — DSCR constrained", f"={LS['maxads']}/{LS['k']}", CUR2, key="loan_dscr")
+ls_calc(18, "Max Loan — Debt-Yield constrained", f"={LS['noi']}/{LS['tdy']}", CUR2, key="loan_dy")
+ls_calc(19, "Binding Max Loan", f"=MIN({LS['loan_dscr']},{LS['loan_dy']})", CUR2,
+        "the lesser of the two", bold=True, fill=TOTAL_FILL, key="loan_max")
+
+sec(ls, 21, "MAXIMUM PURCHASE PRICE", "A:C")
+ls_calc(22, "Max Price — DSCR/Debt-Yield (at Max LTV)", f"={LS['loan_max']}/{LS['maxltv']}", CUR2,
+        "price the debt supports at your LTV", bold=True, fill=KEY_FILL, key="price_debt")
+ls_calc(23, "Current Purchase Price", f"=Underwriting!{R['price']}", CUR2, key="price_now")
+ls_calc(24, "Price Headroom ($)", f"={LS['price_debt']}-{LS['price_now']}", CUR2,
+        "positive = room to pay more; negative = overpaying", bold=True, key="headroom")
+ls_calc(25, "Price Headroom (%)", f"={LS['headroom']}/{LS['price_now']}", PCT, bold=True)
+ls_calc(26, "DSCR at Current Price", f"=Underwriting!{R['dscr']}", MULT,
+        "for reference (target above)")
+ls_calc(27, "Required Equity at Max Price", f"={LS['price_debt']}*(1-{LS['maxltv']})", CUR2,
+        "down payment if you buy at the max")
+
+ls["A29"]=("READ: if Headroom is negative, the price is higher than the income can safely finance at your target "
+           "DSCR — you'd need more equity, a lower rate, or a price cut.")
+ls["A29"].font=NOTE
+
+# =============================================================================
 # SHEET — READ ME (insert first)
 # =============================================================================
 rm = wb.create_sheet("Read Me", 0)
@@ -484,7 +578,8 @@ lines=[
  "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
  "  • Actuals vs Pro Forma — seller's CURRENT numbers vs your stabilized plan, side by side.",
  "  • Pro Forma & Returns — 10-year projection, sale reversion, IRR & equity multiple.",
- "  • Sensitivity   — how Cash-on-Cash & DSCR move with purchase price and interest rate.",
+ "  • Sensitivity   — how Cash-on-Cash & DSCR move with price, interest rate, rent & vacancy.",
+ "  • Loan Sizing   — max purchase price the NOI supports at your target DSCR / debt yield.",
  "",
  "HOW TO USE IT",
  "1. Start on 'Underwriting'. Fill every yellow cell from the seller's P&L and rent roll.",
@@ -519,7 +614,7 @@ for ln in lines:
 
 # ---- tab order --------------------------------------------------------------
 order=["Read Me","Deal Summary","Underwriting","Income Detail",
-       "Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity"]
+       "Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
 wb._sheets.sort(key=lambda s: order.index(s.title))
 wb.active = 0
 
