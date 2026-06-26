@@ -8,6 +8,7 @@ Tabs: Read Me | Deal Summary | Underwriting | Income Detail |
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+from openpyxl.formatting.rule import CellIsRule
 
 # ---- styles ----------------------------------------------------------------
 TITLE   = Font(name="Calibri", size=16, bold=True, color="FFFFFF")
@@ -557,6 +558,95 @@ ls["A29"]=("READ: if Headroom is negative, the price is higher than the income c
 ls["A29"].font=NOTE
 
 # =============================================================================
+# SHEET — DEAL SCORECARD (GOOD / OK / BAD rating)
+# =============================================================================
+sc = wb.create_sheet("Deal Scorecard")
+sc.sheet_view.showGridLines=False
+sc.column_dimensions["A"].width=30
+sc.column_dimensions["B"].width=14
+sc.column_dimensions["C"].width=10
+sc.column_dimensions["D"].width=13
+sc.column_dimensions["E"].width=13
+sc.column_dimensions["F"].width=12
+sc.column_dimensions["G"].width=7
+merge_title(sc, "A1:G1", "DEAL SCORECARD — GOOD / OK / BAD")
+sc["A2"]=("Defaults are industry-standard RV-park benchmarks. The GREEN cutoff cells are EDITABLE — "
+          "replace them with your own (or a course/video's) numbers and the ratings update live.")
+sc["A2"].font=NOTE
+
+hdr=4
+heads=["Metric","Deal Value","Better","Good cutoff","OK cutoff","Rating","Pts"]
+for j,h in enumerate(heads):
+    col=get_column_letter(1+j); c=sc[f"{col}{hdr}"]
+    c.value=h; c.font=SECTION; c.fill=SECTION_FILL; c.alignment=Alignment(horizontal="center")
+
+GREEN=PatternFill("solid", fgColor="C6EFCE")
+YELL =PatternFill("solid", fgColor="FFEB9C")
+RED  =PatternFill("solid", fgColor="FFC7CE")
+GFONT=Font(color="006100", bold=True)
+YFONT=Font(color="9C6500", bold=True)
+RFONT=Font(color="9C0006", bold=True)
+
+# (label, value_formula, fmt, direction High/Low, good, ok)
+NOIv=f"Underwriting!{R['noi']}"
+metrics=[
+ ("Going-in Cap Rate", f"=Underwriting!{R['caprate']}", PCT,  "High", 0.10, 0.08),
+ ("Cash-on-Cash (Yr 1)", f"=Underwriting!{R['coc']}",   PCT,  "High", 0.10, 0.06),
+ ("DSCR",                f"=Underwriting!{R['dscr']}",   MULT, "High", 1.40, 1.25),
+ ("Debt Yield",          f"={NOIv}/Underwriting!{R['loan']}", PCT, "High", 0.10, 0.08),
+ ("Cap Rate − Interest (spread)", f"=Underwriting!{R['caprate']}-Underwriting!{R['intr']}", PCT, "High", 0.03, 0.015),
+ ("Operating Expense Ratio", f"=Underwriting!{R['oer']}", PCT, "Low", 0.40, 0.55),
+ ("Break-even Occupancy",  f"=Underwriting!{R['breakeven']}", PCT, "Low", 0.70, 0.80),
+ ("Levered IRR",         "='Pro Forma & Returns'!B18", PCT,  "High", 0.15, 0.10),
+ ("Equity Multiple",     "='Pro Forma & Returns'!B19", MULT, "High", 2.0,  1.5),
+]
+r=hdr+1
+first=r
+for label,vf,fmt,direction,good,ok in metrics:
+    sc[f"A{r}"]=label; sc[f"A{r}"].font=LABEL
+    b=sc[f"B{r}"]; b.value=vf; b.number_format=fmt; b.font=BOLD; b.alignment=Alignment(horizontal="right")
+    sc[f"C{r}"]=direction; sc[f"C{r}"].font=NOTE; sc[f"C{r}"].alignment=Alignment(horizontal="center")
+    for colcell,val in (("D",good),("E",ok)):
+        c=sc[f"{colcell}{r}"]; c.value=val; c.number_format=fmt
+        c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER; c.alignment=Alignment(horizontal="right")
+    if direction=="High":
+        rf=f'=IF(B{r}>=D{r},"GOOD",IF(B{r}>=E{r},"OK","BAD"))'
+    else:
+        rf=f'=IF(B{r}<=D{r},"GOOD",IF(B{r}<=E{r},"OK","BAD"))'
+    f=sc[f"F{r}"]; f.value=rf; f.alignment=Alignment(horizontal="center"); f.font=BOLD
+    sc[f"G{r}"]=f'=IF(F{r}="GOOD",2,IF(F{r}="OK",1,0))'
+    sc[f"G{r}"].alignment=Alignment(horizontal="center"); sc[f"G{r}"].font=NOTE
+    r+=1
+last=r-1
+
+rng=f"F{first}:F{last}"
+sc.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"GOOD"'], fill=GREEN, font=GFONT))
+sc.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"OK"'],   fill=YELL,  font=YFONT))
+sc.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"BAD"'],  fill=RED,   font=RFONT))
+
+# ---- overall verdict --------------------------------------------------------
+sec(sc, last+2, "OVERALL", "A:G")
+vr=last+3
+sc[f"A{vr}"]="Score"; sc[f"A{vr}"].font=BOLD
+sc[f"B{vr}"]=f"=SUM(G{first}:G{last})"; sc[f"B{vr}"].font=BOLD; sc[f"B{vr}"].alignment=Alignment(horizontal="right")
+sc[f"C{vr}"]=f'="of "&({last}-{first}+1)*2'; sc[f"C{vr}"].font=NOTE
+sc[f"A{vr+1}"]="Score %"; sc[f"A{vr+1}"].font=BOLD
+sc[f"B{vr+1}"]=f"=B{vr}/(({last}-{first}+1)*2)"; sc[f"B{vr+1}"].number_format=PCT
+sc[f"B{vr+1}"].font=BOLD; sc[f"B{vr+1}"].alignment=Alignment(horizontal="right")
+sc[f"A{vr+2}"]="VERDICT"; sc[f"A{vr+2}"].font=Font(size=13,bold=True)
+v=sc[f"B{vr+2}"]
+v.value=f'=IF(B{vr+1}>=0.8,"STRONG DEAL",IF(B{vr+1}>=0.6,"OK — NEEDS WORK","PASS / BAD DEAL"))'
+v.font=Font(size=13,bold=True); v.alignment=Alignment(horizontal="center")
+sc.merge_cells(f"B{vr+2}:D{vr+2}")
+vcell=f"B{vr+2}"
+sc.conditional_formatting.add(vcell, CellIsRule(operator='equal', formula=['"STRONG DEAL"'], fill=GREEN, font=GFONT))
+sc.conditional_formatting.add(vcell, CellIsRule(operator='equal', formula=['"OK — NEEDS WORK"'], fill=YELL, font=YFONT))
+sc.conditional_formatting.add(vcell, CellIsRule(operator='equal', formula=['"PASS / BAD DEAL"'], fill=RED, font=RFONT))
+sc[f"A{vr+4}"]=("Scoring: GOOD=2, OK=1, BAD=0 pts. Verdict: >=80% STRONG, 60-79% OK/NEEDS WORK, <60% PASS. "
+                "These are screening guides, not gospel — edit the cutoffs to match your strategy or market.")
+sc[f"A{vr+4}"].font=NOTE
+
+# =============================================================================
 # SHEET — READ ME (insert first)
 # =============================================================================
 rm = wb.create_sheet("Read Me", 0)
@@ -574,6 +664,7 @@ lines=[
  "",
  "THE TABS (left to right)",
  "  • Deal Summary  — one-page headline view; print/screenshot this for lenders & partners.",
+ "  • Deal Scorecard — rates the deal GOOD/OK/BAD on each metric with an overall verdict (editable cutoffs).",
  "  • Underwriting  — the engine. Fill the YELLOW cells; everything else is a formula.",
  "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
  "  • Actuals vs Pro Forma — seller's CURRENT numbers vs your stabilized plan, side by side.",
@@ -613,7 +704,7 @@ for ln in lines:
     r+=1
 
 # ---- tab order --------------------------------------------------------------
-order=["Read Me","Deal Summary","Underwriting","Income Detail",
+order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Income Detail",
        "Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
 wb._sheets.sort(key=lambda s: order.index(s.title))
 wb.active = 0
