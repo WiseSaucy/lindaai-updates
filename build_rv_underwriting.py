@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Builds an RV Park underwriting workbook (live Excel formulas)."""
+"""Builds an RV Park underwriting workbook (live Excel formulas).
+
+Tabs: Read Me | Deal Summary | Underwriting | Income Detail |
+      Actuals vs Pro Forma | Pro Forma & Returns | Sensitivity
+"""
 
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
@@ -12,358 +16,513 @@ BOLD    = Font(name="Calibri", size=11, bold=True)
 LABEL   = Font(name="Calibri", size=11)
 INPUTF  = Font(name="Calibri", size=11, bold=True, color="1F4E78")
 NOTE    = Font(name="Calibri", size=9, italic=True, color="808080")
+BIG      = Font(name="Calibri", size=20, bold=True, color="1F4E78")
 
 TITLE_FILL   = PatternFill("solid", fgColor="1F4E78")
 SECTION_FILL = PatternFill("solid", fgColor="2E75B6")
 INPUT_FILL   = PatternFill("solid", fgColor="FFF2CC")   # yellow = type here
 TOTAL_FILL   = PatternFill("solid", fgColor="D9E1F2")
 KEY_FILL     = PatternFill("solid", fgColor="E2EFDA")
+WARN_FILL    = PatternFill("solid", fgColor="FCE4D6")
 
 thin = Side(style="thin", color="BFBFBF")
 BORDER = Border(left=thin, right=thin, top=thin, bottom=thin)
 
-CUR   = '#,##0'
-CUR2  = '$#,##0'
-PCT   = '0.0%'
-PCT2  = '0.00%'
-MULT  = '0.00"x"'
+CUR  = '#,##0'
+CUR2 = '$#,##0'
+PCT  = '0.0%'
+PCT2 = '0.00%'
+MULT = '0.00"x"'
 
 wb = Workbook()
+wb.remove(wb.active)  # drop default empty sheet
+R = {}  # Underwriting cell registry: name -> "B17"
 
-# =============================================================================
-# SHEET 1 — UNDERWRITING
-# =============================================================================
-ws = wb.active
-ws.title = "Underwriting"
-ws.sheet_view.showGridLines = False
-ws.column_dimensions["A"].width = 38
-ws.column_dimensions["B"].width = 18
-ws.column_dimensions["C"].width = 30
-
-R = {}  # name -> cell address like "B17"
-
-def title(text):
-    ws.merge_cells("A1:C1")
-    c = ws["A1"]; c.value = text; c.font = TITLE; c.fill = TITLE_FILL
+# generic helpers -------------------------------------------------------------
+def merge_title(ws, rng, text):
+    ws.merge_cells(rng)
+    c = ws[rng.split(":")[0]]; c.value = text; c.font = TITLE; c.fill = TITLE_FILL
     c.alignment = Alignment(horizontal="center", vertical="center")
-    ws.row_dimensions[1].height = 26
+    ws.row_dimensions[int(rng.split(":")[0][1:])].height = 26
 
-def section(row, text):
-    ws.merge_cells(f"A{row}:C{row}")
-    c = ws[f"A{row}"]; c.value = text; c.font = SECTION; c.fill = SECTION_FILL
+def sec(ws, row, text, span="A:C"):
+    a, b = span.split(":")
+    ws.merge_cells(f"{a}{row}:{b}{row}")
+    c = ws[f"{a}{row}"]; c.value = text; c.font = SECTION; c.fill = SECTION_FILL
     c.alignment = Alignment(horizontal="left", vertical="center", indent=1)
     ws.row_dimensions[row].height = 20
 
-def row_input(row, label, value, fmt=CUR2, note="", key=None):
-    ws[f"A{row}"] = label; ws[f"A{row}"].font = LABEL
-    c = ws[f"B{row}"]; c.value = value; c.font = INPUTF; c.fill = INPUT_FILL
-    c.number_format = fmt; c.border = BORDER
-    c.alignment = Alignment(horizontal="right")
-    if note:
-        ws[f"C{row}"] = note; ws[f"C{row}"].font = NOTE
-    if key: R[key] = f"B{row}"
+# =============================================================================
+# SHEET — INCOME DETAIL (built first; Underwriting GPR can reference it)
+# =============================================================================
+inc = wb.create_sheet("Income Detail")
+inc.sheet_view.showGridLines = False
+inc.column_dimensions["A"].width = 30
+for col in "BCDE":
+    inc.column_dimensions[col].width = 16
+merge_title(inc, "A1:E1", "INCOME DETAIL — SITE MIX & SEASONALITY")
+inc["A2"] = "Optional. Build income from your actual site mix, then set 'Use Detailed Income Build?' = Y on the Underwriting tab."
+inc["A2"].font = NOTE
 
-def row_calc(row, label, formula, fmt=CUR2, note="", bold=False, fill=None, key=None):
-    ws[f"A{row}"] = label; ws[f"A{row}"].font = BOLD if bold else LABEL
-    c = ws[f"B{row}"]; c.value = formula
-    c.font = BOLD if bold else LABEL
-    c.number_format = fmt; c.alignment = Alignment(horizontal="right")
+def inp(ws, cell, val, fmt, note_cell=None, note=None):
+    c = ws[cell]; c.value = val; c.font = INPUTF; c.fill = INPUT_FILL
+    c.number_format = fmt; c.border = BORDER; c.alignment = Alignment(horizontal="right")
+    if note_cell and note:
+        ws[note_cell] = note; ws[note_cell].font = NOTE
+
+def calc(ws, cell, formula, fmt, bold=False, fill=None):
+    c = ws[cell]; c.value = formula; c.number_format = fmt
+    c.font = BOLD if bold else LABEL; c.alignment = Alignment(horizontal="right")
     if fill: c.fill = fill
-    if note:
-        ws[f"C{row}"] = note; ws[f"C{row}"].font = NOTE
-    if key: R[key] = f"B{row}"
 
-title("RV PARK UNDERWRITING ANALYSIS")
+# Long-term tenants ----------------------------------------------------------
+sec(inc, 4, "LONG-TERM TENANTS (MONTHLY / ANNUAL LEASES)", "A:E")
+inc["A5"] = "Tier"; inc["B5"] = "# Sites"; inc["C5"] = "Monthly Rate"
+inc["D5"] = "Occupancy %"; inc["E5"] = "Annual Revenue"
+for cl in "ABCDE": inc[f"{cl}5"].font = BOLD
+inc["A6"] = "Monthly tenants"; inc["A7"] = "Annual / seasonal leases"
+for r in (6, 7):
+    inp(inc, f"B{r}", 30 if r == 6 else 8, CUR)
+    inp(inc, f"C{r}", 450 if r == 6 else 400, CUR2)
+    inp(inc, f"D{r}", 0.95 if r == 6 else 0.90, PCT)
+    calc(inc, f"E{r}", f"=B{r}*C{r}*12*D{r}", CUR2)
+inc["A8"] = "Subtotal — long-term"; inc["A8"].font = BOLD
+calc(inc, "E8", "=SUM(E6:E7)", CUR2, bold=True, fill=TOTAL_FILL)
+calc(inc, "B8", "=SUM(B6:B7)", CUR, bold=True)
 
-ws["A3"] = "Property Name"; ws["A3"].font = LABEL
-ws["B3"] = "Enter property name"; ws["B3"].font = INPUTF; ws["B3"].fill = INPUT_FILL; ws["B3"].border = BORDER
-ws["A4"] = "Location (City, ST)"; ws["A4"].font = LABEL
-ws["B4"] = "City, ST"; ws["B4"].font = INPUTF; ws["B4"].fill = INPUT_FILL; ws["B4"].border = BORDER
-ws["A5"] = "Analysis Date"; ws["A5"].font = LABEL
-ws["B5"] = "2026-06-26"; ws["B5"].font = INPUTF; ws["B5"].fill = INPUT_FILL; ws["B5"].border = BORDER
-ws["C3"] = "Yellow cells = your inputs. Everything else calculates."; ws["C3"].font = NOTE
+# Transient (nightly) seasonal ----------------------------------------------
+sec(inc, 10, "TRANSIENT / NIGHTLY SITES (SEASONAL)", "A:E")
+inc["A11"] = "# Transient sites"; inp(inc, "B11", 12, CUR)
+inc["A12"] = "Avg nightly rate"; inp(inc, "B12", 55, CUR2)
+inc["A14"] = "Month"; inc["B14"] = "Days"; inc["C14"] = "Occupancy %"
+inc["D14"] = "Revenue"
+for cl in "ABCD": inc[f"{cl}14"].font = BOLD
+months = [("Jan",31,.30),("Feb",28,.30),("Mar",31,.45),("Apr",30,.55),
+          ("May",31,.70),("Jun",30,.85),("Jul",31,.95),("Aug",31,.95),
+          ("Sep",30,.75),("Oct",31,.55),("Nov",30,.35),("Dec",31,.30)]
+start = 15
+for i,(m,days,occ) in enumerate(months):
+    r = start + i
+    inc[f"A{r}"] = m; inc[f"A{r}"].font = LABEL
+    inc[f"B{r}"] = days; inc[f"B{r}"].font = LABEL; inc[f"B{r}"].alignment = Alignment(horizontal="right")
+    inp(inc, f"C{r}", occ, PCT)
+    calc(inc, f"D{r}", f"=$B$11*$B$12*B{r}*C{r}", CUR2)
+last = start + 11           # 26
+trow = last + 1             # 27 transient subtotal
+inc[f"A{trow}"] = "Subtotal — transient"; inc[f"A{trow}"].font = BOLD
+calc(inc, f"D{trow}", f"=SUM(D{start}:D{last})", CUR2, bold=True, fill=TOTAL_FILL)
+arow = trow + 1
+inc[f"A{arow}"] = "Avg transient occupancy"; inc[f"A{arow}"].font = LABEL
+calc(inc, f"C{arow}", f"=SUMPRODUCT(B{start}:B{last},C{start}:C{last})/SUM(B{start}:B{last})", PCT)
 
-# ----- Deal assumptions ------------------------------------------------------
-section(7, "DEAL ASSUMPTIONS")
-row_input(8,  "Number of RV Sites (pads)", 50, '#,##0', "total rentable pads", key="sites")
-row_input(9,  "Purchase Price", 1500000, CUR2, key="price")
-row_calc (10, "  Price per Site", f"={R['price']}/{R['sites']}", CUR2, "purchase price / sites")
-row_input(11, "Avg. Monthly Rent per Site", 450, CUR2, "blended lot rent / month", key="rent")
-row_input(12, "Vacancy & Credit Loss %", 0.15, PCT, "economic vacancy", key="vac")
-row_input(13, "Other Income (monthly)", 1500, CUR2, "store, laundry, propane, fees", key="other_m")
-row_input(14, "Management Fee (% of EGI)", 0.08, PCT, "3rd-party or self-mgmt", key="mgmt_pct")
-row_input(15, "Replacement Reserves / site / yr", 100, CUR2, "capital reserve", key="res_site")
-row_input(16, "Annual Rent Growth %", 0.03, PCT, "for multi-year projection", key="rent_g")
-row_input(17, "Annual Expense Growth %", 0.025, PCT, "for multi-year projection", key="exp_g")
-
-# ----- Income ----------------------------------------------------------------
-section(19, "INCOME  (Year 1 Stabilized Pro Forma)")
-row_calc(20, "Gross Potential Rent (GPR)", f"={R['sites']}*{R['rent']}*12", CUR2, "annual", key="gpr")
-row_calc(21, "Less: Vacancy & Credit Loss", f"=-{R['gpr']}*{R['vac']}", CUR2)
-R["vacloss"] = "B21"
-row_calc(22, "Plus: Other Income", f"={R['other_m']}*12", CUR2, key="other_a")
-row_calc(23, "Effective Gross Income (EGI)", f"={R['gpr']}+{R['vacloss']}+{R['other_a']}",
-         CUR2, bold=True, fill=TOTAL_FILL, key="egi")
-
-# ----- Operating expenses ----------------------------------------------------
-section(25, "OPERATING EXPENSES  (Year 1)")
-row_input(26, "Property Taxes", 18000, CUR2, key="tax")
-row_input(27, "Insurance", 9000, CUR2, key="ins")
-row_input(28, "Utilities (water/sewer/trash/elec)", 36000, CUR2, "owner-paid portion", key="util")
-row_input(29, "Repairs & Maintenance", 15000, CUR2, key="rm")
-row_input(30, "Payroll / Onsite Manager", 24000, CUR2, key="pay")
-row_input(31, "Marketing, Admin, Office", 8000, CUR2, key="admin")
-row_calc (32, "Management Fee", f"={R['mgmt_pct']}*{R['egi']}", CUR2, "= mgmt % x EGI", key="mgmt")
-row_calc (33, "Replacement Reserves", f"={R['res_site']}*{R['sites']}", CUR2, key="reserves")
-row_calc (34, "Total Operating Expenses",
-         f"=SUM({R['tax']}:{R['reserves'].replace('B','B')})", CUR2, bold=True, fill=TOTAL_FILL, key="opex")
-# fix the sum range explicitly
-ws[R["opex"]].value = f"=SUM(B26:B33)"
-row_calc (35, "Operating Expense Ratio", f"={R['opex']}/{R['egi']}", PCT, "OpEx / EGI", key="oer")
-row_calc (36, "Expenses per Site", f"={R['opex']}/{R['sites']}", CUR2)
-
-# ----- NOI -------------------------------------------------------------------
-section(38, "NET OPERATING INCOME")
-row_calc(39, "Net Operating Income (NOI)", f"={R['egi']}-{R['opex']}", CUR2,
-         bold=True, fill=KEY_FILL, key="noi")
-row_calc(40, "NOI per Site", f"={R['noi']}/{R['sites']}", CUR2)
-
-# ----- Financing & exit assumptions -----------------------------------------
-section(42, "FINANCING & EXIT ASSUMPTIONS")
-row_input(43, "Loan-to-Value (LTV) %", 0.70, PCT, key="ltv")
-row_input(44, "Interest Rate %", 0.07, PCT2, "annual", key="intr")
-row_input(45, "Amortization (years)", 25, '#,##0', key="amort")
-row_input(46, "Closing Costs %", 0.03, PCT, "of purchase price", key="close_pct")
-row_input(47, "Initial CapEx / Rehab", 50000, CUR2, "day-one improvements", key="capex")
-row_input(48, "Hold Period (years)", 5, '#,##0', "1-10", key="hold")
-row_input(49, "Exit Cap Rate %", 0.085, PCT2, "for sale value", key="exitcap")
-row_input(50, "Selling Costs %", 0.05, PCT, "of sale price", key="sellcost")
-
-# ----- Debt & equity ---------------------------------------------------------
-section(52, "DEBT & EQUITY")
-row_calc(53, "Loan Amount", f"={R['price']}*{R['ltv']}", CUR2, key="loan")
-row_calc(54, "Down Payment (Equity)", f"={R['price']}-{R['loan']}", CUR2, key="down")
-row_calc(55, "Closing Costs", f"={R['price']}*{R['close_pct']}", CUR2, key="close")
-row_calc(56, "Total Cash Required",
-         f"={R['down']}+{R['close']}+{R['capex']}", CUR2, bold=True, fill=TOTAL_FILL, key="cash")
-row_calc(57, "Monthly Debt Payment",
-         f"=PMT({R['intr']}/12,{R['amort']}*12,-{R['loan']})", CUR2, key="pmt_m")
-row_calc(58, "Annual Debt Service", f"={R['pmt_m']}*12", CUR2, bold=True, key="ads")
-
-# ----- Returns ---------------------------------------------------------------
-section(60, "KEY RETURN METRICS  (Year 1)")
-row_calc(61, "Going-in Cap Rate", f"={R['noi']}/{R['price']}", PCT, "NOI / Price",
-         bold=True, fill=KEY_FILL, key="caprate")
-row_calc(62, "Cash Flow Before Tax (CFBT)", f"={R['noi']}-{R['ads']}", CUR2,
-         bold=True, fill=KEY_FILL, key="cfbt")
-row_calc(63, "Cash-on-Cash Return", f"={R['cfbt']}/{R['cash']}", PCT, "CFBT / cash invested",
-         bold=True, fill=KEY_FILL, key="coc")
-row_calc(64, "Debt Service Coverage (DSCR)", f"={R['noi']}/{R['ads']}", MULT,
-         "lenders want >= 1.25x", bold=True, fill=KEY_FILL, key="dscr")
-row_calc(65, "Gross Rent Multiplier (GRM)", f"={R['price']}/{R['gpr']}", '0.00"x"')
-row_calc(66, "Break-even Occupancy",
-         f"=({R['opex']}+{R['ads']})/({R['gpr']}+{R['other_a']})", PCT,
-         "occupancy needed to cover costs", key="breakeven")
-row_calc(67, "Debt Yield", f"={R['noi']}/{R['loan']}", PCT, "NOI / loan (lender metric)")
-
-for r in range(3, 68):
-    ws.row_dimensions[r].height = max(ws.row_dimensions[r].height or 15, 15)
+# Total potential annual site revenue ---------------------------------------
+tot = arow + 2              # 30
+sec(inc, tot - 1, "TOTAL POTENTIAL ANNUAL SITE REVENUE", "A:E")
+inc[f"A{tot}"] = "Total Potential Annual Site Revenue"; inc[f"A{tot}"].font = BOLD
+calc(inc, f"E{tot}", f"=E8+D{trow}", CUR2, bold=True, fill=KEY_FILL)
+INC_TOTAL = f"'Income Detail'!E{tot}"     # referenced by Underwriting GPR
+inc[f"A{tot+1}"] = "Total sites in build"
+calc(inc, f"E{tot+1}", f"=B8+B11", CUR)
+inc[f"A{tot+2}"] = "Implied blended monthly rent / site"
+calc(inc, f"E{tot+2}", f"=E{tot}/E{tot+1}/12", CUR2)
+inc[f"A{tot+3}"] = ("Note: when Use Detailed Income Build = Y, keep the Underwriting "
+                    "Vacancy % low (credit loss only) — occupancy is already in this build.")
+inc[f"A{tot+3}"].font = NOTE
 
 # =============================================================================
-# SHEET 2 — 10-YEAR PRO FORMA & IRR
+# SHEET — UNDERWRITING (row cursor; registry R for cross-sheet refs)
+# =============================================================================
+ws = wb.create_sheet("Underwriting")
+ws.sheet_view.showGridLines = False
+ws.column_dimensions["A"].width = 38
+ws.column_dimensions["B"].width = 18
+ws.column_dimensions["C"].width = 32
+
+merge_title(ws, "A1:C1", "RV PARK UNDERWRITING ANALYSIS")
+
+def u_input(row, label, value, fmt=CUR2, note="", key=None):
+    ws[f"A{row}"] = label; ws[f"A{row}"].font = LABEL
+    c = ws[f"B{row}"]; c.value = value; c.font = INPUTF; c.fill = INPUT_FILL
+    c.number_format = fmt; c.border = BORDER; c.alignment = Alignment(horizontal="right")
+    if note: ws[f"C{row}"] = note; ws[f"C{row}"].font = NOTE
+    if key: R[key] = f"B{row}"
+
+def u_calc(row, label, formula, fmt=CUR2, note="", bold=False, fill=None, key=None):
+    ws[f"A{row}"] = label; ws[f"A{row}"].font = BOLD if bold else LABEL
+    c = ws[f"B{row}"]; c.value = formula; c.font = BOLD if bold else LABEL
+    c.number_format = fmt; c.alignment = Alignment(horizontal="right")
+    if fill: c.fill = fill
+    if note: ws[f"C{row}"] = note; ws[f"C{row}"].font = NOTE
+    if key: R[key] = f"B{row}"
+
+# header inputs
+ws["A3"]="Property Name"; ws["A3"].font=LABEL
+ws["B3"]="Enter property name"; ws["B3"].font=INPUTF; ws["B3"].fill=INPUT_FILL; ws["B3"].border=BORDER; R["name"]="B3"
+ws["A4"]="Location (City, ST)"; ws["A4"].font=LABEL
+ws["B4"]="City, ST"; ws["B4"].font=INPUTF; ws["B4"].fill=INPUT_FILL; ws["B4"].border=BORDER; R["loc"]="B4"
+ws["A5"]="Analysis Date"; ws["A5"].font=LABEL
+ws["B5"]="2026-06-26"; ws["B5"].font=INPUTF; ws["B5"].fill=INPUT_FILL; ws["B5"].border=BORDER; R["date"]="B5"
+ws["C3"]="Yellow cells = your inputs. Everything else calculates."; ws["C3"].font=NOTE
+
+sec(ws, 7, "DEAL ASSUMPTIONS")
+u_input(8,  "Number of RV Sites (pads)", 50, CUR, "total rentable pads", key="sites")
+u_input(9,  "Purchase Price", 1500000, CUR2, key="price")
+u_calc (10, "  Price per Site", "=B9/B8", CUR2, "purchase price / sites")
+u_input(11, "Avg. Monthly Rent per Site", 450, CUR2, "blended lot rent / month", key="rent")
+u_input(12, "Vacancy & Credit Loss %", 0.15, PCT, "economic vacancy", key="vac")
+u_input(13, "Other Income (monthly)", 1500, CUR2, "store, laundry, propane, fees", key="other_m")
+u_input(14, "Management Fee (% of EGI)", 0.08, PCT, "3rd-party or self-mgmt", key="mgmt_pct")
+u_input(15, "Replacement Reserves / site / yr", 100, CUR2, "capital reserve", key="res_site")
+u_input(16, "Annual Rent Growth %", 0.03, PCT, "for multi-year projection", key="rent_g")
+u_input(17, "Annual Expense Growth %", 0.025, PCT, "for multi-year projection", key="exp_g")
+u_input(18, "Use Detailed Income Build? (Y/N)", "N", '@',
+        "Y = pull GPR from Income Detail tab", key="use_detail")
+
+sec(ws, 20, "INCOME  (Year 1 Stabilized Pro Forma)")
+u_calc(21, "Gross Potential Rent (GPR)",
+       f'=IF({R["use_detail"]}="Y",{INC_TOTAL},{R["sites"]}*{R["rent"]}*12)',
+       CUR2, "auto: site mix or sites x rent", key="gpr")
+u_calc(22, "Less: Vacancy & Credit Loss", f'=-{R["gpr"]}*{R["vac"]}', CUR2, key="vacloss")
+u_calc(23, "Plus: Other Income", f'={R["other_m"]}*12', CUR2, key="other_a")
+u_calc(24, "Effective Gross Income (EGI)", f'={R["gpr"]}+{R["vacloss"]}+{R["other_a"]}',
+       CUR2, bold=True, fill=TOTAL_FILL, key="egi")
+
+sec(ws, 26, "OPERATING EXPENSES  (Year 1)")
+u_input(27, "Property Taxes", 18000, CUR2, key="tax")
+u_input(28, "Insurance", 9000, CUR2, key="ins")
+u_input(29, "Utilities (water/sewer/trash/elec)", 36000, CUR2, "owner-paid portion", key="util")
+u_input(30, "Repairs & Maintenance", 15000, CUR2, key="rm")
+u_input(31, "Payroll / Onsite Manager", 24000, CUR2, key="pay")
+u_input(32, "Marketing, Admin, Office", 8000, CUR2, key="admin")
+u_calc (33, "Management Fee", f'={R["mgmt_pct"]}*{R["egi"]}', CUR2, "= mgmt % x EGI", key="mgmt")
+u_calc (34, "Replacement Reserves", f'={R["res_site"]}*{R["sites"]}', CUR2, key="reserves")
+u_calc (35, "Total Operating Expenses", "=SUM(B27:B34)", CUR2, bold=True, fill=TOTAL_FILL, key="opex")
+u_calc (36, "Operating Expense Ratio", f'={R["opex"]}/{R["egi"]}', PCT, "OpEx / EGI", key="oer")
+u_calc (37, "Expenses per Site", f'={R["opex"]}/{R["sites"]}', CUR2)
+
+sec(ws, 39, "NET OPERATING INCOME")
+u_calc(40, "Net Operating Income (NOI)", f'={R["egi"]}-{R["opex"]}', CUR2,
+       bold=True, fill=KEY_FILL, key="noi")
+u_calc(41, "NOI per Site", f'={R["noi"]}/{R["sites"]}', CUR2)
+
+sec(ws, 43, "FINANCING & EXIT ASSUMPTIONS")
+u_input(44, "Loan-to-Value (LTV) %", 0.70, PCT, key="ltv")
+u_input(45, "Interest Rate %", 0.07, PCT2, "annual", key="intr")
+u_input(46, "Amortization (years)", 25, CUR, key="amort")
+u_input(47, "Closing Costs %", 0.03, PCT, "of purchase price", key="close_pct")
+u_input(48, "Initial CapEx / Rehab", 50000, CUR2, "day-one improvements", key="capex")
+u_input(49, "Hold Period (years)", 5, CUR, "1-10", key="hold")
+u_input(50, "Exit Cap Rate %", 0.085, PCT2, "for sale value", key="exitcap")
+u_input(51, "Selling Costs %", 0.05, PCT, "of sale price", key="sellcost")
+
+sec(ws, 53, "DEBT & EQUITY")
+u_calc(54, "Loan Amount", f'={R["price"]}*{R["ltv"]}', CUR2, key="loan")
+u_calc(55, "Down Payment (Equity)", f'={R["price"]}-{R["loan"]}', CUR2, key="down")
+u_calc(56, "Closing Costs", f'={R["price"]}*{R["close_pct"]}', CUR2, key="close")
+u_calc(57, "Total Cash Required", f'={R["down"]}+{R["close"]}+{R["capex"]}',
+       CUR2, bold=True, fill=TOTAL_FILL, key="cash")
+u_calc(58, "Monthly Debt Payment", f'=PMT({R["intr"]}/12,{R["amort"]}*12,-{R["loan"]})', CUR2, key="pmt_m")
+u_calc(59, "Annual Debt Service", f'={R["pmt_m"]}*12', CUR2, bold=True, key="ads")
+
+sec(ws, 61, "KEY RETURN METRICS  (Year 1)")
+u_calc(62, "Going-in Cap Rate", f'={R["noi"]}/{R["price"]}', PCT, "NOI / Price",
+       bold=True, fill=KEY_FILL, key="caprate")
+u_calc(63, "Cash Flow Before Tax (CFBT)", f'={R["noi"]}-{R["ads"]}', CUR2,
+       bold=True, fill=KEY_FILL, key="cfbt")
+u_calc(64, "Cash-on-Cash Return", f'={R["cfbt"]}/{R["cash"]}', PCT, "CFBT / cash invested",
+       bold=True, fill=KEY_FILL, key="coc")
+u_calc(65, "Debt Service Coverage (DSCR)", f'={R["noi"]}/{R["ads"]}', MULT,
+       "lenders want >= 1.25x", bold=True, fill=KEY_FILL, key="dscr")
+u_calc(66, "Gross Rent Multiplier (GRM)", f'={R["price"]}/{R["gpr"]}', '0.00"x"')
+u_calc(67, "Break-even Occupancy", f'=({R["opex"]}+{R["ads"]})/({R["gpr"]}+{R["other_a"]})', PCT,
+       "occupancy to cover costs", key="breakeven")
+u_calc(68, "Debt Yield", f'={R["noi"]}/{R["loan"]}', PCT, "NOI / loan (lender metric)")
+
+# =============================================================================
+# SHEET — ACTUALS vs PRO FORMA
+# =============================================================================
+av = wb.create_sheet("Actuals vs Pro Forma")
+av.sheet_view.showGridLines = False
+av.column_dimensions["A"].width = 36
+for col in "BCD": av.column_dimensions[col].width = 18
+merge_title(av, "A1:D1", "IN-PLACE ACTUALS  vs  STABILIZED PRO FORMA")
+av["A2"] = ("Left column = what the seller is doing TODAY (from their T-12 P&L). Right = your stabilized plan "
+            "(pulled from Underwriting). The gap is your value-add.")
+av["A2"].font = NOTE
+U = "Underwriting!"
+av["A4"]="Line Item"; av["B4"]="In-Place / Actuals"; av["C4"]="Stabilized Pro Forma"; av["D4"]="Variance"
+for cl in "ABCD": av[f"{cl}4"].font=SECTION; av[f"{cl}4"].fill=SECTION_FILL; av[f"{cl}4"].alignment=Alignment(horizontal="center")
+
+def av_row(row, label, actual_val, stab_formula, fmt=CUR2, isinput=True, bold=False, fill=None):
+    av[f"A{row}"]=label; av[f"A{row}"].font=BOLD if bold else LABEL
+    a=av[f"B{row}"]
+    if isinput:
+        a.value=actual_val; a.font=INPUTF; a.fill=INPUT_FILL; a.border=BORDER
+    else:
+        a.value=actual_val; a.font=BOLD if bold else LABEL
+        if fill: a.fill=fill
+    a.number_format=fmt; a.alignment=Alignment(horizontal="right")
+    c=av[f"C{row}"]; c.value=stab_formula; c.font=BOLD if bold else LABEL
+    c.number_format=fmt; c.alignment=Alignment(horizontal="right")
+    if fill: c.fill=fill
+    d=av[f"D{row}"]
+    if fmt!=PCT and fmt!=MULT:
+        d.value=f"=C{row}-B{row}"; d.number_format=CUR2
+    d.font=LABEL; d.alignment=Alignment(horizontal="right")
+
+av_row(5,  "Gross Potential Rent", 240000, f"={U}{R['gpr']}")
+av_row(6,  "Vacancy & Credit Loss", -48000, f"={U}{R['vacloss']}")
+av_row(7,  "Other Income", 12000, f"={U}{R['other_a']}")
+av_row(8,  "Effective Gross Income", "=B5+B6+B7", f"={U}{R['egi']}", isinput=False, bold=True, fill=TOTAL_FILL)
+av_row(9,  "Property Taxes", 12000, f"={U}{R['tax']}")
+av_row(10, "Insurance", 8000, f"={U}{R['ins']}")
+av_row(11, "Utilities", 38000, f"={U}{R['util']}")
+av_row(12, "Repairs & Maintenance", 20000, f"={U}{R['rm']}")
+av_row(13, "Payroll / Onsite Mgr", 20000, f"={U}{R['pay']}")
+av_row(14, "Marketing, Admin, Office", 6000, f"={U}{R['admin']}")
+av_row(15, "Management Fee", 0, f"={U}{R['mgmt']}")
+av_row(16, "Replacement Reserves", 0, f"={U}{R['reserves']}")
+av_row(17, "Total Operating Expenses", "=SUM(B9:B16)", f"={U}{R['opex']}", isinput=False, bold=True, fill=TOTAL_FILL)
+av_row(18, "Net Operating Income", "=B8-B17", f"={U}{R['noi']}", isinput=False, bold=True, fill=KEY_FILL)
+av["A20"]="Cap Rate at Purchase Price"; av["A20"].font=BOLD
+av["B20"]=f"=B18/{U}{R['price']}"; av["B20"].number_format=PCT; av["B20"].font=BOLD; av["B20"].fill=KEY_FILL; av["B20"].alignment=Alignment(horizontal="right")
+av["C20"]=f"={U}{R['caprate']}"; av["C20"].number_format=PCT; av["C20"].font=BOLD; av["C20"].fill=KEY_FILL; av["C20"].alignment=Alignment(horizontal="right")
+av["A22"]="In-place cap rate = what you're actually buying today. Underwrite to this first, the pro forma second."
+av["A22"].font=NOTE
+
+# =============================================================================
+# SHEET — PRO FORMA & RETURNS
 # =============================================================================
 pf = wb.create_sheet("Pro Forma & Returns")
 pf.sheet_view.showGridLines = False
 pf.column_dimensions["A"].width = 34
-for i in range(11):  # B..L for year 0..10
-    pf.column_dimensions[get_column_letter(2 + i)].width = 13
+for i in range(11):
+    pf.column_dimensions[get_column_letter(2+i)].width = 13
+merge_title(pf, "A1:L1", "10-YEAR PRO FORMA & RETURNS")
+def uref(k): return U + R[k]
 
-pf.merge_cells("A1:L1")
-c = pf["A1"]; c.value = "10-YEAR PRO FORMA & RETURNS"; c.font = TITLE; c.fill = TITLE_FILL
-c.alignment = Alignment(horizontal="center", vertical="center")
-pf.row_dimensions[1].height = 26
-
-U = "Underwriting!"
-def uref(key): return U + R[key]
-
-# header row 3: Year 0..10
-pf["A3"] = "Year"; pf["A3"].font = BOLD; pf["A3"].fill = SECTION_FILL; pf["A3"].font = SECTION
-for y in range(0, 11):
-    col = get_column_letter(2 + y)
-    cc = pf[f"{col}3"]; cc.value = y; cc.font = SECTION; cc.fill = SECTION_FILL
-    cc.alignment = Alignment(horizontal="center")
+pf["A3"]="Year"; pf["A3"].font=SECTION; pf["A3"].fill=SECTION_FILL
+for y in range(0,11):
+    col=get_column_letter(2+y); cc=pf[f"{col}3"]; cc.value=y
+    cc.font=SECTION; cc.fill=SECTION_FILL; cc.alignment=Alignment(horizontal="center")
 
 def pf_row(row, label, fn, fmt=CUR2, bold=False, fill=None):
-    pf[f"A{row}"] = label
-    pf[f"A{row}"].font = BOLD if bold else LABEL
-    for y in range(0, 11):
-        col = get_column_letter(2 + y)
-        cell = pf[f"{col}{row}"]
-        v = fn(y, col)
-        if v is None:
-            continue
-        cell.value = v
-        cell.number_format = fmt
-        cell.font = BOLD if bold else LABEL
-        cell.alignment = Alignment(horizontal="right")
-        if fill: cell.fill = fill
+    pf[f"A{row}"]=label; pf[f"A{row}"].font=BOLD if bold else LABEL
+    for y in range(0,11):
+        col=get_column_letter(2+y); v=fn(y,col)
+        if v is None: continue
+        cell=pf[f"{col}{row}"]; cell.value=v; cell.number_format=fmt
+        cell.font=BOLD if bold else LABEL; cell.alignment=Alignment(horizontal="right")
+        if fill: cell.fill=fill
 
-# growth factor helper for year y (operating year y, y>=1)
-def gpr_y(y, col):
-    if y == 0: return None
-    return f"={uref('gpr')}*(1+{uref('rent_g')})^{y-1}"
-pf_row(5, "Gross Potential Rent", gpr_y)
-
-def vac_y(y, col):
-    if y == 0: return None
-    return f"=-{col}5*{uref('vac')}"
-pf_row(6, "Less: Vacancy & Credit Loss", vac_y)
-
-def other_y(y, col):
-    if y == 0: return None
-    return f"={uref('other_a')}*(1+{uref('rent_g')})^{y-1}"
-pf_row(7, "Other Income", other_y)
-
-def egi_y(y, col):
-    if y == 0: return None
-    return f"={col}5+{col}6+{col}7"
-pf_row(8, "Effective Gross Income", egi_y, bold=True, fill=TOTAL_FILL)
-
-# operating expenses: base opex grows, but management fee tracks EGI; keep simple: total opex grows w/ expense growth
-def opex_y(y, col):
-    if y == 0: return None
-    return f"={uref('opex')}*(1+{uref('exp_g')})^{y-1}"
-pf_row(9, "Operating Expenses", opex_y)
-
-def noi_y(y, col):
-    if y == 0: return None
-    return f"={col}8-{col}9"
-pf_row(10, "Net Operating Income", noi_y, bold=True, fill=KEY_FILL)
-
-def ads_y(y, col):
-    if y == 0: return None
-    return f"=IF({y}<={uref('hold')},{uref('ads')},0)"
-pf_row(11, "Annual Debt Service", ads_y)
-
-# loan balance at end of year y (algebraic): L*(1+i)^k - PMT*((1+i)^k-1)/i
-def bal_y(y, col):
-    i = f"({uref('intr')}/12)"
-    pmt = f"(-{uref('pmt_m')})"  # PMT returns negative; flip to positive payment
-    # Underwriting PMT was computed with -loan so result positive; pmt_m is positive already
-    pmt = uref('pmt_m')
-    k = f"MIN({y},{uref('amort')})*12"
-    L = uref('loan')
-    if y == 0:
-        return f"={L}"
-    return (f"={L}*(1+{i})^({k})-{pmt}*(((1+{i})^({k})-1)/{i})")
-pf_row(12, "Loan Balance (end of yr)", bal_y, fmt=CUR2)
-
-# operating cash flow before tax, only during hold
-def cfo_y(y, col):
-    if y == 0: return None
-    return f"=IF({y}<={uref('hold')},{col}10-{col}11,0)"
-pf_row(13, "Operating Cash Flow", cfo_y, bold=True)
-
-# reversion (sale) in the hold year: sale price = next-year NOI / exit cap
-def sale_y(y, col):
-    if y == 0: return None
-    nextcol = get_column_letter(2 + y + 1) if y < 10 else None
-    # forward NOI = this year's NOI grown one more year
-    fwd = f"{col}10*(1+{uref('exp_g')})"  # approx forward NOI growth
-    saleprice = f"({col}10*(1+{uref('rent_g')}))/{uref('exitcap')}"
-    net = f"({saleprice})*(1-{uref('sellcost')})-{col}12"
+pf_row(5, "Gross Potential Rent",
+       lambda y,c: None if y==0 else f"={uref('gpr')}*(1+{uref('rent_g')})^{y-1}")
+pf_row(6, "Less: Vacancy & Credit Loss",
+       lambda y,c: None if y==0 else f"=-{c}5*{uref('vac')}")
+pf_row(7, "Other Income",
+       lambda y,c: None if y==0 else f"={uref('other_a')}*(1+{uref('rent_g')})^{y-1}")
+pf_row(8, "Effective Gross Income",
+       lambda y,c: None if y==0 else f"={c}5+{c}6+{c}7", bold=True, fill=TOTAL_FILL)
+pf_row(9, "Operating Expenses",
+       lambda y,c: None if y==0 else f"={uref('opex')}*(1+{uref('exp_g')})^{y-1}")
+pf_row(10, "Net Operating Income",
+       lambda y,c: None if y==0 else f"={c}8-{c}9", bold=True, fill=KEY_FILL)
+pf_row(11, "Annual Debt Service",
+       lambda y,c: None if y==0 else f"=IF({y}<={uref('hold')},{uref('ads')},0)")
+def bal_y(y,c):
+    if y==0: return f"={uref('loan')}"
+    i=f"({uref('intr')}/12)"; k=f"MIN({y},{uref('amort')})*12"
+    return f"={uref('loan')}*(1+{i})^({k})-{uref('pmt_m')}*(((1+{i})^({k})-1)/{i})"
+pf_row(12, "Loan Balance (end of yr)", bal_y)
+pf_row(13, "Operating Cash Flow",
+       lambda y,c: None if y==0 else f"=IF({y}<={uref('hold')},{c}10-{c}11,0)", bold=True)
+def sale_y(y,c):
+    if y==0: return None
+    saleprice=f"({c}10*(1+{uref('rent_g')}))/{uref('exitcap')}"
+    net=f"({saleprice})*(1-{uref('sellcost')})-{c}12"
     return f"=IF({y}={uref('hold')},{net},0)"
 pf_row(14, "Net Sale Proceeds (reversion)", sale_y, fill=TOTAL_FILL)
+pf_row(15, "Total Cash Flow (for IRR)",
+       lambda y,c: f"=-{uref('cash')}" if y==0 else f"={c}13+{c}14",
+       bold=True, fill=KEY_FILL)
 
-# total cash flow for IRR: year 0 = -total cash; years = operating CF + reversion
-def cft_y(y, col):
-    if y == 0:
-        return f"=-{uref('cash')}"
-    return f"={col}13+{col}14"
-pf_row(15, "Total Cash Flow (for IRR)", cft_y, bold=True, fill=KEY_FILL)
-
-pf.row_dimensions[3].height = 18
-
-# ----- returns summary block -------------------------------------------------
-pf["A17"] = "RETURN SUMMARY (over hold period)";
-pf.merge_cells("A17:D17")
-pf["A17"].font = SECTION; pf["A17"].fill = SECTION_FILL
-pf["A17"].alignment = Alignment(horizontal="left", indent=1)
-
+sec(pf, 17, "RETURN SUMMARY (over hold period)", "A:D")
 def summ(row, label, formula, fmt, note=""):
-    pf[f"A{row}"] = label; pf[f"A{row}"].font = BOLD
-    cc = pf[f"B{row}"]; cc.value = formula; cc.number_format = fmt
-    cc.font = BOLD; cc.fill = KEY_FILL; cc.alignment = Alignment(horizontal="right")
-    if note:
-        pf[f"C{row}"] = note; pf[f"C{row}"].font = NOTE
-
-# IRR over B15:L15 (years 0..10); trailing zeros after sale are fine
+    pf[f"A{row}"]=label; pf[f"A{row}"].font=BOLD
+    c=pf[f"B{row}"]; c.value=formula; c.number_format=fmt; c.font=BOLD
+    c.fill=KEY_FILL; c.alignment=Alignment(horizontal="right")
+    if note: pf[f"C{row}"]=note; pf[f"C{row}"].font=NOTE
 summ(18, "Levered IRR", "=IRR(B15:L15)", PCT, "internal rate of return on equity")
-summ(19, "Equity Multiple", "=SUM(C13:L13)/-B15 + (SUMIF... )", MULT)
-# proper equity multiple: (sum operating CF + reversion) / initial equity
-pf["B19"].value = "=(SUM(C13:L13)+SUM(C14:L14))/-B15"
-summ(20, "Avg. Cash-on-Cash", f"=AVERAGEIF(C11:L11,\">0\",C13:L13)/{U+R['cash']}", PCT,
+summ(19, "Equity Multiple", "=(SUM(C13:L13)+SUM(C14:L14))/-B15", MULT, "total cash returned / equity")
+summ(20, "Avg. Cash-on-Cash", f"=AVERAGEIF(C11:L11,\">0\",C13:L13)/{uref('cash')}", PCT,
      "avg operating CF / equity during hold")
-summ(21, "Year-1 Cash-on-Cash", f"={U+R['coc']}", PCT)
-summ(22, "Going-in Cap Rate", f"={U+R['caprate']}", PCT)
+summ(21, "Year-1 Cash-on-Cash", f"={uref('coc')}", PCT)
+summ(22, "Going-in Cap Rate", f"={uref('caprate')}", PCT)
 summ(23, "Total Profit", "=SUM(C13:L13)+SUM(C14:L14)+B15", CUR2, "all cash flows incl. equity out")
 
 # =============================================================================
-# SHEET 3 — INSTRUCTIONS
+# SHEET — SENSITIVITY
 # =============================================================================
-ins = wb.create_sheet("Read Me", 0)
-ins.sheet_view.showGridLines = False
-ins.column_dimensions["A"].width = 100
-ins.merge_cells("A1:A1")
-ins["A1"] = "RV PARK UNDERWRITING — HOW TO USE"
-ins["A1"].font = TITLE; ins["A1"].fill = TITLE_FILL
-ins["A1"].alignment = Alignment(horizontal="left", vertical="center", indent=1)
-ins.row_dimensions[1].height = 26
+sn = wb.create_sheet("Sensitivity")
+sn.sheet_view.showGridLines = False
+sn.column_dimensions["A"].width = 22
+for col in "BCDEF": sn.column_dimensions[col].width = 13
+merge_title(sn, "A1:F1", "SENSITIVITY TABLES")
+sn["A2"]="Rows = purchase price scenarios. Columns = interest rate. Cells recompute live from Underwriting inputs."
+sn["A2"].font=NOTE
 
-lines = [
-    "",
-    "WHAT THIS IS",
-    "A deal screening model for buying RV parks. Plug in a property's numbers and it tells you the cap rate,",
-    "cash flow, cash-on-cash return, DSCR, and a 5-10 year IRR so you can decide if a deal works.",
-    "",
-    "HOW TO USE IT",
-    "1. Go to the 'Underwriting' tab.",
-    "2. Fill in every YELLOW cell with the property's real numbers (from the seller's P&L / rent roll).",
-    "3. Everything that isn't yellow calculates automatically — do not type over formulas.",
-    "4. Check the green 'KEY RETURN METRICS' box for the headline numbers.",
-    "5. Open the 'Pro Forma & Returns' tab for the multi-year projection and IRR.",
-    "",
-    "THE INPUTS THAT MATTER MOST",
-    "  • Number of sites, purchase price, and average monthly lot rent drive the income.",
-    "  • Vacancy & Credit Loss — be honest; verify against the actual rent roll, not the pro forma.",
-    "  • Operating expenses — get the seller's trailing-12 P&L. Watch for understated taxes (they reset",
-    "    on sale) and missing management/payroll/reserves.",
-    "  • Financing — LTV, interest rate, amortization. Update to your actual lender quote.",
-    "  • Exit Cap Rate — usually set 0.5%-1.0% HIGHER than the going-in cap to be conservative.",
-    "",
-    "RULES OF THUMB (screening, not gospel)",
-    "  • Cap rate: 8%+ is typical for RV parks; lower means you're paying up.",
-    "  • DSCR: lenders want 1.25x or better. Below 1.20x is a financing risk.",
-    "  • Cash-on-Cash: 8-12%+ year one is a healthy target.",
-    "  • Expense ratio: 35-50% of EGI is normal; under 30% usually means expenses are understated.",
-    "  • Always underwrite to ACTUALS first, then to your stabilized pro forma separately.",
-    "",
-    "WATCH-OUTS SPECIFIC TO RV PARKS",
-    "  • Transient vs. annual/monthly mix — transient income is seasonal and far less stable.",
-    "  • Utility metering — are sites individually metered or is the owner eating utilities?",
-    "  • Infrastructure age — septic/sewer, electric pedestals (30/50 amp), and water lines are big CapEx.",
-    "  • Flood zone, seasonal closures, and percentage of park-owned rentals vs. tenant-owned rigs.",
-    "",
-    "This is a screening tool, not investment advice. Verify every number and consult professionals.",
+price_factors=[0.90,0.95,1.00,1.05,1.10]
+rate_deltas=[-0.01,-0.005,0,0.005,0.01]
+
+def build_grid(top, title_text, metric, fmt):
+    sec(sn, top, title_text, "A:F")
+    # corner + column headers (interest rate)
+    hdr=top+1
+    sn[f"A{hdr}"]="Price \\ Rate"; sn[f"A{hdr}"].font=BOLD; sn[f"A{hdr}"].alignment=Alignment(horizontal="center")
+    sn[f"A{hdr}"].fill=TOTAL_FILL
+    for j,d in enumerate(rate_deltas):
+        col=get_column_letter(2+j); c=sn[f"{col}{hdr}"]
+        c.value=f"={uref('intr')}+{d}"; c.number_format=PCT2; c.font=BOLD
+        c.fill=TOTAL_FILL; c.alignment=Alignment(horizontal="center")
+    # rows
+    for i,f in enumerate(price_factors):
+        row=hdr+1+i; c=sn[f"A{row}"]
+        c.value=f"={uref('price')}*{f}"; c.number_format=CUR2; c.font=BOLD
+        c.fill=TOTAL_FILL; c.alignment=Alignment(horizontal="right")
+        for j,d in enumerate(rate_deltas):
+            col=get_column_letter(2+j); cell=sn[f"{col}{row}"]
+            P=f"$A{row}"; r=f"{col}${hdr}"
+            loan=f"({P}*{uref('ltv')})"
+            pmt=f"({loan}*({r}/12)/(1-(1+{r}/12)^(-{uref('amort')}*12)))"
+            ads=f"({pmt}*12)"
+            cash=f"({P}*(1-{uref('ltv')})+{P}*{uref('close_pct')}+{uref('capex')})"
+            if metric=="coc":
+                cell.value=f"=({uref('noi')}-{ads})/{cash}"
+            elif metric=="dscr":
+                cell.value=f"={uref('noi')}/{ads}"
+            cell.number_format=fmt; cell.alignment=Alignment(horizontal="right")
+    return hdr+1+len(price_factors)
+
+end1=build_grid(4, "CASH-ON-CASH RETURN  (Year 1)", "coc", PCT)
+end2=build_grid(end1+2, "DEBT SERVICE COVERAGE (DSCR)", "dscr", MULT)
+sn[f"A{end2+1}"]="NOTE: NOI is held constant; these tables isolate price & financing risk."
+sn[f"A{end2+1}"].font=NOTE
+
+# =============================================================================
+# SHEET — DEAL SUMMARY (one-page, lender-friendly)
+# =============================================================================
+ds = wb.create_sheet("Deal Summary")
+ds.sheet_view.showGridLines = False
+ds.column_dimensions["A"].width = 30
+ds.column_dimensions["B"].width = 22
+ds.column_dimensions["C"].width = 30
+ds.column_dimensions["D"].width = 22
+merge_title(ds, "A1:D1", "DEAL SUMMARY")
+PFR = "'Pro Forma & Returns'!"
+
+ds.merge_cells("A2:D2")
+ds["A2"]=f'=Underwriting!{R["name"]}&"  —  "&Underwriting!{R["loc"]}'
+ds["A2"].font=Font(size=13, bold=True, color="1F4E78"); ds["A2"].alignment=Alignment(horizontal="center")
+
+def kv(cell_label, cell_val, label, formula, fmt, big=False, fill=None):
+    l=ds[cell_label]; l.value=label; l.font=BOLD
+    v=ds[cell_val]; v.value=formula; v.number_format=fmt
+    v.font=BIG if big else BOLD; v.alignment=Alignment(horizontal="right")
+    if fill: v.fill=fill; l.fill=fill
+
+sec(ds, 4, "THE ASSET", "A:D")
+kv("A5","B5","Number of Sites", f"=Underwriting!{R['sites']}", CUR)
+kv("C5","D5","Purchase Price", f"=Underwriting!{R['price']}", CUR2)
+kv("A6","B6","Price per Site", f"=Underwriting!{R['price']}/Underwriting!{R['sites']}", CUR2)
+kv("C6","D6","Year-1 NOI", f"=Underwriting!{R['noi']}", CUR2)
+
+sec(ds, 8, "FINANCING", "A:D")
+kv("A9","B9","Loan Amount", f"=Underwriting!{R['loan']}", CUR2)
+kv("C9","D9","Down Payment (Equity)", f"=Underwriting!{R['down']}", CUR2)
+kv("A10","B10","Interest Rate", f"=Underwriting!{R['intr']}", PCT2)
+kv("C10","D10","Amortization (yrs)", f"=Underwriting!{R['amort']}", CUR)
+kv("A11","B11","Annual Debt Service", f"=Underwriting!{R['ads']}", CUR2)
+kv("C11","D11","Total Cash Required", f"=Underwriting!{R['cash']}", CUR2)
+
+sec(ds, 13, "RETURNS — THE HEADLINE NUMBERS", "A:D")
+kv("A14","B14","Going-in Cap Rate", f"=Underwriting!{R['caprate']}", PCT, big=True, fill=KEY_FILL)
+kv("C14","D14","DSCR", f"=Underwriting!{R['dscr']}", MULT, big=True, fill=KEY_FILL)
+kv("A16","B16","Cash-on-Cash (Yr 1)", f"=Underwriting!{R['coc']}", PCT, big=True, fill=KEY_FILL)
+kv("C16","D16","Debt Yield", f"=Underwriting!{R['noi']}/Underwriting!{R['loan']}", PCT, big=True, fill=KEY_FILL)
+kv("A18","B18","Levered IRR", f"={PFR}B18", PCT, big=True, fill=KEY_FILL)
+kv("C18","D18","Equity Multiple", f"={PFR}B19", MULT, big=True, fill=KEY_FILL)
+
+sec(ds, 20, "EXIT ASSUMPTIONS", "A:D")
+kv("A21","B21","Hold Period (yrs)", f"=Underwriting!{R['hold']}", CUR)
+kv("C21","D21","Exit Cap Rate", f"=Underwriting!{R['exitcap']}", PCT2)
+kv("A22","B22","Annual Rent Growth", f"=Underwriting!{R['rent_g']}", PCT)
+kv("C22","D22","Annual Expense Growth", f"=Underwriting!{R['exp_g']}", PCT)
+
+ds.merge_cells("A24:D24")
+ds["A24"]="Screening tool only — not investment advice. Verify every figure against the seller's T-12 and rent roll."
+ds["A24"].font=NOTE
+
+# =============================================================================
+# SHEET — READ ME (insert first)
+# =============================================================================
+rm = wb.create_sheet("Read Me", 0)
+rm.sheet_view.showGridLines=False
+rm.column_dimensions["A"].width=104
+rm["A1"]="RV PARK UNDERWRITING — HOW TO USE"
+rm["A1"].font=TITLE; rm["A1"].fill=TITLE_FILL
+rm["A1"].alignment=Alignment(horizontal="left", vertical="center", indent=1)
+rm.row_dimensions[1].height=26
+lines=[
+ "",
+ "WHAT THIS IS",
+ "A deal-screening model for buying RV parks. Plug in a property's numbers and it returns the cap rate,",
+ "cash flow, cash-on-cash, DSCR, debt yield, and a 5-10 year IRR so you can decide fast if a deal works.",
+ "",
+ "THE TABS (left to right)",
+ "  • Deal Summary  — one-page headline view; print/screenshot this for lenders & partners.",
+ "  • Underwriting  — the engine. Fill the YELLOW cells; everything else is a formula.",
+ "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
+ "  • Actuals vs Pro Forma — seller's CURRENT numbers vs your stabilized plan, side by side.",
+ "  • Pro Forma & Returns — 10-year projection, sale reversion, IRR & equity multiple.",
+ "  • Sensitivity   — how Cash-on-Cash & DSCR move with purchase price and interest rate.",
+ "",
+ "HOW TO USE IT",
+ "1. Start on 'Underwriting'. Fill every yellow cell from the seller's P&L and rent roll.",
+ "2. (Optional) Use 'Income Detail' for a seasonal park, then set 'Use Detailed Income Build? = Y'.",
+ "3. Put the seller's CURRENT numbers into the left column of 'Actuals vs Pro Forma' to see the gap.",
+ "4. Read the headline numbers on 'Deal Summary'; stress-test on 'Sensitivity'.",
+ "",
+ "RULES OF THUMB (screening, not gospel)",
+ "  • Cap rate: 8%+ is typical for RV parks; lower means you're paying up.",
+ "  • DSCR: lenders want 1.25x+. Below 1.20x is a financing risk.",
+ "  • Cash-on-Cash: 8-12%+ in year one is a healthy target.",
+ "  • Expense ratio: 35-50% of EGI is normal; under 30% usually means expenses are understated.",
+ "  • Set your Exit Cap 0.5-1.0% HIGHER than the going-in cap to stay conservative.",
+ "",
+ "RV-PARK-SPECIFIC WATCH-OUTS",
+ "  • Transient/nightly income is seasonal and far less stable than annual/monthly tenants.",
+ "  • Utility metering — are sites individually metered, or is the owner eating utilities?",
+ "  • Infrastructure age — septic/sewer, electric pedestals (30/50 amp), water lines = big CapEx.",
+ "  • Flood zone, seasonal closures, and % of park-owned rentals vs. tenant-owned rigs.",
+ "  • Property taxes usually RESET on sale — don't trust the seller's current tax line.",
+ "",
+ "This is a screening tool, not investment advice. Verify every number and consult professionals.",
 ]
-r = 2
+r=2
 for ln in lines:
-    ins[f"A{r}"] = ln
+    rm[f"A{r}"]=ln
     if ln.isupper() and ln.strip() and not ln.startswith(" "):
-        ins[f"A{r}"].font = Font(bold=True, size=12, color="1F4E78")
+        rm[f"A{r}"].font=Font(bold=True, size=12, color="1F4E78")
     else:
-        ins[f"A{r}"].font = Font(size=11)
-    r += 1
+        rm[f"A{r}"].font=Font(size=11)
+    r+=1
+
+# ---- tab order --------------------------------------------------------------
+order=["Read Me","Deal Summary","Underwriting","Income Detail",
+       "Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity"]
+wb._sheets.sort(key=lambda s: order.index(s.title))
+wb.active = 0
 
 wb.save("RV_Park_Underwriting.xlsx")
 print("Saved RV_Park_Underwriting.xlsx")
+print("Tabs:", [s.title for s in wb._sheets])
