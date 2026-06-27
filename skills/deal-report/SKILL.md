@@ -10,7 +10,7 @@ min_tier: gold
 ## Overview
 
 Turns a filled `RV_Park_Underwriting.xlsx` into a **branded one-page PDF** and a
-**PowerPoint deck** in AJ Kukra's report style: 5 key metrics, property snapshot,
+**PowerPoint deck** in Linda's report style: 5 key metrics, property snapshot,
 normalized-vs-seller NOI, the offer comparison with the MAO, red flags, and
 value-add upside. The report engine **recomputes every metric in Python** (Excel
 formulas aren't evaluated by the reader), so the output is correct without opening

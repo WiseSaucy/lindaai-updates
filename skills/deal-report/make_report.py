@@ -3,7 +3,7 @@
 LindaAI — RV Park deal report generator.
 
 Reads a filled RV_Park_Underwriting workbook, RECOMPUTES every metric in Python
-(openpyxl does not evaluate Excel formulas), and renders AJ Kukra-style reports:
+(openpyxl does not evaluate Excel formulas), and renders Linda-style reports:
 
   • One-page PDF  (reportlab)  — offer summary, 5 key metrics, snapshot,
     normalized vs seller, offer comparison, red flags, value-add.
@@ -216,7 +216,7 @@ def compute(wb):
                     else ("CONDITIONAL" if (d["dscr"] >= 1.35 or d["coc"] >= 0.10) else "NO-GO"))
     flags = []
     if "norm" in d and d["norm"]["seller_oer"] and d["norm"]["seller_oer"] < 0.30:
-        flags.append(f"Seller expense ratio {pct(d['norm']['seller_oer'])} is under 30% — NOI likely inflated (AJ: 'fiction').")
+        flags.append(f"Seller expense ratio {pct(d['norm']['seller_oer'])} is under 30% — NOI likely inflated (Linda: 'fiction').")
     if d["dscr"] < 1.35:
         flags.append(f"DSCR {mult(d['dscr'])} is below the 1.35x floor — financing risk.")
     if d["coc"] < 0.10:
@@ -366,7 +366,7 @@ def render_pdf(d, path, logo=None):
 
     c.setFillColor(colors.HexColor("#999999")); c.setFont("Helvetica-Oblique", 7.5)
     c.drawString(m, 0.4 * inch, "© 2026 Wise Certified Home Buyers  ·  Screening tool, not investment advice  "
-                               "·  Framework: AJ Kukra, RV Park Profit Blueprint  ·  Built with LindaAI.")
+                               "·  Built with LindaAI.")
     c.showPage(); c.save()
 
 
@@ -427,9 +427,9 @@ def render_pptx(d, path, logo=None):
     s = slide("The 5 Key Metrics")
     bullets(s, [f"NOI:  {money(d['noi'])}   ({money(d['noi_per_site'])}/site)",
                 f"Cap Rate:  {pct(d['caprate'])}",
-                f"DSCR:  {mult(d['dscr'])}   (AJ floor 1.35x)",
+                f"DSCR:  {mult(d['dscr'])}   (Linda floor 1.35x)",
                 f"Net Profit (cash flow):  {money(d['cfbt'])}",
-                f"Cash-on-Cash:  {pct(d['coc'])}   (AJ target 10%)",
+                f"Cash-on-Cash:  {pct(d['coc'])}   (Linda target 10%)",
                 f"5-yr IRR:  {pct(d['irr']) if d.get('irr') is not None else '—'}   ·   Equity Multiple:  {mult(d['equity_multiple'])}"], size=20)
 
     # 3 — normalized vs seller
@@ -440,7 +440,7 @@ def render_pptx(d, path, logo=None):
                     f"NOI Haircut:  {money(n['haircut'])}",
                     f"Overpayment Risk:  {money(n['overpay'])}",
                     "",
-                    "AJ's adjustments: management 10% · R&M 5% · capex 3% · taxes +20%."], size=20)
+                    "Linda's adjustments: management 10% · R&M 5% · capex 3% · taxes +20%."], size=20)
 
     # 4 — offer comparison
     if "offers" in d:

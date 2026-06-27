@@ -7,10 +7,10 @@ it into the RV_Park_Underwriting.xlsx template:
 
   • Property basics, income and financing  -> Underwriting tab
   • Seller's REPORTED expenses              -> Normalization tab (seller column)
-  • NORMALIZED expenses (AJ's 4 rules)       -> Underwriting tab (so NOI, the
+  • NORMALIZED expenses (Linda's 4 rules)       -> Underwriting tab (so NOI, the
     Deal Scorecard, and Offer Structures all reflect YOUR numbers, not theirs)
 
-AJ's normalization rules (overridable in the JSON's "normalization" block):
+Linda's normalization rules (overridable in the JSON's "normalization" block):
   management -> >= 10% of EGI · repairs -> >= 5% of EGI · capex -> >= 3% of EGI
   · property taxes -> +20%
 
@@ -87,7 +87,7 @@ def main():
     check_labels(uw, U_CHECK, "Underwriting")
     check_labels(nm, N_CHECK, "Normalization")
 
-    # ---- normalization rules (AJ defaults) ----
+    # ---- normalization rules (Linda defaults) ----
     mgmt_pct = num(d, "normalization", "mgmt_pct", default=0.10)
     rm_pct   = num(d, "normalization", "rm_pct",   default=0.05)
     capex_pct= num(d, "normalization", "capex_pct",default=0.03)
@@ -99,7 +99,7 @@ def main():
     gpr     = num(d, "income", "annual_site_rent")       # gross potential site rent (annual)
     vac     = num(d, "income", "vacancy_pct")
     other_a = num(d, "income", "other_income_annual")
-    egi     = gpr * (1 - vac) + other_a                  # AJ: gross income = EGI
+    egi     = gpr * (1 - vac) + other_a                  # Linda: gross income = EGI
 
     # ---- seller-reported expenses ----
     s = d.get("seller_expenses", {})
@@ -107,7 +107,7 @@ def main():
     s_rm   = num(s, "repairs_maintenance"); s_mgmt = num(s, "management"); s_capex = num(s, "capex")
     s_pay  = num(s, "payroll"); s_admin = num(s, "other_admin")
 
-    # ---- normalized expenses (AJ's rules) ----
+    # ---- normalized expenses (Linda's rules) ----
     n_tax  = s_tax * (1 + tax_bump)
     n_rm   = max(s_rm,   rm_pct * egi)
     n_capex= max(s_capex,capex_pct * egi)

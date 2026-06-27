@@ -558,18 +558,18 @@ ls["A29"]=("READ: if Headroom is negative, the price is higher than the income c
 ls["A29"].font=NOTE
 
 # =============================================================================
-# SHEET — NORMALIZATION (AJ's "build your own NOI")
+# SHEET — NORMALIZATION (Linda's "build your own NOI")
 # =============================================================================
 nm = wb.create_sheet("Normalization")
 nm.sheet_view.showGridLines=False
 for cl,w in (("A",34),("B",16),("C",16),("D",42)):
     nm.column_dimensions[cl].width=w
 merge_title(nm, "A1:D1", "NORMALIZE THE NOI — BUILD YOUR OWN NUMBERS")
-nm["A2"]=("AJ: the T12 is your starting point but never trusted as-is. Enter the SELLER'S reported figures "
-          "(yellow); the Normalized column rebuilds the NOI with AJ's 4 adjustments. Source: AJ Kukra.")
+nm["A2"]=("Linda: the T-12 is your starting point but never trusted as-is. Enter the SELLER'S reported figures "
+          "(yellow); the Normalized column rebuilds the NOI with Linda's 4 adjustments. Part of the LindaAI framework.")
 nm["A2"].font=NOTE
 
-sec(nm, 4, "AJ'S NORMALIZATION RULES (editable)", "A:D")
+sec(nm, 4, "LINDA'S NORMALIZATION RULES (editable)", "A:D")
 def nm_in(row,label,val,fmt,note):
     nm[f"A{row}"]=label; nm[f"A{row}"].font=LABEL
     c=nm[f"B{row}"]; c.value=val; c.number_format=fmt; c.font=INPUTF; c.fill=INPUT_FILL
@@ -586,11 +586,11 @@ nm["A11"]="Effective Gross Income (EGI)"; nm["A11"].font=LABEL
 c=nm["B11"]; c.value=247500; c.number_format=CUR2; c.font=INPUTF; c.fill=INPUT_FILL
 c.border=BORDER; c.alignment=Alignment(horizontal="right")
 nm["C11"]="=B11"; nm["C11"].number_format=CUR2; nm["C11"].font=BOLD; nm["C11"].alignment=Alignment(horizontal="right")
-nm["D11"]="seller's real top line (AJ: gross income = EGI)"; nm["D11"].font=NOTE
+nm["D11"]="seller's real top line (Linda: gross income = EGI)"; nm["D11"].font=NOTE
 EGI="B11"
 
 sec(nm, 13, "OPERATING EXPENSES", "A:D")
-nm["B14"]="Seller Reported"; nm["C14"]="Normalized"; nm["D14"]="AJ adjustment"
+nm["B14"]="Seller Reported"; nm["C14"]="Normalized"; nm["D14"]="Linda adjustment"
 for cl in ("B","C","D"):
     nm[f"{cl}14"].font=SECTION; nm[f"{cl}14"].fill=SECTION_FILL; nm[f"{cl}14"].alignment=Alignment(horizontal="center")
 # (label, seller_default, normalized_formula_template, note)  {r}=current row
@@ -626,7 +626,7 @@ nm[f"A{rr}"]="Expense Ratio"; nm[f"A{rr}"].font=LABEL
 nm[f"B{rr}"]=f"={opex_s}/{EGI}"; nm[f"C{rr}"]=f"={opex_n}/C11"
 for col in ("B","C"):
     nm[f"{col}{rr}"].number_format=PCT; nm[f"{col}{rr}"].alignment=Alignment(horizontal="right")
-nm[f"D{rr}"]="AJ: under 30% means something's missing"; nm[f"D{rr}"].font=NOTE
+nm[f"D{rr}"]="Linda: under 30% means something's missing"; nm[f"D{rr}"].font=NOTE
 
 sec(nm, rr+2, "RESULT", "A:D")
 nr=rr+3
@@ -647,7 +647,7 @@ capcell.fill=INPUT_FILL; capcell.border=BORDER; capcell.alignment=Alignment(hori
 nm[f"A{nr+4}"]="OVERPAYMENT RISK  (haircut / cap rate)"; nm[f"A{nr+4}"].font=Font(size=12,bold=True,color="9C0006")
 ovp=nm[f"C{nr+4}"]; ovp.value=f"=({noi_s}-{noi_n})/B{nr+3}"; ovp.number_format=CUR2
 ovp.font=Font(size=12,bold=True,color="9C0006"); ovp.fill=WARN_FILL; ovp.alignment=Alignment(horizontal="right")
-nm[f"D{nr+4}"]="AJ: a small NOI cut = a huge price difference"; nm[f"D{nr+4}"].font=NOTE
+nm[f"D{nr+4}"]="Linda: a small NOI cut = a huge price difference"; nm[f"D{nr+4}"].font=NOTE
 nm[f"A{nr+6}"]=("NEXT: carry the NORMALIZED expense figures (column C) into the Underwriting tab so every "
                 "metric and the Deal Scorecard reflect YOUR numbers, not the seller's.")
 nm[f"A{nr+6}"].font=NOTE
@@ -659,9 +659,9 @@ sc = wb.create_sheet("Deal Scorecard")
 sc.sheet_view.showGridLines=False
 for cl,w in (("A",36),("B",13),("C",27),("D",9),("E",9),("F",9),("G",9),("H",16)):
     sc.column_dimensions[cl].width=w
-merge_title(sc, "A1:H1", "DEAL SCORECARD — AJ KUKRA 'RV PARK PROFIT BLUEPRINT'")
-sc["A2"]=("AJ's framework. Underwrite to the NORMALIZED NOI (see Normalization tab) before trusting these. "
-          "GREEN cutoff cells are editable. Source: AJ Kukra, RV Park Profit Blueprint workshop.")
+merge_title(sc, "A1:H1", "DEAL SCORECARD — LINDAAI FRAMEWORK")
+sc["A2"]=("Linda's framework. Underwrite to the NORMALIZED NOI (see Normalization tab) before trusting these. "
+          "GREEN cutoff cells are editable. Part of the LindaAI underwriting framework.")
 sc["A2"].font=NOTE
 
 GREEN=PatternFill("solid", fgColor="C6EFCE")
@@ -672,7 +672,7 @@ YFONT=Font(color="9C6500", bold=True)
 RFONT=Font(color="9C0006", bold=True)
 
 hdr=4
-heads=["Metric","Deal Value","AJ's rule","Good","OK","(band)","(band)","Rating"]
+heads=["Metric","Deal Value","Linda's rule","Good","OK","(band)","(band)","Rating"]
 for j,h in enumerate(heads):
     col=get_column_letter(1+j); c=sc[f"{col}{hdr}"]
     c.value=h; c.font=SECTION; c.fill=SECTION_FILL; c.alignment=Alignment(horizontal="center")
@@ -685,8 +685,8 @@ dscrv=U_+R['dscr']; cocv=U_+R['coc']; oerv=U_+R['oer']; caprate=U_+R['caprate']
 # kind: high|low (cuts=good,ok)  ;  band (cuts=badlo,goodlo,goodhi,badhi)
 rows=[
  ("__sec__","GO / NO-GO METRICS  (after normalizing the NOI)"),
- ("DSCR", f"={dscrv}", MULT, "high", (1.50,1.35), "AJ floor 1.35x to GO"),
- ("Cash-on-Cash Return", f"={cocv}", PCT, "high", (0.10,0.08), "AJ target 10%+ to GO"),
+ ("DSCR", f"={dscrv}", MULT, "high", (1.50,1.35), "Linda floor: 1.35x to GO"),
+ ("Cash-on-Cash Return", f"={cocv}", PCT, "high", (0.10,0.08), "Linda target: 10%+ to GO"),
  ("__sec__","THE 5 QUICK HACKS  (screen any listing in ~2 min)"),
  ("1% Rule  (monthly gross / price)", f"=({egiv}/12)/{price}", PCT2, "high", (0.01,0.009), ">=1% likely good"),
  ("10x Rule — GRM  (price / annual gross)", f"={price}/{egiv}", '0.00"x"', "low", (10,12), "<10 ideal; >12 pricey"),
@@ -731,9 +731,9 @@ sc[f"A{last+1}"]=("Expense Ratio is a BAND: below D = BAD (NOI likely inflated /
                   "E-F = GOOD (healthy) · above G = BAD.  D,E,F,G default to 30/35/65/70%.")
 sc[f"A{last+1}"].font=NOTE
 
-# ---- AJ verdict: BOTH core metrics must clear --------------------------------
+# ---- Linda verdict: BOTH core metrics must clear --------------------------------
 vr=last+3
-sec(sc, vr-1, "VERDICT  (AJ's rule: both DSCR and Cash-on-Cash must clear)", "A:H")
+sec(sc, vr-1, "VERDICT  (Linda's rule: both DSCR and Cash-on-Cash must clear)", "A:H")
 sc[f"A{vr}"]="DSCR clears floor?"; sc[f"A{vr}"].font=BOLD
 sc[f"B{vr}"]=f'=IF(B{row_dscr}>=E{row_dscr},"YES","NO")'; sc[f"B{vr}"].font=BOLD; sc[f"B{vr}"].alignment=Alignment(horizontal="center")
 sc[f"A{vr+1}"]="Cash-on-Cash clears target?"; sc[f"A{vr+1}"].font=BOLD
@@ -750,22 +750,22 @@ sc.conditional_formatting.add(f"B{vr+3}", FormulaRule(formula=[f'ISNUMBER(SEARCH
 sc.conditional_formatting.add(f"B{vr+3}", FormulaRule(formula=[f'ISNUMBER(SEARCH("NO-GO",{vcell}))'], fill=RED, font=RFONT))
 sc[f"A{vr+5}"]="Red flags (BAD ratings)"; sc[f"A{vr+5}"].font=BOLD
 sc[f"B{vr+5}"]=f'=COUNTIF(H{hdr+1}:H{last},"BAD")'; sc[f"B{vr+5}"].font=BOLD; sc[f"B{vr+5}"].alignment=Alignment(horizontal="center")
-sc[f"A{vr+7}"]=("CONDITIONAL means restructure to save it (AJ's 3 levers): (1) lower price to your MAO, "
+sc[f"A{vr+7}"]=("CONDITIONAL means restructure to save it (Linda's 3 levers): (1) lower price to your MAO, "
                 "(2) ask the seller to carry a slice — blended rate drops, DSCR clears, CoC jumps, "
                 "(3) more down payment. If none work and the seller won't budge, your underwriting just "
                 "saved you from an expensive mistake.")
 sc[f"A{vr+7}"].font=NOTE
 
 # =============================================================================
-# SHEET — OFFER STRUCTURES (AJ's 4-column engine + MAO + seller carry)
+# SHEET — OFFER STRUCTURES (Linda's 4-column engine + MAO + seller carry)
 # =============================================================================
 of = wb.create_sheet("Offer Structures")
 of.sheet_view.showGridLines=False
 of.column_dimensions["A"].width=34
 for cl in "BCDE": of.column_dimensions[cl].width=17
-merge_title(of, "A1:E1", "OFFER STRUCTURES — MAO & SELLER CARRY (AJ KUKRA)")
+merge_title(of, "A1:E1", "OFFER STRUCTURES — MAO & SELLER CARRY (LINDA FRAMEWORK)")
 of["A2"]=("NOI is held constant (operations don't change with financing). Each column is a price + financing "
-          "scenario; yellow = editable levers. Verdict uses AJ's rule: DSCR >= target AND Cash-on-Cash >= target.")
+          "scenario; yellow = editable levers. Verdict uses Linda's rule: DSCR >= target AND Cash-on-Cash >= target.")
 of["A2"].font=NOTE
 
 Uno=f"Underwriting!{R['noi']}"; Uclose=f"Underwriting!{R['close_pct']}"; Ucapex=f"Underwriting!{R['capex']}"
@@ -782,8 +782,8 @@ def of_kv(row,label,val,fmt,note="",inp=False,key=None,bold=False,fill=None,big=
     c.alignment=Alignment(horizontal="right")
     if note: of[f"C{row}"]=note; of[f"C{row}"].font=NOTE; of.merge_cells(f"C{row}:E{row}")
     if key: MAO[key]=f"B{row}"
-of_kv(5,"Target DSCR",1.35,MULT,"AJ floor",inp=True,key="tdscr")
-of_kv(6,"Target Cash-on-Cash",0.10,PCT,"AJ target",inp=True,key="tcoc")
+of_kv(5,"Target DSCR",1.35,MULT,"Linda floor",inp=True,key="tdscr")
+of_kv(6,"Target Cash-on-Cash",0.10,PCT,"Linda target",inp=True,key="tcoc")
 of_kv(7,"Bank LTV % (conventional)",0.70,PCT,"loan-to-value for the conventional offer",inp=True,key="ltv")
 of_kv(8,"Bank Interest Rate",0.07,PCT2,inp=True,key="rate")
 of_kv(9,"Amortization (yrs)",25,CUR,inp=True,key="amort")
@@ -869,7 +869,7 @@ of.conditional_formatting.add("B46:E46", CellIsRule(operator='equal', formula=['
 of.conditional_formatting.add("B46:E46", CellIsRule(operator='equal', formula=['"CONDITIONAL"'], fill=YEL2, font=YF))
 of.conditional_formatting.add("B46:E46", CellIsRule(operator='equal', formula=['"NO-GO"'], fill=RED2, font=RF))
 
-of["A48"]=("AJ's 3 levers to save a CONDITIONAL deal: (1) lower the price toward the MAO, (2) ask the seller "
+of["A48"]=("Linda's 3 levers to save a CONDITIONAL deal: (1) lower the price toward the MAO, (2) ask the seller "
            "to carry a slice — the blended rate drops so DSCR clears and CoC jumps, (3) add down payment. "
            "Full seller carry (interest-only) often clears both even at the asking price.")
 of["A48"].font=NOTE
@@ -889,28 +889,28 @@ rm.row_dimensions[1].height=26
 lines=[
  "",
  "WHAT THIS IS",
- "An RV-park deal-screening model built on AJ Kukra's 'RV Park Profit Blueprint' framework. Drop in a",
- "deal's numbers and it tells you in minutes whether it makes money — using AJ's 5 key metrics, his 5",
- "quick hacks, NOI normalization, and his go / conditional / no-go rule. Works for RV parks and adapts",
- "directly to mobile home parks (same lot-rent math). Source: AJ Kukra, RV Park Profit Blueprint workshop.",
+ "An RV-park deal-screening model built on the LindaAI underwriting framework. Drop in a",
+ "deal's numbers and it tells you in minutes whether it makes money — using Linda's 5 key metrics, its 5",
+ "quick hacks, NOI normalization, and its go / conditional / no-go rule. Works for RV parks and adapts",
+ "directly to mobile home parks (same lot-rent math). Part of the LindaAI underwriting framework.",
  "",
- "AJ'S 5 KEY METRICS (the heartbeat of the deal)",
+ "LINDA'S 5 KEY METRICS (the heartbeat of the deal)",
  "  1. NOI — effective gross income (EGI) minus operating expenses. Every other metric flows from it.",
  "  2. Cap Rate = NOI / price. Higher = paying less. But a very high cap (14%+) usually means hidden risk.",
- "  3. DSCR = NOI / annual debt. AJ's floor is 1.35x — that's YOUR target, not just the lender's.",
+ "  3. DSCR = NOI / annual debt. Linda's floor is 1.35x — that's YOUR target, not just the lender's.",
  "  4. Net Profit = what's left after opex AND debt service.",
- "  5. Cash-on-Cash = net profit / cash invested. AJ's target is 10%+.",
+ "  5. Cash-on-Cash = net profit / cash invested. Linda's target is 10%+.",
  "",
- "AJ'S 5 QUICK HACKS (screen any listing in ~2 minutes) — see the Deal Scorecard tab",
+ "LINDA'S 5 QUICK HACKS (screen any listing in ~2 minutes) — see the Deal Scorecard tab",
  "  1. 1% Rule — monthly gross >= 1% of price = likely good (cross the last two zeros off the price).",
  "  2. 10x Rule (GRM) — price / annual gross; want UNDER 10. Over ~15 is expensive.",
  "  3. Quick DSCR — NOI / (price x interest rate): >1.5 good, 1.25-1.5 closer look, <1.25 lending risk.",
  "  4. Expense Ratio — OpEx / gross: UNDER 30% = numbers are fiction; 35-65% normal; over 70% a problem.",
  "  5. Negative Leverage — if cap rate < your interest rate you lose money day one. Want cap ABOVE rate.",
  "",
- "NORMALIZE THE NOI (AJ: never trust the seller's NOI) — see the Normalization tab",
+ "NORMALIZE THE NOI (Linda: never trust the seller's NOI) — see the Normalization tab",
  "  The OM is the seller's best case; the Pro Forma is fantasy; the T12 is your start but needs adjusting.",
- "  AJ's 4 standard adjustments: management -> 10% of EGI, repairs -> 5% (or prior year), capex -> +3%,",
+ "  Linda's 4 standard adjustments: management -> 10% of EGI, repairs -> 5% (or prior year), capex -> +3%,",
  "  property taxes -> +20% (they reset on sale). A small NOI cut at an 8-10% cap = a huge price difference.",
  "",
  "THE BAD-DAY TEST (break the deal on purpose) — use the Sensitivity tab",
@@ -918,16 +918,16 @@ lines=[
  "",
  "THE DECISION (after normalizing)",
  "  Both DSCR (>=1.35) AND Cash-on-Cash (>=10%) clear -> GO. One fails -> CONDITIONAL (restructure).",
- "  Both fail -> likely NO-GO. To save a conditional deal, use AJ's 3 levers: lower the price to your",
+ "  Both fail -> likely NO-GO. To save a conditional deal, use Linda's 3 levers: lower the price to your",
  "  MAO, ask the seller to carry a slice (blended rate drops), or add down payment. Don't pay the seller",
  "  for value YOU will create (rent bumps to market, occupancy, utility bill-back, added revenue).",
  "",
  "THE TABS (left to right)",
  "  • Deal Summary  — one-page headline view; print/screenshot for lenders & partners.",
- "  • Deal Scorecard — AJ's metrics + 5 hacks rated GOOD/OK/BAD with his go / conditional / no-go verdict.",
+ "  • Deal Scorecard — Linda's metrics + 5 hacks rated GOOD/OK/BAD with its go / conditional / no-go verdict.",
  "  • Underwriting  — the engine. Fill the YELLOW cells; everything else is a formula.",
- "  • Normalization — rebuild the seller's NOI with AJ's 4 adjustments; shows the overpayment risk.",
- "  • Offer Structures — AJ's 4-column engine: Seller / Conventional / Partial carry / Full carry, two-lien",
+ "  • Normalization — rebuild the seller's NOI with Linda's 4 adjustments; shows the overpayment risk.",
+ "  • Offer Structures — Linda's 4-column engine: Seller / Conventional / Partial carry / Full carry, two-lien",
  "      debt stack, blended rate, and the auto-solved Maximum Allowable Offer (MAO).",
  "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
  "  • Actuals vs Pro Forma — seller's CURRENT numbers vs your stabilized plan, side by side.",

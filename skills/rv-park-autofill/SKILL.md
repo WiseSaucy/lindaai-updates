@@ -11,7 +11,7 @@ min_tier: gold
 
 Reads a seller's deal documents (T-12 / P&L / offering memorandum / rent roll),
 extracts the numbers, and writes them into the RV park underwriting workbook —
-**normalizing the NOI with AJ Kukra's rules along the way**. The seller's raw
+**normalizing the NOI with Linda's rules along the way**. The seller's raw
 figures land in the Normalization tab; the normalized figures drive the engine,
 so the Deal Scorecard, NOI, and Offer Structures all reflect YOUR numbers, not
 the seller's best case. Turns a folder of PDFs into a scored deal in minutes.
@@ -49,7 +49,7 @@ pip install -r requirements.txt   # openpyxl
 Read every document the user provided and fill out the schema in
 `deal_input.example.json`. Be rigorous and honest — this is the heart of the job:
 
-- **Prefer the T-12** over the OM/Pro Forma. AJ: the OM is the seller's best case;
+- **Prefer the T-12** over the OM/Pro Forma. Linda: the OM is the seller's best case;
   the Pro Forma is fantasy; the T-12 is your real starting point. If both an OM and
   a T-12 are given and they disagree, use the T-12 and note the gap to the user.
 - Capture **seller-reported expenses exactly as stated** (do NOT pre-normalize —
@@ -57,11 +57,11 @@ Read every document the user provided and fill out the schema in
   enter `0` — the normalization rules will backfill it.
 - Pull `sites`, `asking_price`, annual site rent (gross potential), other income,
   and vacancy/occupancy. If only occupancy is given, vacancy = 1 − occupancy.
-- Leave `normalization` at AJ's defaults (mgmt 10%, R&M 5%, capex 3%, tax +20%)
+- Leave `normalization` at Linda's defaults (mgmt 10%, R&M 5%, capex 3%, tax +20%)
   unless the user specifies otherwise.
 
 **Show the user the extracted numbers and let them correct anything before you
-run it.** AJ's rule: the human always makes the final call.
+run it.** Linda's rule: the human always makes the final call.
 
 ### Step 3 — Fill the workbook
 
@@ -79,10 +79,10 @@ normalized NOI, both expense ratios, NOI haircut) — relay the highlights.
 Open the filled workbook and read the results to the user:
 
 - **Normalization tab** — the NOI haircut and overpayment risk. Flag it loudly if
-  the seller's expense ratio is **under 30%** (AJ: the numbers are "fiction").
+  the seller's expense ratio is **under 30%** (Linda: the numbers are "fiction").
 - **Deal Scorecard** — the GOOD/OK/BAD ratings and the GO / CONDITIONAL / NO-GO verdict.
 - **Offer Structures** — the auto-solved MAO and which of the conventional / partial-carry
-  / full-carry structures clear. If CONDITIONAL, walk AJ's 3 levers (lower price to the
+  / full-carry structures clear. If CONDITIONAL, walk Linda's 3 levers (lower price to the
   MAO, ask for a seller carry, add down payment).
 
 Deliver the filled `.xlsx` as the report. Offer to adjust any normalization

@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.10.0",
+  "manifest_version": "1.11.0",
   "generated": "2026-06-27",
   "product": "LindaAI",
   "update_base_url": "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main",
@@ -217,6 +217,10 @@
     "travel-plan": {
       "version": "1.0.0",
       "min_tier": "bronze"
+    },
+    "underwrite-deal": {
+      "version": "1.0.0",
+      "min_tier": "gold"
     },
     "update-manager": {
       "version": "1.0.0",
