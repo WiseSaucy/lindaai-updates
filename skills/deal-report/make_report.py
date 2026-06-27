@@ -243,6 +243,38 @@ VALUE_ADD = [
 # --------------------------------------------------------------------------- #
 # PDF (one page)
 # --------------------------------------------------------------------------- #
+def draw_brandmark(c, x, ytop, h, BRAND, BLACK):
+    """Vector Wise Certified emblem — mountains + blue roofline + window. Returns width drawn."""
+    w = h * 1.25
+    yb = ytop - h
+    # mountain range (black) — upper ~55% of the mark
+    p = c.beginPath()
+    p.moveTo(x, yb + 0.46 * h)
+    p.lineTo(x + 0.20 * w, yb + 0.88 * h)
+    p.lineTo(x + 0.33 * w, yb + 0.64 * h)
+    p.lineTo(x + 0.52 * w, yb + 1.00 * h)
+    p.lineTo(x + 0.70 * w, yb + 0.62 * h)
+    p.lineTo(x + 0.86 * w, yb + 0.82 * h)
+    p.lineTo(x + w, yb + 0.50 * h)
+    p.lineTo(x + w, yb + 0.46 * h)
+    p.close()
+    c.setFillColor(BLACK); c.drawPath(p, fill=1, stroke=0)
+    # roofline chevron (royal blue) in the white lower area
+    c.setLineCap(1); c.setLineJoin(1)
+    apex_x = x + 0.50 * w
+    c.setStrokeColor(BRAND); c.setLineWidth(max(2.6, 0.12 * h))
+    c.line(x + 0.05 * w, yb + 0.16 * h, apex_x, yb + 0.54 * h)
+    c.line(apex_x, yb + 0.54 * h, x + 0.95 * w, yb + 0.16 * h)
+    # 2x2 window under the apex (black, on white)
+    s = 0.05 * w; gap = 0.016 * w
+    bx = apex_x - s - gap / 2; by = yb + 0.19 * h
+    c.setFillColor(BLACK)
+    for ix in (0, 1):
+        for iy in (0, 1):
+            c.rect(bx + ix * (s + gap), by + iy * (s + gap), s, s, fill=1, stroke=0)
+    return w
+
+
 def render_pdf(d, path, logo=None):
     from reportlab.lib.pagesizes import letter
     from reportlab.lib.units import inch
@@ -260,44 +292,43 @@ def render_pdf(d, path, logo=None):
     m = 0.55 * inch
     top = H - m
 
-    # ---- branded header (logo if present, else Wise Certified wordmark) ----
-    logo_h = 0.85 * inch
-    drew_logo = False
-    tx = m
+    GREY = colors.HexColor("#555555")
+    # ---- branded header: real logo if present, else vector Wise Certified mark ----
+    logo_h = 0.80 * inch
+    drew = False
     if logo and os.path.exists(logo):
         try:
             from reportlab.lib.utils import ImageReader
             img = ImageReader(logo); iw, ih = img.getSize(); ar = iw / ih if ih else 1
-            lw = logo_h * ar
-            c.drawImage(img, m, top - logo_h, width=lw, height=logo_h,
+            c.drawImage(img, m, top - logo_h, width=logo_h * ar, height=logo_h,
                         mask="auto", preserveAspectRatio=True)
-            drew_logo = True; tx = m + lw + 0.25 * inch
+            drew = True
         except Exception:
-            drew_logo = False
-    if not drew_logo:
-        c.setFillColor(BLACK); c.setFont("Helvetica-Bold", 22)
-        c.drawString(m, top - 0.32 * inch, "WISE CERTIFIED")
-        c.setFillColor(BRAND); c.setFont("Helvetica-Bold", 10.5)
-        c.drawString(m, top - 0.54 * inch, "H O M E   B U Y E R S")
-        tx = m + 2.7 * inch
+            drew = False
+    if not drew:
+        iconw = draw_brandmark(c, m, top, logo_h, BRAND, BLACK)
+        wx = m + iconw + 0.16 * inch
+        c.setFillColor(BLACK); c.setFont("Helvetica-Bold", 20)
+        c.drawString(wx, top - 0.36 * inch, "WISE CERTIFIED")
+        c.setFillColor(BRAND); c.setFont("Helvetica-Bold", 9)
+        c.drawString(wx, top - 0.56 * inch, "H O M E   B U Y E R S")
 
-    name = str(d["name"])[:24]
-    sub = f"{d['loc']} · Underwriting"
-    if len(sub) > 30:
-        sub = f"{str(d['loc'])[:18]} · Underwriting"
-    c.setFillColor(BRAND); c.setFont("Helvetica-Bold", 16)
-    c.drawString(tx, top - 0.30 * inch, name)
-    c.setFillColor(colors.HexColor("#555555")); c.setFont("Helvetica", 9.5)
-    c.drawString(tx, top - 0.52 * inch, sub)
-    # verdict badge
+    # verdict badge (top right)
     c.setFillColor(vfill.get(d["verdict"], YELL))
-    c.roundRect(W - m - 1.9 * inch, top - 0.62 * inch, 1.9 * inch, 0.55 * inch, 6, fill=1, stroke=0)
+    c.roundRect(W - m - 1.9 * inch, top - 0.58 * inch, 1.9 * inch, 0.55 * inch, 6, fill=1, stroke=0)
     c.setFillColor(colors.black); c.setFont("Helvetica-Bold", 15)
-    c.drawCentredString(W - m - 0.95 * inch, top - 0.40 * inch, d["verdict"])
+    c.drawCentredString(W - m - 0.95 * inch, top - 0.36 * inch, d["verdict"])
+
     # brand rule
-    rule_y = top - logo_h - 0.10 * inch
+    rule_y = top - logo_h - 0.06 * inch
     c.setStrokeColor(BRAND); c.setLineWidth(2); c.line(m, rule_y, W - m, rule_y)
-    y = rule_y - 0.30 * inch
+
+    # deal title line under the rule
+    c.setFillColor(BRAND); c.setFont("Helvetica-Bold", 15)
+    c.drawString(m, rule_y - 0.26 * inch, str(d["name"])[:44])
+    c.setFillColor(GREY); c.setFont("Helvetica", 10)
+    c.drawString(m, rule_y - 0.44 * inch, f"{d['loc']}  ·  RV Park Underwriting Summary")
+    y = rule_y - 0.72 * inch
 
     def header(label):
         nonlocal y
