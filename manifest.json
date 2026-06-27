@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.8.0",
+  "manifest_version": "1.9.0",
   "generated": "2026-06-27",
   "product": "LindaAI",
   "update_base_url": "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main",
@@ -181,6 +181,10 @@
     "rooster-setup": {
       "version": "1.0.0",
       "min_tier": "bronze"
+    },
+    "rv-park-autofill": {
+      "version": "1.0.0",
+      "min_tier": "gold"
     },
     "sam-gov-setup": {
       "version": "1.0.0",
