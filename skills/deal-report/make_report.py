@@ -244,30 +244,43 @@ VALUE_ADD = [
 # PDF (one page)
 # --------------------------------------------------------------------------- #
 def draw_brandmark(c, x, ytop, h, BRAND, BLACK):
-    """Vector Wise Certified emblem — mountains + blue roofline + window. Returns width drawn."""
-    w = h * 1.25
+    """Vector Wise Certified emblem — mountain range, bold blue roofline, house+chimney,
+    and a window — a faithful rendition of the logo. Returns width drawn."""
+    w = h * 1.30
     yb = ytop - h
-    # mountain range (black) — upper ~55% of the mark
+    # mountain range (black) — upper portion, two main peaks
     p = c.beginPath()
-    p.moveTo(x, yb + 0.46 * h)
-    p.lineTo(x + 0.20 * w, yb + 0.88 * h)
-    p.lineTo(x + 0.33 * w, yb + 0.64 * h)
-    p.lineTo(x + 0.52 * w, yb + 1.00 * h)
-    p.lineTo(x + 0.70 * w, yb + 0.62 * h)
-    p.lineTo(x + 0.86 * w, yb + 0.82 * h)
-    p.lineTo(x + w, yb + 0.50 * h)
-    p.lineTo(x + w, yb + 0.46 * h)
+    p.moveTo(x, yb + 0.48 * h)
+    p.lineTo(x + 0.18 * w, yb + 0.86 * h)
+    p.lineTo(x + 0.30 * w, yb + 0.66 * h)
+    p.lineTo(x + 0.50 * w, yb + 1.00 * h)
+    p.lineTo(x + 0.66 * w, yb + 0.70 * h)
+    p.lineTo(x + 0.82 * w, yb + 0.90 * h)
+    p.lineTo(x + w, yb + 0.52 * h)
+    p.lineTo(x + w, yb + 0.48 * h)
     p.close()
     c.setFillColor(BLACK); c.drawPath(p, fill=1, stroke=0)
-    # roofline chevron (royal blue) in the white lower area
+    apex_x = x + 0.43 * w
+    # small house + chimney sitting on the right slope of the roof
+    hx = x + 0.66 * w; hw = 0.15 * w; hy = yb + 0.30 * h; hh = 0.17 * h
+    c.setFillColor(BLACK)
+    c.rect(hx, hy, hw, hh, fill=1, stroke=0)                       # body
+    tp = c.beginPath(); tp.moveTo(hx - 0.025 * w, hy + hh)
+    tp.lineTo(hx + hw / 2, hy + hh + 0.11 * h); tp.lineTo(hx + hw + 0.025 * w, hy + hh); tp.close()
+    c.drawPath(tp, fill=1, stroke=0)                              # roof
+    c.rect(hx + hw * 0.66, hy + hh + 0.02 * h, 0.03 * w, 0.11 * h, fill=1, stroke=0)  # chimney
+    # bold royal-blue roofline chevron (front)
     c.setLineCap(1); c.setLineJoin(1)
-    apex_x = x + 0.50 * w
-    c.setStrokeColor(BRAND); c.setLineWidth(max(2.6, 0.12 * h))
-    c.line(x + 0.05 * w, yb + 0.16 * h, apex_x, yb + 0.54 * h)
-    c.line(apex_x, yb + 0.54 * h, x + 0.95 * w, yb + 0.16 * h)
+    c.setStrokeColor(BRAND); c.setLineWidth(max(3.2, 0.15 * h))
+    c.line(x + 0.04 * w, yb + 0.18 * h, apex_x, yb + 0.56 * h)
+    c.line(apex_x, yb + 0.56 * h, x + 0.99 * w, yb + 0.12 * h)
+    # thin dark second roofline (behind, for the layered look)
+    c.setStrokeColor(BLACK); c.setLineWidth(max(1.1, 0.04 * h))
+    c.line(x + 0.10 * w, yb + 0.12 * h, apex_x, yb + 0.46 * h)
+    c.line(apex_x, yb + 0.46 * h, x + 0.92 * w, yb + 0.10 * h)
     # 2x2 window under the apex (black, on white)
-    s = 0.05 * w; gap = 0.016 * w
-    bx = apex_x - s - gap / 2; by = yb + 0.19 * h
+    s = 0.052 * w; gap = 0.016 * w
+    bx = apex_x - s - gap / 2; by = yb + 0.20 * h
     c.setFillColor(BLACK)
     for ix in (0, 1):
         for iy in (0, 1):
