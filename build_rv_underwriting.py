@@ -757,6 +757,126 @@ sc[f"A{vr+7}"]=("CONDITIONAL means restructure to save it (AJ's 3 levers): (1) l
 sc[f"A{vr+7}"].font=NOTE
 
 # =============================================================================
+# SHEET — OFFER STRUCTURES (AJ's 4-column engine + MAO + seller carry)
+# =============================================================================
+of = wb.create_sheet("Offer Structures")
+of.sheet_view.showGridLines=False
+of.column_dimensions["A"].width=34
+for cl in "BCDE": of.column_dimensions[cl].width=17
+merge_title(of, "A1:E1", "OFFER STRUCTURES — MAO & SELLER CARRY (AJ KUKRA)")
+of["A2"]=("NOI is held constant (operations don't change with financing). Each column is a price + financing "
+          "scenario; yellow = editable levers. Verdict uses AJ's rule: DSCR >= target AND Cash-on-Cash >= target.")
+of["A2"].font=NOTE
+
+Uno=f"Underwriting!{R['noi']}"; Uclose=f"Underwriting!{R['close_pct']}"; Ucapex=f"Underwriting!{R['capex']}"
+
+# ---- MAO auto-solve ---------------------------------------------------------
+sec(of, 4, "MAXIMUM ALLOWABLE OFFER — auto-solved (conventional financing)", "A:E")
+MAO={}
+def of_kv(row,label,val,fmt,note="",inp=False,key=None,bold=False,fill=None,big=False):
+    of[f"A{row}"]=label; of[f"A{row}"].font=Font(size=12,bold=True) if big else (BOLD if bold else LABEL)
+    c=of[f"B{row}"]; c.value=val; c.number_format=fmt
+    if inp: c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER
+    else: c.font=Font(size=12,bold=True) if big else (BOLD if bold else LABEL)
+    if fill: c.fill=fill
+    c.alignment=Alignment(horizontal="right")
+    if note: of[f"C{row}"]=note; of[f"C{row}"].font=NOTE; of.merge_cells(f"C{row}:E{row}")
+    if key: MAO[key]=f"B{row}"
+of_kv(5,"Target DSCR",1.35,MULT,"AJ floor",inp=True,key="tdscr")
+of_kv(6,"Target Cash-on-Cash",0.10,PCT,"AJ target",inp=True,key="tcoc")
+of_kv(7,"Bank LTV % (conventional)",0.70,PCT,"loan-to-value for the conventional offer",inp=True,key="ltv")
+of_kv(8,"Bank Interest Rate",0.07,PCT2,inp=True,key="rate")
+of_kv(9,"Amortization (yrs)",25,CUR,inp=True,key="amort")
+of_kv(10,"NOI (from Underwriting)",f"={Uno}",CUR2,key="noi")
+of_kv(11,"Annual Debt Constant k (per $1 loan)",f"=PMT({MAO['rate']}/12,{MAO['amort']}*12,-1)*12",'0.0000',
+      "annual debt service per $1 borrowed",key="k")
+of_kv(12,"Max Price @ DSCR target",f"={MAO['noi']}/({MAO['tdscr']}*{MAO['ltv']}*{MAO['k']})",CUR2,
+      "DSCR-constrained ceiling",key="pdscr")
+of_kv(13,"Max Price @ Cash-on-Cash target",
+      f"=({MAO['noi']}-{MAO['tcoc']}*{Ucapex})/({MAO['ltv']}*{MAO['k']}+{MAO['tcoc']}*(1-{MAO['ltv']}+{Uclose}))",
+      CUR2,"CoC-constrained ceiling",key="pcoc")
+of_kv(14,"MAXIMUM ALLOWABLE OFFER (MAO)",f"=MIN({MAO['pdscr']},{MAO['pcoc']})",CUR2,
+      "highest price where BOTH clear",big=True,fill=KEY_FILL,key="mao")
+
+TD,TC="$B$5","$B$6"   # target cells (absolute)
+
+# ---- offer comparison -------------------------------------------------------
+sec(of, 16, "OFFER COMPARISON  (type any price/structure — verdict updates live)", "A:E")
+hdr=17
+for cl,t in zip("ABCDE",["Lever / Metric","Seller Asking","Offer 1: Conventional",
+                          "Offer 2: Partial Carry","Offer 3: Full Carry"]):
+    c=of[f"{cl}{hdr}"]; c.value=t; c.font=SECTION; c.fill=SECTION_FILL
+    c.alignment=Alignment(horizontal="center", vertical="center", wrap_text=True)
+of.row_dimensions[hdr].height=30
+
+def of_in(row,label,vals,fmt,note=""):
+    of[f"A{row}"]=label; of[f"A{row}"].font=LABEL
+    for cl,v in zip("BCDE",vals):
+        c=of[f"{cl}{row}"]; c.value=v; c.number_format=fmt; c.font=INPUTF; c.fill=INPUT_FILL
+        c.border=BORDER; c.alignment=Alignment(horizontal="right")
+def of_ca(row,label,tmpl,fmt,bold=False,fill=None):
+    of[f"A{row}"]=label; of[f"A{row}"].font=BOLD if bold else LABEL
+    for cl in "BCDE":
+        c=of[f"{cl}{row}"]; c.value=tmpl.format(c=cl); c.number_format=fmt
+        c.font=BOLD if bold else LABEL; c.alignment=Alignment(horizontal="right")
+        if fill: c.fill=fill
+
+of_in(18,"Purchase Price",[1500000,1150000,1500000,1500000],CUR2)
+of["F18"]="Offer 1 defaults near the MAO above — type your own to test"; of["F18"].font=NOTE
+of_in(19,"Bank Loan % (of price)",[0.70,0.70,0.65,0.0],PCT)
+of_in(20,"Bank Interest Rate",[0.07,0.07,0.07,0.07],PCT2)
+of_in(21,"Bank Amortization (yrs)",[25,25,25,25],CUR)
+of_in(22,"Bank Interest-Only? (Y/N)",["N","N","N","N"],'@')
+of_in(23,"Seller Carry % (of price)",[0,0,0.25,0.90],PCT)
+of_in(24,"Seller Carry Rate",[0,0,0.05,0.06],PCT2)
+of_in(25,"Seller Carry Amort (yrs)",[25,25,25,25],CUR)
+of_in(26,"Seller Carry Interest-Only? (Y/N)",["N","N","N","Y"],'@')
+of_ca(27,"Down Payment %","=1-{c}19-{c}23",PCT)
+
+sec(of, 28, "DEBT STACK", "A:E")
+of_ca(29,"Bank Loan $","={c}18*{c}19",CUR2)
+of_ca(30,"Bank Annual Debt Service",'=IF({c}22="Y",{c}29*{c}20,PMT({c}20/12,{c}21*12,-{c}29)*12)',CUR2)
+of_ca(31,"Seller Carry $","={c}18*{c}23",CUR2)
+of_ca(32,"Seller Carry Annual Debt Service",
+      '=IF({c}31=0,0,IF({c}26="Y",{c}31*{c}24,PMT({c}24/12,{c}25*12,-{c}31)*12))',CUR2)
+of_ca(33,"Total Annual Debt Service","={c}30+{c}32",CUR2,bold=True,fill=TOTAL_FILL)
+of_ca(34,"Blended Rate",'=IF(({c}29+{c}31)=0,0,({c}29*{c}20+{c}31*{c}24)/({c}29+{c}31))',PCT2)
+of_ca(35,"Down Payment $","={c}18*{c}27",CUR2)
+of_ca(36,"Closing + CapEx",f"={{c}}18*{Uclose}+{Ucapex}",CUR2)
+of_ca(37,"Total Cash Invested","={c}35+{c}36",CUR2,bold=True,fill=TOTAL_FILL)
+
+sec(of, 38, "KEY METRICS", "A:E")
+of_ca(39,"NOI (constant)",f"={Uno}",CUR2)
+of_ca(40,"Cap Rate","={c}39/{c}18",PCT)
+of_ca(41,"DSCR (total debt)",'=IF({c}33=0,"n/a",{c}39/{c}33)',MULT,bold=True)
+of_ca(42,"Net Profit (cash flow)","={c}39-{c}33",CUR2)
+of_ca(43,"Cash-on-Cash Return","={c}42/{c}37",PCT,bold=True)
+of_ca(44,"DSCR clears target?",f'=IF({{c}}33=0,"YES",IF({{c}}39/{{c}}33>={TD},"YES","NO"))','@')
+of_ca(45,"Cash-on-Cash clears target?",f'=IF({{c}}43>={TC},"YES","NO")','@')
+of_ca(46,"VERDICT",
+      '=IF(AND({c}44="YES",{c}45="YES"),"GO",IF(OR({c}44="YES",{c}45="YES"),"CONDITIONAL","NO-GO"))','@',bold=True)
+for cl in "BCDE":
+    of[f"{cl}44"].alignment=Alignment(horizontal="center")
+    of[f"{cl}45"].alignment=Alignment(horizontal="center")
+    of[f"{cl}46"].alignment=Alignment(horizontal="center"); of[f"{cl}46"].font=Font(bold=True,size=12)
+
+GREEN2=PatternFill("solid", fgColor="C6EFCE"); YEL2=PatternFill("solid", fgColor="FFEB9C"); RED2=PatternFill("solid", fgColor="FFC7CE")
+GF=Font(color="006100", bold=True); YF=Font(color="9C6500", bold=True); RF=Font(color="9C0006", bold=True)
+for rge in ("B44:E45",):
+    of.conditional_formatting.add(rge, CellIsRule(operator='equal', formula=['"YES"'], fill=GREEN2, font=GF))
+    of.conditional_formatting.add(rge, CellIsRule(operator='equal', formula=['"NO"'],  fill=RED2,  font=RF))
+of.conditional_formatting.add("B46:E46", CellIsRule(operator='equal', formula=['"GO"'], fill=GREEN2, font=GF))
+of.conditional_formatting.add("B46:E46", CellIsRule(operator='equal', formula=['"CONDITIONAL"'], fill=YEL2, font=YF))
+of.conditional_formatting.add("B46:E46", CellIsRule(operator='equal', formula=['"NO-GO"'], fill=RED2, font=RF))
+
+of["A48"]=("AJ's 3 levers to save a CONDITIONAL deal: (1) lower the price toward the MAO, (2) ask the seller "
+           "to carry a slice — the blended rate drops so DSCR clears and CoC jumps, (3) add down payment. "
+           "Full seller carry (interest-only) often clears both even at the asking price.")
+of["A48"].font=NOTE
+of["A49"]="Don't pay the seller for value YOU create (rent bumps, occupancy, utility bill-back, new revenue)."
+of["A49"].font=NOTE
+
+# =============================================================================
 # SHEET — READ ME (insert first)
 # =============================================================================
 rm = wb.create_sheet("Read Me", 0)
@@ -807,6 +927,8 @@ lines=[
  "  • Deal Scorecard — AJ's metrics + 5 hacks rated GOOD/OK/BAD with his go / conditional / no-go verdict.",
  "  • Underwriting  — the engine. Fill the YELLOW cells; everything else is a formula.",
  "  • Normalization — rebuild the seller's NOI with AJ's 4 adjustments; shows the overpayment risk.",
+ "  • Offer Structures — AJ's 4-column engine: Seller / Conventional / Partial carry / Full carry, two-lien",
+ "      debt stack, blended rate, and the auto-solved Maximum Allowable Offer (MAO).",
  "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
  "  • Actuals vs Pro Forma — seller's CURRENT numbers vs your stabilized plan, side by side.",
  "  • Pro Forma & Returns — 10-year projection, sale reversion, IRR & equity multiple.",
@@ -838,8 +960,8 @@ for ln in lines:
     r+=1
 
 # ---- tab order --------------------------------------------------------------
-order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Normalization","Income Detail",
-       "Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
+order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Normalization","Offer Structures",
+       "Income Detail","Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
 wb._sheets.sort(key=lambda s: order.index(s.title))
 wb.active = 0
 
