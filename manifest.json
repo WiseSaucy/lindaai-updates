@@ -1,5 +1,5 @@
 {
-  "manifest_version": "1.9.0",
+  "manifest_version": "1.10.0",
   "generated": "2026-06-27",
   "product": "LindaAI",
   "update_base_url": "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main",
@@ -39,6 +39,10 @@
       "min_tier": "platinum"
     },
     "deal-analyzer": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "deal-report": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
