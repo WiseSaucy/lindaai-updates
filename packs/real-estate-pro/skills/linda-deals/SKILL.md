@@ -3,7 +3,7 @@ name: linda-deals
 description: This skill should be used when the user asks to "analyze a deal", "run the numbers", "underwrite a property", "is this a good deal", "evaluate this investment", "what's the cash flow", "calculate cap rate", "what's the cash-on-cash return", "DSCR on this deal", "should I buy this property", "deal analysis", "run deal numbers", "break down this deal", "compare financing options", "creative finance analysis", "subject-to analysis", "seller finance deal", "hard money deal analysis", "BRRRR numbers", "rental property analysis", "multi-family underwriting", "commercial deal analysis", or any request involving evaluating whether a real estate deal makes financial sense.
 version: 1.0.0
 ---
-> 🤠 **For wholesale + fix-and-flip MAO using Boss47's locked Sauce Underwriter formula → use `linda-sauce-uw` instead.** This skill (`linda-deals`) handles other deal types (creative finance, multifamily, MHP/RV park).
+> 🤠 **For wholesale + fix-and-flip MAO using Boss47's locked Sauce Underwriter formula → use `linda-trigger` instead.** This skill (`linda-deals`) handles other deal types (creative finance, multifamily, MHP/RV park).
 
 
 # Deal Analyzer

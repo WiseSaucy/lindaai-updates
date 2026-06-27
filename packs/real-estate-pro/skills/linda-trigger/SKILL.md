@@ -1,11 +1,13 @@
 ---
-name: linda-sauce-uw
-description: Run a deal through the Sauce Underwriter — Boss47's locked formula for wholesale MAO and fix-and-flip walk-away. Use when the user says "underwrite this deal", "what should I offer", "MAO", "max allowable offer", "Sauce Underwriter", "run the numbers", "wholesale MAO", "fix and flip walk-away", "is this a good wholesale", "is this a good flip", "what's the buy price", "what's the dispo price", "run a flip analysis", "/linda-sauce-uw", "/linda-uw", "Sauce numbers", "Boss47 numbers", or any request involving evaluating a single-family or small-multi residential deal for a wholesale assignment or fix-and-flip exit.
+name: linda-trigger
+description: Run a deal through the Sauce Underwriter — Boss47's locked formula for wholesale MAO and fix-and-flip walk-away. Use when the user says "underwrite this deal", "what should I offer", "MAO", "max allowable offer", "Sauce Underwriter", "run the numbers", "wholesale MAO", "fix and flip walk-away", "is this a good wholesale", "is this a good flip", "what's the buy price", "what's the dispo price", "run a flip analysis", "/linda-trigger", "pull the trigger", "trigger on this deal", "trigger the MAO", "linda trigger", "/linda-trigger", "/linda-uw", "Sauce numbers", "Boss47 numbers", or any request involving evaluating a single-family or small-multi residential deal for a wholesale assignment or fix-and-flip exit.
 tier: gold
 tags: [real-estate, wholesale, fix-and-flip, MAO, underwriting, deal-analysis, sauce-formula]
 ---
 
-# 🤠 Linda Sauce-UW — The Sauce Underwriter
+# 🤠 Linda Trigger — Pull the Trigger on the MAO
+
+> When Bandit's done huntin', it's Trigger time. This is the Sauce Underwriter — Boss47's locked formula for wholesale MAO + fix-and-flip walk-away. **Pull the trigger when the numbers say green.**
 
 > Boss47's locked formula for wholesale + fix-and-flip deals.
 > Source: `Sauce Underwriter.xlsx` (Boss47's personal calculator).
