@@ -35,6 +35,20 @@ video's "...more → Show transcript", or supply the numbers directly). To run i
 unattended, the environment must be created with a network policy that allows
 those hosts — see https://code.claude.com/docs/en/claude-code-on-the-web
 
+## Standard Operating Procedure (SOP)
+
+**Whenever the user shares a video link, transcribe it — automatically, without
+being asked twice.** This is standing policy:
+
+1. Produce a **Whisper transcript by default** (`--force-whisper`) as the canonical
+   record — it is the most accurate and consistent, which matters when numbers and
+   thresholds are involved. The captions path is a fast cross-check, not the default.
+2. Then do the actual job (summary / criteria extraction / spreadsheet) from that text.
+3. If the environment blocks YouTube (403), say so once, run nothing further, and
+   ask the user to paste the transcript or the numbers — do not keep retrying.
+
+The goal: the user should never have to explain how to "watch" a video again.
+
 ## How It Works
 
 ### License Check
@@ -63,9 +77,11 @@ captions; the first Whisper run downloads a small model.
 ### Step 2 — Transcribe
 
 ```bash
+# SOP default — Whisper transcript (canonical, most accurate):
+python3 transcribe.py "<YOUTUBE_URL>" --out transcript.txt --force-whisper --model small
+# Fast cross-check only (use YouTube's own captions, skip Whisper):
 python3 transcribe.py "<YOUTUBE_URL>" --out transcript.txt
-# options: --model tiny|base|small|medium|large-v3   --lang en|auto   --force-whisper
-```
+# options: --model tiny|base|small|medium|large-v3   --lang en|auto
 
 The script prints a one-line JSON summary (title, channel, method, word count,
 output path) and writes the full transcript to `--out`. `method` is `captions`

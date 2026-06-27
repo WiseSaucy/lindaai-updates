@@ -8,7 +8,7 @@ Tabs: Read Me | Deal Summary | Underwriting | Income Detail |
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
-from openpyxl.formatting.rule import CellIsRule
+from openpyxl.formatting.rule import CellIsRule, FormulaRule
 
 # ---- styles ----------------------------------------------------------------
 TITLE   = Font(name="Calibri", size=16, bold=True, color="FFFFFF")
@@ -558,27 +558,111 @@ ls["A29"]=("READ: if Headroom is negative, the price is higher than the income c
 ls["A29"].font=NOTE
 
 # =============================================================================
+# SHEET — NORMALIZATION (AJ's "build your own NOI")
+# =============================================================================
+nm = wb.create_sheet("Normalization")
+nm.sheet_view.showGridLines=False
+for cl,w in (("A",34),("B",16),("C",16),("D",42)):
+    nm.column_dimensions[cl].width=w
+merge_title(nm, "A1:D1", "NORMALIZE THE NOI — BUILD YOUR OWN NUMBERS")
+nm["A2"]=("AJ: the T12 is your starting point but never trusted as-is. Enter the SELLER'S reported figures "
+          "(yellow); the Normalized column rebuilds the NOI with AJ's 4 adjustments. Source: AJ Kukra.")
+nm["A2"].font=NOTE
+
+sec(nm, 4, "AJ'S NORMALIZATION RULES (editable)", "A:D")
+def nm_in(row,label,val,fmt,note):
+    nm[f"A{row}"]=label; nm[f"A{row}"].font=LABEL
+    c=nm[f"B{row}"]; c.value=val; c.number_format=fmt; c.font=INPUTF; c.fill=INPUT_FILL
+    c.border=BORDER; c.alignment=Alignment(horizontal="right")
+    if note: nm[f"D{row}"]=note; nm[f"D{row}"].font=NOTE
+nm_in(5,"Management Fee (% of EGI)",0.10,PCT,"self-managed owners show little or none")
+nm_in(6,"Repairs & Maintenance (% of EGI)",0.05,PCT,"or use the prior-year actual")
+nm_in(7,"CapEx / Reserves (% of EGI)",0.03,PCT,"a real cost that's rarely in the P&L")
+nm_in(8,"Property Tax bump (%)",0.20,PCT,"taxes reset on sale in disclosure states")
+MG,RM,CX,TX="B5","B6","B7","B8"
+
+sec(nm, 10, "INCOME", "A:D")
+nm["A11"]="Effective Gross Income (EGI)"; nm["A11"].font=LABEL
+c=nm["B11"]; c.value=247500; c.number_format=CUR2; c.font=INPUTF; c.fill=INPUT_FILL
+c.border=BORDER; c.alignment=Alignment(horizontal="right")
+nm["C11"]="=B11"; nm["C11"].number_format=CUR2; nm["C11"].font=BOLD; nm["C11"].alignment=Alignment(horizontal="right")
+nm["D11"]="seller's real top line (AJ: gross income = EGI)"; nm["D11"].font=NOTE
+EGI="B11"
+
+sec(nm, 13, "OPERATING EXPENSES", "A:D")
+nm["B14"]="Seller Reported"; nm["C14"]="Normalized"; nm["D14"]="AJ adjustment"
+for cl in ("B","C","D"):
+    nm[f"{cl}14"].font=SECTION; nm[f"{cl}14"].fill=SECTION_FILL; nm[f"{cl}14"].alignment=Alignment(horizontal="center")
+# (label, seller_default, normalized_formula_template, note)  {r}=current row
+exp=[
+ ("Property Taxes", 12000, "=B{r}*(1+%s)"%TX, "+20%: resets on sale"),
+ ("Insurance", 8000, "=B{r}", "pass-through"),
+ ("Utilities (W/S/trash/elec)", 38000, "=B{r}", "pass-through"),
+ ("Repairs & Maintenance", 4200, "=MAX(B{r},%s*%s)"%(RM,EGI), "use >=5%% of EGI (deferred maint)"),
+ ("Management Fee", 3500, "=MAX(B{r},%s*%s)"%(MG,EGI), "use >=10%% of EGI (self-mgmt understates)"),
+ ("CapEx / Reserves", 0, "=MAX(B{r},%s*%s)"%(CX,EGI), "add >=3%% of EGI (never in P&L)"),
+ ("Payroll / Onsite", 0, "=B{r}", "pass-through"),
+ ("Marketing / Admin / Other", 6000, "=B{r}", "pass-through"),
+]
+er=15
+efirst=er
+for label,sv,nf,note in exp:
+    nm[f"A{er}"]=label; nm[f"A{er}"].font=LABEL
+    b=nm[f"B{er}"]; b.value=sv; b.number_format=CUR2; b.font=INPUTF; b.fill=INPUT_FILL
+    b.border=BORDER; b.alignment=Alignment(horizontal="right")
+    cc=nm[f"C{er}"]; cc.value=nf.format(r=er); cc.number_format=CUR2; cc.alignment=Alignment(horizontal="right")
+    nm[f"D{er}"]=note; nm[f"D{er}"].font=NOTE
+    er+=1
+elast=er-1
+# totals
+nm[f"A{er}"]="Total Operating Expenses"; nm[f"A{er}"].font=BOLD
+nm[f"B{er}"]=f"=SUM(B{efirst}:B{elast})"; nm[f"C{er}"]=f"=SUM(C{efirst}:C{elast})"
+for col in ("B","C"):
+    nm[f"{col}{er}"].number_format=CUR2; nm[f"{col}{er}"].font=BOLD; nm[f"{col}{er}"].fill=TOTAL_FILL
+    nm[f"{col}{er}"].alignment=Alignment(horizontal="right")
+opex_s,opex_n=f"B{er}",f"C{er}"
+rr=er+1
+nm[f"A{rr}"]="Expense Ratio"; nm[f"A{rr}"].font=LABEL
+nm[f"B{rr}"]=f"={opex_s}/{EGI}"; nm[f"C{rr}"]=f"={opex_n}/C11"
+for col in ("B","C"):
+    nm[f"{col}{rr}"].number_format=PCT; nm[f"{col}{rr}"].alignment=Alignment(horizontal="right")
+nm[f"D{rr}"]="AJ: under 30% means something's missing"; nm[f"D{rr}"].font=NOTE
+
+sec(nm, rr+2, "RESULT", "A:D")
+nr=rr+3
+nm[f"A{nr}"]="Net Operating Income (NOI)"; nm[f"A{nr}"].font=BOLD
+nm[f"B{nr}"]=f"={EGI}-{opex_s}"; nm[f"C{nr}"]=f"=C11-{opex_n}"
+for col in ("B","C"):
+    nm[f"{col}{nr}"].number_format=CUR2; nm[f"{col}{nr}"].font=BOLD; nm[f"{col}{nr}"].fill=KEY_FILL
+    nm[f"{col}{nr}"].alignment=Alignment(horizontal="right")
+noi_s,noi_n=f"B{nr}",f"C{nr}"
+nm[f"A{nr+1}"]="NOI Haircut ($ cut from seller's NOI)"; nm[f"A{nr+1}"].font=BOLD
+nm[f"C{nr+1}"]=f"={noi_s}-{noi_n}"; nm[f"C{nr+1}"].number_format=CUR2; nm[f"C{nr+1}"].font=BOLD
+nm[f"C{nr+1}"].alignment=Alignment(horizontal="right")
+nm[f"A{nr+2}"]="NOI Haircut (%)"; nm[f"A{nr+2}"].font=LABEL
+nm[f"C{nr+2}"]=f"=({noi_s}-{noi_n})/{noi_s}"; nm[f"C{nr+2}"].number_format=PCT; nm[f"C{nr+2}"].alignment=Alignment(horizontal="right")
+nm[f"A{nr+3}"]="Valuation Cap Rate (for overpayment calc)"; nm[f"A{nr+3}"].font=LABEL
+capcell=nm[f"B{nr+3}"]; capcell.value=0.10; capcell.number_format=PCT2; capcell.font=INPUTF
+capcell.fill=INPUT_FILL; capcell.border=BORDER; capcell.alignment=Alignment(horizontal="right")
+nm[f"A{nr+4}"]="OVERPAYMENT RISK  (haircut / cap rate)"; nm[f"A{nr+4}"].font=Font(size=12,bold=True,color="9C0006")
+ovp=nm[f"C{nr+4}"]; ovp.value=f"=({noi_s}-{noi_n})/B{nr+3}"; ovp.number_format=CUR2
+ovp.font=Font(size=12,bold=True,color="9C0006"); ovp.fill=WARN_FILL; ovp.alignment=Alignment(horizontal="right")
+nm[f"D{nr+4}"]="AJ: a small NOI cut = a huge price difference"; nm[f"D{nr+4}"].font=NOTE
+nm[f"A{nr+6}"]=("NEXT: carry the NORMALIZED expense figures (column C) into the Underwriting tab so every "
+                "metric and the Deal Scorecard reflect YOUR numbers, not the seller's.")
+nm[f"A{nr+6}"].font=NOTE
+
+# =============================================================================
 # SHEET — DEAL SCORECARD (GOOD / OK / BAD rating)
 # =============================================================================
 sc = wb.create_sheet("Deal Scorecard")
 sc.sheet_view.showGridLines=False
-sc.column_dimensions["A"].width=30
-sc.column_dimensions["B"].width=14
-sc.column_dimensions["C"].width=10
-sc.column_dimensions["D"].width=13
-sc.column_dimensions["E"].width=13
-sc.column_dimensions["F"].width=12
-sc.column_dimensions["G"].width=7
-merge_title(sc, "A1:G1", "DEAL SCORECARD — GOOD / OK / BAD")
-sc["A2"]=("Defaults are industry-standard RV-park benchmarks. The GREEN cutoff cells are EDITABLE — "
-          "replace them with your own (or a course/video's) numbers and the ratings update live.")
+for cl,w in (("A",36),("B",13),("C",27),("D",9),("E",9),("F",9),("G",9),("H",16)):
+    sc.column_dimensions[cl].width=w
+merge_title(sc, "A1:H1", "DEAL SCORECARD — AJ KUKRA 'RV PARK PROFIT BLUEPRINT'")
+sc["A2"]=("AJ's framework. Underwrite to the NORMALIZED NOI (see Normalization tab) before trusting these. "
+          "GREEN cutoff cells are editable. Source: AJ Kukra, RV Park Profit Blueprint workshop.")
 sc["A2"].font=NOTE
-
-hdr=4
-heads=["Metric","Deal Value","Better","Good cutoff","OK cutoff","Rating","Pts"]
-for j,h in enumerate(heads):
-    col=get_column_letter(1+j); c=sc[f"{col}{hdr}"]
-    c.value=h; c.font=SECTION; c.fill=SECTION_FILL; c.alignment=Alignment(horizontal="center")
 
 GREEN=PatternFill("solid", fgColor="C6EFCE")
 YELL =PatternFill("solid", fgColor="FFEB9C")
@@ -587,64 +671,90 @@ GFONT=Font(color="006100", bold=True)
 YFONT=Font(color="9C6500", bold=True)
 RFONT=Font(color="9C0006", bold=True)
 
-# (label, value_formula, fmt, direction High/Low, good, ok)
-NOIv=f"Underwriting!{R['noi']}"
-metrics=[
- ("Going-in Cap Rate", f"=Underwriting!{R['caprate']}", PCT,  "High", 0.10, 0.08),
- ("Cash-on-Cash (Yr 1)", f"=Underwriting!{R['coc']}",   PCT,  "High", 0.10, 0.06),
- ("DSCR",                f"=Underwriting!{R['dscr']}",   MULT, "High", 1.40, 1.25),
- ("Debt Yield",          f"={NOIv}/Underwriting!{R['loan']}", PCT, "High", 0.10, 0.08),
- ("Cap Rate − Interest (spread)", f"=Underwriting!{R['caprate']}-Underwriting!{R['intr']}", PCT, "High", 0.03, 0.015),
- ("Operating Expense Ratio", f"=Underwriting!{R['oer']}", PCT, "Low", 0.40, 0.55),
- ("Break-even Occupancy",  f"=Underwriting!{R['breakeven']}", PCT, "Low", 0.70, 0.80),
- ("Levered IRR",         "='Pro Forma & Returns'!B18", PCT,  "High", 0.15, 0.10),
- ("Equity Multiple",     "='Pro Forma & Returns'!B19", MULT, "High", 2.0,  1.5),
+hdr=4
+heads=["Metric","Deal Value","AJ's rule","Good","OK","(band)","(band)","Rating"]
+for j,h in enumerate(heads):
+    col=get_column_letter(1+j); c=sc[f"{col}{hdr}"]
+    c.value=h; c.font=SECTION; c.fill=SECTION_FILL; c.alignment=Alignment(horizontal="center")
+
+U_="Underwriting!"
+egiv=U_+R['egi']; price=U_+R['price']; intr=U_+R['intr']; noi=U_+R['noi']
+dscrv=U_+R['dscr']; cocv=U_+R['coc']; oerv=U_+R['oer']; caprate=U_+R['caprate']
+
+# rows: ("__sec__",title) OR (label, value_formula, fmt, kind, cuts, rule)
+# kind: high|low (cuts=good,ok)  ;  band (cuts=badlo,goodlo,goodhi,badhi)
+rows=[
+ ("__sec__","GO / NO-GO METRICS  (after normalizing the NOI)"),
+ ("DSCR", f"={dscrv}", MULT, "high", (1.50,1.35), "AJ floor 1.35x to GO"),
+ ("Cash-on-Cash Return", f"={cocv}", PCT, "high", (0.10,0.08), "AJ target 10%+ to GO"),
+ ("__sec__","THE 5 QUICK HACKS  (screen any listing in ~2 min)"),
+ ("1% Rule  (monthly gross / price)", f"=({egiv}/12)/{price}", PCT2, "high", (0.01,0.009), ">=1% likely good"),
+ ("10x Rule — GRM  (price / annual gross)", f"={price}/{egiv}", '0.00"x"', "low", (10,12), "<10 ideal; >12 pricey"),
+ ("Quick DSCR  (NOI / (price x rate))", f"={noi}/({price}*{intr})", MULT, "high", (1.5,1.25), ">1.5 good; <1.25 risk"),
+ ("Expense Ratio  (OpEx / gross)", f"={oerv}", PCT, "band", (0.30,0.35,0.65,0.70), "35-65% healthy; <30%=fiction"),
+ ("Leverage spread  (cap - interest)", f"={caprate}-{intr}", PCT, "high", (0.02,0.0), "cap>rate = positive leverage"),
 ]
 r=hdr+1
-first=r
-for label,vf,fmt,direction,good,ok in metrics:
+row_dscr=row_coc=None
+for item in rows:
+    if item[0]=="__sec__":
+        sec(sc, r, item[1], "A:H"); r+=1; continue
+    label,vf,fmt,kind,cuts,rule=item
     sc[f"A{r}"]=label; sc[f"A{r}"].font=LABEL
     b=sc[f"B{r}"]; b.value=vf; b.number_format=fmt; b.font=BOLD; b.alignment=Alignment(horizontal="right")
-    sc[f"C{r}"]=direction; sc[f"C{r}"].font=NOTE; sc[f"C{r}"].alignment=Alignment(horizontal="center")
-    for colcell,val in (("D",good),("E",ok)):
-        c=sc[f"{colcell}{r}"]; c.value=val; c.number_format=fmt
-        c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER; c.alignment=Alignment(horizontal="right")
-    if direction=="High":
-        rf=f'=IF(B{r}>=D{r},"GOOD",IF(B{r}>=E{r},"OK","BAD"))'
+    sc[f"C{r}"]=rule; sc[f"C{r}"].font=NOTE
+    if kind=="band":
+        for colcell,val in zip(("D","E","F","G"),cuts):
+            c=sc[f"{colcell}{r}"]; c.value=val; c.number_format=fmt
+            c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER; c.alignment=Alignment(horizontal="right")
+        rf=f'=IF(OR(B{r}<D{r},B{r}>G{r}),"BAD",IF(AND(B{r}>=E{r},B{r}<=F{r}),"GOOD","OK"))'
     else:
-        rf=f'=IF(B{r}<=D{r},"GOOD",IF(B{r}<=E{r},"OK","BAD"))'
-    f=sc[f"F{r}"]; f.value=rf; f.alignment=Alignment(horizontal="center"); f.font=BOLD
-    sc[f"G{r}"]=f'=IF(F{r}="GOOD",2,IF(F{r}="OK",1,0))'
-    sc[f"G{r}"].alignment=Alignment(horizontal="center"); sc[f"G{r}"].font=NOTE
+        for colcell,val in (("D",cuts[0]),("E",cuts[1])):
+            c=sc[f"{colcell}{r}"]; c.value=val; c.number_format=fmt
+            c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER; c.alignment=Alignment(horizontal="right")
+        if kind=="high":
+            rf=f'=IF(B{r}>=D{r},"GOOD",IF(B{r}>=E{r},"OK","BAD"))'
+        else:
+            rf=f'=IF(B{r}<=D{r},"GOOD",IF(B{r}<=E{r},"OK","BAD"))'
+    h=sc[f"H{r}"]; h.value=rf; h.alignment=Alignment(horizontal="center"); h.font=BOLD
+    if label=="DSCR": row_dscr=r
+    if label=="Cash-on-Cash Return": row_coc=r
     r+=1
 last=r-1
 
-rng=f"F{first}:F{last}"
+rng=f"H{hdr+1}:H{last}"
 sc.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"GOOD"'], fill=GREEN, font=GFONT))
 sc.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"OK"'],   fill=YELL,  font=YFONT))
 sc.conditional_formatting.add(rng, CellIsRule(operator='equal', formula=['"BAD"'],  fill=RED,   font=RFONT))
 
-# ---- overall verdict --------------------------------------------------------
-sec(sc, last+2, "OVERALL", "A:G")
+sc[f"A{last+1}"]=("Expense Ratio is a BAND: below D = BAD (NOI likely inflated / 'fiction') · D-E and F-G = OK · "
+                  "E-F = GOOD (healthy) · above G = BAD.  D,E,F,G default to 30/35/65/70%.")
+sc[f"A{last+1}"].font=NOTE
+
+# ---- AJ verdict: BOTH core metrics must clear --------------------------------
 vr=last+3
-sc[f"A{vr}"]="Score"; sc[f"A{vr}"].font=BOLD
-sc[f"B{vr}"]=f"=SUM(G{first}:G{last})"; sc[f"B{vr}"].font=BOLD; sc[f"B{vr}"].alignment=Alignment(horizontal="right")
-sc[f"C{vr}"]=f'="of "&({last}-{first}+1)*2'; sc[f"C{vr}"].font=NOTE
-sc[f"A{vr+1}"]="Score %"; sc[f"A{vr+1}"].font=BOLD
-sc[f"B{vr+1}"]=f"=B{vr}/(({last}-{first}+1)*2)"; sc[f"B{vr+1}"].number_format=PCT
-sc[f"B{vr+1}"].font=BOLD; sc[f"B{vr+1}"].alignment=Alignment(horizontal="right")
-sc[f"A{vr+2}"]="VERDICT"; sc[f"A{vr+2}"].font=Font(size=13,bold=True)
-v=sc[f"B{vr+2}"]
-v.value=f'=IF(B{vr+1}>=0.8,"STRONG DEAL",IF(B{vr+1}>=0.6,"OK — NEEDS WORK","PASS / BAD DEAL"))'
+sec(sc, vr-1, "VERDICT  (AJ's rule: both DSCR and Cash-on-Cash must clear)", "A:H")
+sc[f"A{vr}"]="DSCR clears floor?"; sc[f"A{vr}"].font=BOLD
+sc[f"B{vr}"]=f'=IF(B{row_dscr}>=E{row_dscr},"YES","NO")'; sc[f"B{vr}"].font=BOLD; sc[f"B{vr}"].alignment=Alignment(horizontal="center")
+sc[f"A{vr+1}"]="Cash-on-Cash clears target?"; sc[f"A{vr+1}"].font=BOLD
+sc[f"B{vr+1}"]=f'=IF(B{row_coc}>=D{row_coc},"YES","NO")'; sc[f"B{vr+1}"].font=BOLD; sc[f"B{vr+1}"].alignment=Alignment(horizontal="center")
+sc[f"A{vr+3}"]="VERDICT"; sc[f"A{vr+3}"].font=Font(size=13,bold=True)
+v=sc[f"B{vr+3}"]
+v.value=(f'=IF(AND(B{row_dscr}>=E{row_dscr},B{row_coc}>=D{row_coc}),"GO - both clear",'
+         f'IF(OR(B{row_dscr}>=E{row_dscr},B{row_coc}>=D{row_coc}),"CONDITIONAL - restructure","LIKELY NO-GO"))')
 v.font=Font(size=13,bold=True); v.alignment=Alignment(horizontal="center")
-sc.merge_cells(f"B{vr+2}:D{vr+2}")
-vcell=f"B{vr+2}"
-sc.conditional_formatting.add(vcell, CellIsRule(operator='equal', formula=['"STRONG DEAL"'], fill=GREEN, font=GFONT))
-sc.conditional_formatting.add(vcell, CellIsRule(operator='equal', formula=['"OK — NEEDS WORK"'], fill=YELL, font=YFONT))
-sc.conditional_formatting.add(vcell, CellIsRule(operator='equal', formula=['"PASS / BAD DEAL"'], fill=RED, font=RFONT))
-sc[f"A{vr+4}"]=("Scoring: GOOD=2, OK=1, BAD=0 pts. Verdict: >=80% STRONG, 60-79% OK/NEEDS WORK, <60% PASS. "
-                "These are screening guides, not gospel — edit the cutoffs to match your strategy or market.")
-sc[f"A{vr+4}"].font=NOTE
+sc.merge_cells(f"B{vr+3}:E{vr+3}")
+vcell=f"$B${vr+3}"
+sc.conditional_formatting.add(f"B{vr+3}", FormulaRule(formula=[f'LEFT({vcell},2)="GO"'], fill=GREEN, font=GFONT))
+sc.conditional_formatting.add(f"B{vr+3}", FormulaRule(formula=[f'ISNUMBER(SEARCH("CONDITIONAL",{vcell}))'], fill=YELL, font=YFONT))
+sc.conditional_formatting.add(f"B{vr+3}", FormulaRule(formula=[f'ISNUMBER(SEARCH("NO-GO",{vcell}))'], fill=RED, font=RFONT))
+sc[f"A{vr+5}"]="Red flags (BAD ratings)"; sc[f"A{vr+5}"].font=BOLD
+sc[f"B{vr+5}"]=f'=COUNTIF(H{hdr+1}:H{last},"BAD")'; sc[f"B{vr+5}"].font=BOLD; sc[f"B{vr+5}"].alignment=Alignment(horizontal="center")
+sc[f"A{vr+7}"]=("CONDITIONAL means restructure to save it (AJ's 3 levers): (1) lower price to your MAO, "
+                "(2) ask the seller to carry a slice — blended rate drops, DSCR clears, CoC jumps, "
+                "(3) more down payment. If none work and the seller won't budge, your underwriting just "
+                "saved you from an expensive mistake.")
+sc[f"A{vr+7}"].font=NOTE
 
 # =============================================================================
 # SHEET — READ ME (insert first)
@@ -659,37 +769,61 @@ rm.row_dimensions[1].height=26
 lines=[
  "",
  "WHAT THIS IS",
- "A deal-screening model for buying RV parks. Plug in a property's numbers and it returns the cap rate,",
- "cash flow, cash-on-cash, DSCR, debt yield, and a 5-10 year IRR so you can decide fast if a deal works.",
+ "An RV-park deal-screening model built on AJ Kukra's 'RV Park Profit Blueprint' framework. Drop in a",
+ "deal's numbers and it tells you in minutes whether it makes money — using AJ's 5 key metrics, his 5",
+ "quick hacks, NOI normalization, and his go / conditional / no-go rule. Works for RV parks and adapts",
+ "directly to mobile home parks (same lot-rent math). Source: AJ Kukra, RV Park Profit Blueprint workshop.",
+ "",
+ "AJ'S 5 KEY METRICS (the heartbeat of the deal)",
+ "  1. NOI — effective gross income (EGI) minus operating expenses. Every other metric flows from it.",
+ "  2. Cap Rate = NOI / price. Higher = paying less. But a very high cap (14%+) usually means hidden risk.",
+ "  3. DSCR = NOI / annual debt. AJ's floor is 1.35x — that's YOUR target, not just the lender's.",
+ "  4. Net Profit = what's left after opex AND debt service.",
+ "  5. Cash-on-Cash = net profit / cash invested. AJ's target is 10%+.",
+ "",
+ "AJ'S 5 QUICK HACKS (screen any listing in ~2 minutes) — see the Deal Scorecard tab",
+ "  1. 1% Rule — monthly gross >= 1% of price = likely good (cross the last two zeros off the price).",
+ "  2. 10x Rule (GRM) — price / annual gross; want UNDER 10. Over ~15 is expensive.",
+ "  3. Quick DSCR — NOI / (price x interest rate): >1.5 good, 1.25-1.5 closer look, <1.25 lending risk.",
+ "  4. Expense Ratio — OpEx / gross: UNDER 30% = numbers are fiction; 35-65% normal; over 70% a problem.",
+ "  5. Negative Leverage — if cap rate < your interest rate you lose money day one. Want cap ABOVE rate.",
+ "",
+ "NORMALIZE THE NOI (AJ: never trust the seller's NOI) — see the Normalization tab",
+ "  The OM is the seller's best case; the Pro Forma is fantasy; the T12 is your start but needs adjusting.",
+ "  AJ's 4 standard adjustments: management -> 10% of EGI, repairs -> 5% (or prior year), capex -> +3%,",
+ "  property taxes -> +20% (they reset on sale). A small NOI cut at an 8-10% cap = a huge price difference.",
+ "",
+ "THE BAD-DAY TEST (break the deal on purpose) — use the Sensitivity tab",
+ "  Cut occupancy 10-15%, add 1-2% to the interest rate, raise expenses 10-15%. Does DSCR still clear?",
+ "",
+ "THE DECISION (after normalizing)",
+ "  Both DSCR (>=1.35) AND Cash-on-Cash (>=10%) clear -> GO. One fails -> CONDITIONAL (restructure).",
+ "  Both fail -> likely NO-GO. To save a conditional deal, use AJ's 3 levers: lower the price to your",
+ "  MAO, ask the seller to carry a slice (blended rate drops), or add down payment. Don't pay the seller",
+ "  for value YOU will create (rent bumps to market, occupancy, utility bill-back, added revenue).",
  "",
  "THE TABS (left to right)",
- "  • Deal Summary  — one-page headline view; print/screenshot this for lenders & partners.",
- "  • Deal Scorecard — rates the deal GOOD/OK/BAD on each metric with an overall verdict (editable cutoffs).",
+ "  • Deal Summary  — one-page headline view; print/screenshot for lenders & partners.",
+ "  • Deal Scorecard — AJ's metrics + 5 hacks rated GOOD/OK/BAD with his go / conditional / no-go verdict.",
  "  • Underwriting  — the engine. Fill the YELLOW cells; everything else is a formula.",
+ "  • Normalization — rebuild the seller's NOI with AJ's 4 adjustments; shows the overpayment risk.",
  "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
  "  • Actuals vs Pro Forma — seller's CURRENT numbers vs your stabilized plan, side by side.",
  "  • Pro Forma & Returns — 10-year projection, sale reversion, IRR & equity multiple.",
- "  • Sensitivity   — how Cash-on-Cash & DSCR move with price, interest rate, rent & vacancy.",
+ "  • Sensitivity   — the Bad-Day Test: CoC & DSCR vs price, interest rate, rent & vacancy.",
  "  • Loan Sizing   — max purchase price the NOI supports at your target DSCR / debt yield.",
  "",
  "HOW TO USE IT",
- "1. Start on 'Underwriting'. Fill every yellow cell from the seller's P&L and rent roll.",
- "2. (Optional) Use 'Income Detail' for a seasonal park, then set 'Use Detailed Income Build? = Y'.",
- "3. Put the seller's CURRENT numbers into the left column of 'Actuals vs Pro Forma' to see the gap.",
- "4. Read the headline numbers on 'Deal Summary'; stress-test on 'Sensitivity'.",
+ "1. Normalization tab: enter the seller's reported expenses; read off your normalized NOI.",
+ "2. Underwriting tab: fill the yellow cells using those NORMALIZED numbers, not the seller's.",
+ "3. Deal Scorecard: read the GOOD/OK/BAD ratings and the GO / CONDITIONAL / NO-GO verdict.",
+ "4. Sensitivity: run the bad-day stress test. Deal Summary: the one-page headline.",
  "",
- "RULES OF THUMB (screening, not gospel)",
- "  • Cap rate: 8%+ is typical for RV parks; lower means you're paying up.",
- "  • DSCR: lenders want 1.25x+. Below 1.20x is a financing risk.",
- "  • Cash-on-Cash: 8-12%+ in year one is a healthy target.",
- "  • Expense ratio: 35-50% of EGI is normal; under 30% usually means expenses are understated.",
- "  • Set your Exit Cap 0.5-1.0% HIGHER than the going-in cap to stay conservative.",
- "",
- "RV-PARK-SPECIFIC WATCH-OUTS",
+ "RV-PARK / MHP WATCH-OUTS",
+ "  • Nondisclosure states: sellers needn't volunteer problems (failing septic, AC, zoning). Dig.",
  "  • Transient/nightly income is seasonal and far less stable than annual/monthly tenants.",
- "  • Utility metering — are sites individually metered, or is the owner eating utilities?",
+ "  • Utility metering — are sites individually metered, or is the owner eating utilities? (ratio bill-back).",
  "  • Infrastructure age — septic/sewer, electric pedestals (30/50 amp), water lines = big CapEx.",
- "  • Flood zone, seasonal closures, and % of park-owned rentals vs. tenant-owned rigs.",
  "  • Property taxes usually RESET on sale — don't trust the seller's current tax line.",
  "",
  "This is a screening tool, not investment advice. Verify every number and consult professionals.",
@@ -704,7 +838,7 @@ for ln in lines:
     r+=1
 
 # ---- tab order --------------------------------------------------------------
-order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Income Detail",
+order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Normalization","Income Detail",
        "Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
 wb._sheets.sort(key=lambda s: order.index(s.title))
 wb.active = 0
