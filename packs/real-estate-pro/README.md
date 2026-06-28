@@ -10,7 +10,7 @@ This is Boss47's home turf — the same toolkit Daniel Wise uses every day to so
 
 ## What's in this pack
 
-**Seventeen skills**, organized by where they fit in the deal lifecycle. Hand off cleanly between them — `/linda-bandit` finds the deal, `/linda-deals` underwrites it, `/linda-loi` fires the offer, `/linda-closer` pushes it across the line, `/linda-zillow` + `/linda-retiktok` market it. Every skill is built around one of LindaAI's named agents (Bandit, Closer, Wrangler, Inkslinger) so you always know who's on the job.
+**Eighteen skills**, organized by where they fit in the deal lifecycle. Hand off cleanly between them — `/linda-bandit` finds the deal, `/linda-deals` underwrites it, `/linda-loi` fires the offer, `/linda-closer` pushes it across the line, `/linda-zillow` + `/linda-retiktok` market it. Every skill is built around one of LindaAI's named agents (Bandit, Closer, Wrangler, Inkslinger) so you always know who's on the job.
 
 ### 🤠 Hunt the deal
 - **linda-bandit** — 🤠 **Bandit** hunts MHP, RV, wholesale, and off-market deals matching your buy box. Ranks by motivation + math. Tells you which 3 to call first.
@@ -22,6 +22,7 @@ This is Boss47's home turf — the same toolkit Daniel Wise uses every day to so
 - **linda-invest** — Run BRRRR, flip, buy-and-hold, seller-finance amortization, and creative finance scenarios side-by-side.
 - **linda-airbnb** — Underwrite a short-term rental with real Airbnb data and seasonality.
 - **linda-coliving** — Rent-by-the-room analysis for co-living, sober living, and house hacks.
+- **linda-rvpark** — Underwrite any RV park or campground. 5 key metrics, seller numbers vs. three offers (conventional / partial seller carry / full seller carry), NOI normalization, screening hacks, and the bad-day stress test.
 
 ### 🚂 Make the offer
 - **linda-loi** — Send a clean, professional LOI in minutes — DSCR senior + seller carry junior structure built in, signable PDF, auto-follow-ups.
