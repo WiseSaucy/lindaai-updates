@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Generated deal outputs (per-deal, not source)
+Deal - *.xlsx
+Wise Certified - *.xlsx
+Wise Certified - *.pdf
+Wise Certified - *.pptx

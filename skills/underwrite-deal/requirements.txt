@@ -1,0 +1,7 @@
+# LindaAI underwrite-deal (master) — full pipeline deps
+openpyxl>=3.1.0
+reportlab>=4.0.0
+python-pptx>=0.6.21
+# only needed if transcribing a video (youtube-transcribe stage)
+yt-dlp>=2024.1.0
+faster-whisper>=1.0.0
