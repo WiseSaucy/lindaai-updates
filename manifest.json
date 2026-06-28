@@ -1,6 +1,6 @@
 {
-  "manifest_version": "1.7.1",
-  "generated": "2026-06-09",
+  "manifest_version": "1.12.0",
+  "generated": "2026-06-28",
   "product": "LindaAI",
   "update_base_url": "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main",
   "copyright": "\u00a9 2026 LindaAI \u2014 Built by Daniel Wise",
@@ -39,6 +39,10 @@
       "min_tier": "platinum"
     },
     "deal-analyzer": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "deal-report": {
       "version": "1.0.0",
       "min_tier": "gold"
     },
@@ -182,6 +186,14 @@
       "version": "1.0.0",
       "min_tier": "bronze"
     },
+    "rv-park-autofill": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
+    "rv-park-underwriting": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
     "sam-gov-setup": {
       "version": "1.0.0",
       "min_tier": "bronze"
@@ -210,9 +222,17 @@
       "version": "1.0.0",
       "min_tier": "bronze"
     },
+    "underwrite-deal": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
     "update-manager": {
       "version": "1.0.0",
       "min_tier": "bronze"
+    },
+    "video-scrape": {
+      "version": "1.0.0",
+      "min_tier": "gold"
     },
     "voice": {
       "version": "1.0.0",
@@ -225,6 +245,10 @@
     "weekly-review": {
       "version": "1.0.0",
       "min_tier": "bronze"
+    },
+    "youtube-transcribe": {
+      "version": "1.0.0",
+      "min_tier": "silver"
     }
   },
   "agents": {
