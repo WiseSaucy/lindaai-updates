@@ -307,7 +307,7 @@ def render_pdf(d, path, logo=None):
 
     GREY = colors.HexColor("#555555")
     # ---- branded header: real logo if present, else vector Wise Certified mark ----
-    logo_h = 0.80 * inch
+    logo_h = 1.00 * inch
     drew = False
     if logo and os.path.exists(logo):
         try:
