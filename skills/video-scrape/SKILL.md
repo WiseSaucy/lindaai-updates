@@ -4,6 +4,7 @@ description: This skill should be used when the user wants the FULL contents of 
 version: 1.0.0
 min_tier: gold
 ---
+> 🤠 **Doubles as an engine for `/rv-park-underwriting`.** If the user is underwriting a park *from a deal video*, let `/rv-park-underwriting` drive — it calls this in the background. Use this directly only when they want a video read on its own (any topic), not a park underwrite.
 
 # Video Scrape
 

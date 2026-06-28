@@ -1,9 +1,10 @@
 ---
 name: deal-report
-description: This skill should be used when the user wants a polished, shareable report from a filled RV park underwriting workbook — "make the PDF", "generate the report", "one-page summary", "investor/lender packet", "build the PowerPoint", "deal report", "export this deal", or any request to turn the underwriting numbers into a branded PDF or slide deck (e.g. for Wise Certified Home Buyers).
+description: Background engine for /rv-park-underwriting — it runs this automatically when a report is wanted; the user does not call it directly. Turns a filled RV park workbook into a branded PDF + PowerPoint. Only invoke on its own if the user EXPLICITLY asks for ONLY the report off an already-filled workbook — e.g. "just make the PDF from this workbook", "rebuild the slide deck". Normal "underwrite this park and give me a report" requests go to /rv-park-underwriting.
 version: 1.0.0
 min_tier: gold
 ---
+> ⚙️🤠 **Engine part of `/rv-park-underwriting` — works in the background.** The underwriting skill calls this to print your branded one-pager + deck. Documented here only for a standalone report off an existing workbook.
 
 # Deal Report
 
