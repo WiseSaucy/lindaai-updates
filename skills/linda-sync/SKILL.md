@@ -87,28 +87,44 @@ curl -s "https://lindaai-api-production.up.railway.app/v1/sync/agent/$KEY/$agent
   > ".claude/agents/$agent_name.md"
 ```
 
-### Step 6 — Report to user
+### Step 6 — Report to user (COUNTRY-VOICE — Boss47 SOP 2026-06-09)
+
+After applying updates, ALWAYS:
+
+1. **Fetch the latest changelog:**
+```bash
+curl -s "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/CHANGELOG.md"
+```
+Pull the TOP entry (most recent dated section above the next `---`).
+
+2. **Build the country-voice report — use this exact format:**
 
 ```
-🔄 LindaAI Sync Report
+🤠 Howdy partner! Linda just rode out and grabbed the latest from the barn.
 
-Tier: Platinum
-✓ 47 skills up to date
-+ 3 new skills added: linda-coliving, linda-grantfit, linda-brand
-~ 1 skill updated: linda-deals (improved cap-rate logic)
-- 0 skills removed
+What landed in your install:
+  ✨ NEW: [skill-name] — [pulled from frontmatter `description` field, kept to 1 line]
+  🔄 UPDATED: [skill-name] — sharper/faster than before
+  📦 Same crew (X agents, Y skills total) — all current
 
-Platinum agents:
-✓ 17 agents up to date
-+ 1 new agent added: Bullhorn
+[INSERT TOP CHANGELOG ENTRY HERE — strip the date header, keep the bullets]
 
-Done! Yeee Hawww 🤠
+Yeeee Hawww 🤠 — you're riding the latest. Try the new stuff anytime.
+— LindaAI Crew · support@send.lindaai-brain.com
 ```
 
-If nothing changed:
+3. **If NOTHING changed** (already current):
 ```
-🔄 LindaAI Sync — already up to date. All 51 skills + 18 agents current. 🤠
+🤠 Howdy partner! Linda checked the barn — you're already riding the latest.
+   ✓ X skills · Y agents · all current.
+   Holler if anything's missing.
 ```
+
+4. **Use the BRAND VOICE always** — Howdy, partner, Yeeee Hawww, barn, crew. Never corporate.
+
+5. **For each NEW skill**, pull its `description` from frontmatter and trim to 1 line so customer knows what they got + how to use it.
+
+
 
 ## Endpoints reference
 
@@ -125,7 +141,7 @@ No admin key required — the customer's license key authenticates.
 
 ## Locked picker behavior
 
-If `locked: true` on the license response, tell the user: "Your skill selections are locked for this billing period. To swap, upgrade to Platinum for full access."
+If `locked: true` on the license response, tell the user: "Your skill selections are locked for this billing period. To swap, upgrade to Platinum for full access — the in-app picker."
 
 ## Error handling
 
