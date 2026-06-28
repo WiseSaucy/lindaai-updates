@@ -15,7 +15,7 @@ Linda's normalization rules (overridable in the JSON's "normalization" block):
   · property taxes -> +20%
 
 Usage:
-  python3 fill_template.py deal.json --template RV_Park_Underwriting.xlsx --out "Deal - Pine Ridge.xlsx"
+  python3 fill_template.py deal.json --template RV_Park_Underwriting.xlsx --out "Deal - Example RV Park.xlsx"
 
 The JSON schema is documented in deal_input.example.json (same folder).
 Everything downstream of the input cells is formula-driven, so it recalculates

@@ -1,7 +1,7 @@
 {
-  "property_name": "Pine Ridge RV Park",
-  "location": "Bozeman, MT",
-  "analysis_date": "2026-06-27",
+  "property_name": "Example RV Park (demo data — replace me)",
+  "location": "Anytown, ST",
+  "analysis_date": "2026-01-01",
   "sites": 50,
   "asking_price": 1800000,
 

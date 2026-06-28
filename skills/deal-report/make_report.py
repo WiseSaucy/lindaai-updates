@@ -10,8 +10,8 @@ Reads a filled RV_Park_Underwriting workbook, RECOMPUTES every metric in Python
   • Slide deck    (python-pptx) — ~6 slides of the same.
 
 Usage:
-  python3 make_report.py "Deal - Pine Ridge.xlsx" --pdf --pptx
-  # outputs: "Deal - Pine Ridge.pdf" and/or "Deal - Pine Ridge.pptx"
+  python3 make_report.py "Deal - Example RV Park.xlsx" --pdf --pptx
+  # outputs: "Deal - Example RV Park.pdf" and/or "Deal - Example RV Park.pptx"
 
 Requires:  pip install -r requirements.txt   (openpyxl, reportlab, python-pptx)
 """
