@@ -4,6 +4,7 @@ description: This skill should be used when the user shares a YouTube link (or a
 version: 1.0.0
 min_tier: silver
 ---
+> 🤠 **Doubles as an engine for `/rv-park-underwriting`.** Underwriting a park *from a video*? Let `/rv-park-underwriting` drive — it calls this in the background. Use this directly only when the user wants a transcript on its own (any topic).
 
 # YouTube Transcribe
 
