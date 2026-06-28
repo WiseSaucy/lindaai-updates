@@ -89,10 +89,11 @@
     "gold": {
       "display_name": "LindaAI Gold",
       "tagline": "Pro tier \u2014 real estate + finance power",
-      "skill_count": 34,
+      "skill_count": 35,
       "skills_include_silver": true,
       "additional_skills": [
         "deal-analyzer",
+        "rv-park-underwriting",
         "rental-analysis",
         "property-research",
         "deal-marketing-package",

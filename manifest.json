@@ -190,6 +190,10 @@
       "version": "1.0.0",
       "min_tier": "gold"
     },
+    "rv-park-underwriting": {
+      "version": "1.0.0",
+      "min_tier": "gold"
+    },
     "sam-gov-setup": {
       "version": "1.0.0",
       "min_tier": "bronze"

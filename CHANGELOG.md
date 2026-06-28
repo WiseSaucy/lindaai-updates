@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-06-28 — 🏕️ RV Park Underwriter rolls in
+
+**What's new:**
+
+- 🏕️ **`/rv-park-underwriting`** — NEW skill. A one-page RV park & campground underwriting sheet modeled on a framework refined over hundreds of deals: five key metrics at a glance (NOI, cap rate, DSCR, net profit, cash-on-cash), the seller's numbers vs. three structured offers side by side (conventional / partial seller carry / full seller carry), five 60-second screening hacks, adjustable levers that recalc everything instantly, the full income + T12 expense stack, NOI normalization, a two-lien debt stack, and the "bad day" stress test. Try: *"Underwrite this RV park — [# sites], [$/night], [occupancy %], asking [$ price], T12 attached."*
+
+**For Platinum + Gold tiers.**
+
+Yeeee Hawww 🤠
+
+---
+
 ## 2026-06-09 — 🎯 Sauce Underwriter is live
 
 **What's new:**
