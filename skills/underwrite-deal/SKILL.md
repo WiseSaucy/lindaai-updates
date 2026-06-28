@@ -1,11 +1,12 @@
 ---
 name: underwrite-deal
-description: This skill should be used when the user wants to underwrite an RV park (or mobile home park) deal end to end — "underwrite this deal", "run this deal", "analyze this RV park", "is this a good deal", "should I buy this park", "run the numbers and make me a report", or hands over a listing, T-12/P&L, offering memorandum, rent roll, or a deal walkthrough video. This is the master skill: it transcribes (if a video is given), extracts and normalizes the numbers, scores the deal, and produces a branded Wise Certified PDF + PowerPoint — the whole chain in one pass.
+description: Superseded by /rv-park-underwriting, which is now the single front door that orchestrates the whole chain (transcribe → extract → normalize → score → report). Do NOT trigger this for normal underwriting requests — route those to /rv-park-underwriting. Kept only as the documented pipeline runner (run_pipeline.py) for batch/headless runs.
 version: 1.0.0
 min_tier: gold
 ---
+> 🤠 **Folded into `/rv-park-underwriting`.** That's your one command now — it runs this whole pipeline for you. This page stays as the headless/batch runner (`run_pipeline.py`); you won't type it day to day.
 
-# Underwrite This Deal  (master)
+# Underwrite This Deal  (pipeline runner)
 
 ## Overview
 

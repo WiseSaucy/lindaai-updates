@@ -1,10 +1,9 @@
 ---
 name: linda-rvpark
-description: This skill should be used when the user asks to "underwrite an RV park", "RV park analysis", "RV park underwriting", "campground underwriting", "analyze an RV park deal", "is this RV park a good deal", "RV park cash flow", "RV park deal analysis", "RV park pro forma", "campground deal analysis", "underwrite a campground", "RV park cap rate", "RV park DSCR", "RV park NOI", "normalize RV park financials", "RV park T12 analysis", "RV park offer structure", "seller carry on an RV park", "maximum allowable offer RV park", "RV park stress test", "screen an RV park deal", "RV park 1% rule", "RV park GRM", "RV park expense ratio", "should I buy this RV park", "RV park value-add", "how much should I offer on this campground", "RV park underwriting spreadsheet", "build an RV park underwriting sheet", or any request involving evaluating, screening, normalizing, or structuring an offer on an RV park or campground investment.
+description: This is the ONE skill to underwrite an RV park or campground end to end — it orchestrates document extraction, the workbook, and the branded report behind the scenes, so the user never calls another skill. Use it when the user asks to "underwrite an RV park", "RV park analysis", "RV park underwriting", "campground underwriting", "analyze an RV park deal", "run this deal", "run this T-12 / P&L", "analyze this offering memorandum / OM", "drop this deal into the model", "underwrite this deal end to end", "underwrite this park from this video", "make me a deal report / one-pager / PDF / PowerPoint for this park", "is this RV park a good deal", "RV park cash flow", "RV park deal analysis", "RV park pro forma", "campground deal analysis", "underwrite a campground", "RV park cap rate", "RV park DSCR", "RV park NOI", "normalize RV park financials", "RV park T12 analysis", "RV park offer structure", "seller carry on an RV park", "maximum allowable offer RV park", "RV park stress test", "screen an RV park deal", "RV park 1% rule", "RV park GRM", "RV park expense ratio", "should I buy this RV park", "RV park value-add", "how much should I offer on this campground", "RV park underwriting spreadsheet", "build an RV park underwriting sheet", or any request involving evaluating, screening, normalizing, or structuring an offer on an RV park or campground investment.
 version: 1.0.0
 ---
-> 🤠 **The RV-park & campground specialist.** Once 🤠 **Bandit** (your Deal Hunter) turns up a park, hand it here to underwrite it — seller numbers vs. three offers, NOI normalization, and the bad-day test. For other deal types (SFR, multifamily, MHP, creative finance) use `linda-deals`; for wholesale/flip MAO use `linda-trigger`.
-
+> 🤠 **One command underwrites the whole park.** Drop in a listing, a T-12/P&L/OM, or even a deal video and `/linda-rvpark` runs the whole show — reads the docs, normalizes the NOI, builds three offers, and (on request) prints a branded report. You never type a second skill. Once 🤠 **Bandit** (Deal Hunter) turns up a park, hand it straight here. (Other deal types → `linda-deals`; wholesale/flip MAO → `linda-trigger`.)
 
 # RV Park / Campground Underwriting
 
@@ -48,6 +47,23 @@ Before proceeding, verify the LindaAI license:
    - If the server is unreachable or returns an error, proceed anyway (allow offline use — don't block paying customers because of a server hiccup).
    - If the server responds with `"valid": true`, proceed.
 6. If all checks pass, proceed.
+
+### Step 0 — One Command, Everything Behind It (orchestration)
+
+🤠 *This is the only skill the user ever calls to underwrite a park.* Whatever they hand over, you quietly run the right engine, then underwrite — they never type another skill name. Keep it smooth as a Sunday ride.
+
+| What the user gives you | What you run **silently** | Then |
+|--------------------------|----------------------------|------|
+| Just numbers in chat | nothing | go straight to the underwriting below |
+| A T-12 / P&L / OM / rent roll (PDF, Excel, image, or pasted text) | `python3 ~/.claude/skills/rv-park-autofill/fill_template.py <file> --template ~/.claude/skills/rv-park-autofill/RV_Park_Underwriting.xlsx --out "Deal - <park>.xlsx"` — extracts + normalizes into the workbook | read the normalized numbers back, then underwrite |
+| A deal walkthrough **video / YouTube link** where on-screen visuals matter (slides, spreadsheets) | `python3 ~/.claude/skills/video-scrape/extract.py <url>` | pull the financials from the frames + transcript, then underwrite |
+| A video where only the **narration** matters | `python3 ~/.claude/skills/youtube-transcribe/transcribe.py <url>` | same |
+| "make me the report" / "I need a one-pager" (after underwriting) | `python3 ~/.claude/skills/deal-report/make_report.py "Deal - <park>.xlsx" --pdf --pptx` | hand over the branded PDF / PowerPoint |
+
+**Rules of the trail:**
+- **Never tell the user to run another skill.** You orchestrate the engines; they just talk to you. One command in, full answer out.
+- If an engine isn't installed or a Python dep is missing, **don't block the deal** — fall back to doing that step by hand (read the doc yourself, normalize manually, write the summary in chat) and keep riding.
+- Always finish with the **underwriting analysis + GO / CONDITIONAL / NO-GO verdict.** The branded report is optional — offer it, don't force it.
 
 ### The Spreadsheet Layout
 

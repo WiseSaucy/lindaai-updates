@@ -1,9 +1,10 @@
 ---
 name: rv-park-autofill
-description: This skill should be used when the user wants to auto-fill the RV park underwriting workbook from a deal's documents — "underwrite this RV park", "run this T-12 / P&L", "analyze this offering memorandum", "fill the spreadsheet from this rent roll", "drop this deal into the model", "auto-fill the underwriting sheet", or any time they hand over a seller's financials (PDF, Excel, image, or pasted text) for an RV park or mobile home park and want the numbers loaded, normalized, and scored.
+description: Background engine for /rv-park-underwriting — it runs this automatically; the user does not call it directly. Fills the RV park underwriting workbook from a deal's documents and normalizes the NOI. Only invoke on its own if the user EXPLICITLY wants the spreadsheet filled WITHOUT a full underwrite — e.g. "just fill the spreadsheet", "only populate the workbook", "load these numbers into the model, no analysis". For any normal "underwrite this park" request, use /rv-park-underwriting instead.
 version: 1.0.0
 min_tier: gold
 ---
+> ⚙️🤠 **Engine part of `/rv-park-underwriting` — works in the background.** You don't type this one, partner; the underwriting skill saddles it up for you. Documented here only for when you want *just* the workbook filled.
 
 # RV Park Auto-Fill
 
