@@ -14,7 +14,20 @@
     { "path": ".claude/skills/linda-bureauping", "reason": "Bureau response — internal only", "deprecated_at": "2026-05-20" },
     { "path": ".claude/skills/linda-creditcoach", "reason": "Credit coaching — internal only", "deprecated_at": "2026-05-20" },
     { "path": ".claude/skills/linda-creditclient", "reason": "Credit client tracker — internal only", "deprecated_at": "2026-05-20" },
-    { "path": ".claude/skills/linda-licenses", "reason": "License administration tooling — operator-only, never customer-facing (Sentry leak removal)", "deprecated_at": "2026-06-03" }
+    { "path": ".claude/skills/linda-licenses", "reason": "License administration tooling — operator-only, never customer-facing (Sentry leak removal)", "deprecated_at": "2026-06-03" },
+    { "path": "packs/grant-hunter", "reason": "Grant tooling — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/linda-granthunt", "reason": "Grant finder — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/linda-grantfit", "reason": "Grant eligibility — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/linda-grantwrite", "reason": "Grant writer — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/linda-grantbudget", "reason": "Grant budget — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/linda-granttrack", "reason": "Grant tracker — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/linda-samgov", "reason": "SAM.gov registration — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/grant-writer", "reason": "Grant writer (core) — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/grant-finder", "reason": "Grant finder (core) — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/grant-eligibility", "reason": "Grant eligibility (core) — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/grant-budget-builder", "reason": "Grant budget (core) — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/grant-tracker", "reason": "Grant tracker (core) — internal only (liability)", "deprecated_at": "2026-06-28" },
+    { "path": ".claude/skills/sam-gov-setup", "reason": "SAM.gov registration (core) — internal only (liability)", "deprecated_at": "2026-06-28" }
   ],
   "notes_for_boss47": "Add new entries here whenever you want to retroactively remove something from customer installs. The customer's next /linda-sync will delete these paths. To restore, REMOVE the entry from here and re-sync."
 }
