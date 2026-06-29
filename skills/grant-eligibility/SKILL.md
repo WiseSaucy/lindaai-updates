@@ -1,8 +1,9 @@
 ---
 name: grant-eligibility
-description: This skill should be used when the user asks to "check grant eligibility", "am I eligible for this grant", "can I apply for this grant", "grant pre-screen", "grant qualification check", "does my business qualify", "grant eligibility check", "pre-screen this grant", "should I apply for this grant", "grant fit check", or wants a fast yes/no screen on whether a specific grant opportunity is worth pursuing.
+description: Background engine for /grant-writer — it runs this pre-screen automatically before drafting; the user does not call it directly. Only invoke on its own if the user EXPLICITLY wants ONLY a yes/no eligibility check WITHOUT drafting — e.g. "just tell me if I qualify", "pre-screen this, don't write it". Any "write/apply for this grant" request goes to /grant-writer.
 version: 1.0.0
 ---
+> ⚙️🤠 **Engine part of `/grant-writer` — runs in the background.** It pre-screens before any draft. Documented here only for a standalone qualify-check.
 
 # Grant Eligibility — 60-Second Pre-Screen
 

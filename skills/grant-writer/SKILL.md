@@ -46,6 +46,16 @@ Before proceeding, verify the LindaAI license:
    - If the server responds with `"valid": true`, proceed.
 6. If all checks pass, proceed.
 
+### Step 0 — One Command, Whole Application (orchestration)
+
+🤠 *Grant Writer is the one skill the user calls to go from opportunity to submission-ready draft.* Run the whole chain yourself — never send them to another skill:
+
+1. **Pre-screen eligibility first** (the `grant-eligibility` logic) — confirm the business actually qualifies: UEI/SAM.gov active, entity type, location, use-of-funds fit. If it's a clear no, say so plain and stop before drafting; no sense writing a grant you can't win.
+2. **Draft the application**, building the **budget + justification inline** (the `grant-budget-builder` logic) as section 5 — don't make the user run a separate budget skill.
+3. **Hand off** the draft + submission checklist.
+
+The user never types `grant-eligibility` or `grant-budget-builder` — you run them as part of writing. Separate intents keep their own skills, though: **finding** new grants → `grant-finder`; **tracking** the pipeline → `grant-tracker`; **registering** federally → `sam-gov-setup`.
+
 ### Step 1: Get the Grant Details
 
 Ask Boss47 for (or pull from `brain/grants/opportunities/`):

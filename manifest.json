@@ -70,26 +70,6 @@
       "version": "1.0.0",
       "min_tier": "bronze"
     },
-    "grant-budget-builder": {
-      "version": "1.0.0",
-      "min_tier": "bronze"
-    },
-    "grant-eligibility": {
-      "version": "1.0.0",
-      "min_tier": "platinum"
-    },
-    "grant-finder": {
-      "version": "1.0.0",
-      "min_tier": "platinum"
-    },
-    "grant-tracker": {
-      "version": "1.0.0",
-      "min_tier": "platinum"
-    },
-    "grant-writer": {
-      "version": "1.0.0",
-      "min_tier": "platinum"
-    },
     "healthcheck": {
       "version": "1.0.0",
       "min_tier": "bronze"
@@ -193,10 +173,6 @@
     "rv-park-underwriting": {
       "version": "1.0.0",
       "min_tier": "gold"
-    },
-    "sam-gov-setup": {
-      "version": "1.0.0",
-      "min_tier": "bronze"
     },
     "seller-outreach-drafter": {
       "version": "1.0.0",

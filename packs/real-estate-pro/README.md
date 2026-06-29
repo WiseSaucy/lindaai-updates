@@ -114,7 +114,7 @@ Just say **"walk me through posting this"** when your content is ready.
 
 ## Swap rule
 
-You can swap up to **12 skills** for any other LindaAI skill at your tier. Don't need `linda-coliving`? Trade it for `linda-grantwrite` or `linda-mail` — whatever fits how you work.
+You can swap up to **12 skills** for any other LindaAI skill at your tier. Don't need `linda-coliving`? Trade it for `linda-airbnb` or `linda-mail` — whatever fits how you work.
 
 **Platinum unlocks every skill and every pack** — no swapping needed, you get it all.
 
