@@ -3,6 +3,7 @@ name: deal-marketing-package
 description: This skill should be used when the user asks to "create marketing for a deal", "build a deal package", "marketing package", "deal flyer", "one-pager for a deal", "social media post for a property", "investor pitch", "listing description", "write a deal summary", "email blast for a deal", "property marketing", "market this deal", "create deal materials", "deal presentation", "buyer marketing", "investor marketing", "wholesale deal marketing", "flip marketing", "creative finance marketing", "property listing copy", "IG post for a deal", "Facebook post for a property", "deal promotion", "blast this deal out", "make a deal flyer", or any request involving generating marketing content to sell, assign, or promote a real estate deal to buyers, investors, or the public.
 version: 1.0.0
 ---
+> 🤠 **Front door — build the deal marketing *and* get it out.** Once the package is ready, hand to publishing in the background (`linda-post-walkthrough` to guide, or `linda-postiz-post` / `linda-social-post` to blast it). The user never types a separate post skill — offer to publish and drive it.
 
 # Deal Marketing Package
 
