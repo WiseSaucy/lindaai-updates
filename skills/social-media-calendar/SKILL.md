@@ -3,6 +3,7 @@ name: social-media-calendar
 description: This skill should be used when the user asks to "create a content calendar", "plan social media posts", "generate a posting schedule", "content calendar for the week", "content calendar for the month", "plan my posts", "social media plan", "what should I post", "content ideas", "content schedule", "posting calendar", "plan content for Instagram", "plan content for TikTok", "plan content for YouTube", "plan content for Facebook", "plan content for LinkedIn", "plan content for Twitter/X", "social media strategy", "batch content", "content batching plan", "2 week content plan", "monthly content plan", "weekly content plan", "multi-platform content", "post ideas", "caption ideas", "hashtag strategy", or anything related to planning, scheduling, or generating social media content across platforms.
 version: 1.0.0
 ---
+> 🤠 **Front door — plan *and* publish.** After the calendar's built, hand to publishing in the background (`linda-postiz-post` to auto-schedule at optimal times, or `linda-post-walkthrough` to post live). The user never types a separate post skill — offer to schedule it and drive it.
 
 # Social Media Calendar
 

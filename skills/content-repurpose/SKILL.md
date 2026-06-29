@@ -3,6 +3,7 @@ name: content-repurposer
 description: This skill should be used when the user asks to "repurpose content", "content repurpose", "turn this into social media posts", "create content from this", "repurpose this blog post", "repurpose this video", "repurpose this transcript", "make content from this", "turn this into tweets", "turn this into a thread", "create a LinkedIn post from this", "Instagram caption from this", "TikTok script from this", "repurpose this email", "content multiplier", "content recycling", "one piece of content into many", "derivative content", "atomize this content", "break this down into social posts", "create a content calendar from this", "repurpose this podcast", "repurpose this speech", "10x this content", "content remix", "social media content from this", "batch social content from this", "extract social posts from this", "turn my blog into social posts", "content spin", or wants to take one piece of content and generate multiple derivative pieces across platforms.
 version: 1.0.0
 ---
+> 🤠 **Front door — repurpose *and* publish.** Once the derivative pieces are made, hand to publishing in the background (`linda-post-walkthrough` to guide, or `linda-postiz-post` / `linda-social-post` to schedule). Don't make the user find a post skill — offer to publish and drive it.
 
 # Content Repurposer — One Piece In, 10+ Pieces Out
 

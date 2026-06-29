@@ -3,6 +3,7 @@ name: linda-postiz-post
 description: This skill should be used when the user asks to "post via Postiz", "schedule with Postiz", "post my pack via Postiz", "postiz schedule", "schedule the reel through Postiz", "blast via Postiz", "auto-schedule postiz", "queue this in Postiz", "send to Postiz", "publish via Postiz", "Postiz cross-post", "post the [name] pack to Postiz", "schedule [pack name] across all platforms", or wants finished content auto-scheduled to TikTok, Instagram, Facebook, YouTube Shorts, and Twitter/X via the connected Postiz Cloud account at per-platform optimal MDT times — no manual clicking, no Ayrshare, no walkthrough.
 version: 1.0.0
 ---
+> ⚙️🤠 **Publishing engine (Postiz) — the content skills call me to auto-schedule finished posts** at per-platform optimal times. Works behind `content-batch`, `content-repurpose`, `social-media-calendar`, and `deal-marketing-package`. Callable directly too.
 
 # Linda Postiz Post — Automated Multi-Platform Publisher (via Postiz Cloud API)
 
