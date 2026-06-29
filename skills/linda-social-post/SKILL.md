@@ -3,6 +3,7 @@ name: linda-social-post
 description: This skill should be used when the user asks to "post to social", "post my content", "schedule social post", "publish to TikTok / Instagram / Facebook / YouTube / Twitter", "post the reel", "schedule the reel", "push to socials", "blast to all platforms", "cross-post", "post everywhere", "auto-post", "queue up a post", "send this to my socials", or wants a finished video/image/caption pushed to one or more social platforms now or at an optimal time. Integrates with sauce-cuts output and Ayrshare API.
 version: 1.0.0
 ---
+> ⚙️🤠 **Publishing engine (Ayrshare) — the content skills call me to push finished posts to your platforms.** Works behind `content-batch`, `content-repurpose`, `social-media-calendar`, and `deal-marketing-package`. Callable directly too.
 
 # Linda Social Post — Multi-Platform Publisher (via Ayrshare)
 

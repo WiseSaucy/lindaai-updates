@@ -3,6 +3,7 @@ name: content-batch
 description: This skill should be used when the user asks to "create content", "generate posts", "content batch", "write social media posts", "make me some posts", "batch content", "content calendar", "social media content", "write posts for Instagram", "write posts for Twitter", "write posts for LinkedIn", "TikTok scripts", "content ideas", "write captions", "generate a content calendar", "batch social posts", "create a posting schedule", "write marketing content", "social media batch", "give me content", "write 5 posts", "write 10 posts", "content blitz", "posting cadence", or wants to generate multiple pieces of social media content at once for any platform.
 version: 1.0.0
 ---
+> 🤠 **Front door — content *and* publishing in one ride.** When the posts are ready, hand straight to publishing in the background (📣 Holler walks you through it via `linda-post-walkthrough`, or auto-schedule via `linda-postiz-post` / `linda-social-post`). The user never types a separate post skill — offer to publish, then drive it.
 
 # Content Batch — Multi-Platform Social Media Content Generator
 
