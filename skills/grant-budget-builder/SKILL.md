@@ -1,8 +1,9 @@
 ---
 name: grant-budget-builder
-description: This skill should be used when the user asks to "build a grant budget", "grant budget", "budget for a grant", "budget justification", "grant cost breakdown", "match funding calculation", "cost share calculation", "federal grant budget", "SF-424 budget", "grant budget spreadsheet", "indirect cost calculation", or wants a detailed, funder-compliant budget and justification for a grant application.
+description: Background engine for /grant-writer — it builds the budget inline while drafting; the user does not call it directly. Only invoke on its own if the user EXPLICITLY wants ONLY a budget WITHOUT the full application — e.g. "just build the budget", "budget only, no narrative". Any "write/apply for this grant" request goes to /grant-writer.
 version: 1.0.0
 ---
+> ⚙️🤠 **Engine part of `/grant-writer` — runs in the background.** It builds the funder-compliant budget as part of the draft. Documented here only for a standalone budget.
 
 # Grant Budget Builder — Funder-Compliant Budgets & Justifications
 
