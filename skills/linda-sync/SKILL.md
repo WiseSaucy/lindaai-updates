@@ -87,7 +87,7 @@ curl -s "https://lindaai-api-production.up.railway.app/v1/sync/agent/$KEY/$agent
   > ".claude/agents/$agent_name.md"
 ```
 
-### Step 6 — Report to user (COUNTRY-VOICE — Boss47 SOP 2026-06-09)
+### Step 6 — Report to user (COUNTRY-VOICE — Boss SOP 2026-06-09)
 
 After applying updates, ALWAYS:
 
