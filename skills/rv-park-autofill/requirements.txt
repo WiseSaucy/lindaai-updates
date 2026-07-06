@@ -1,2 +1,0 @@
-# LindaAI rv-park-autofill skill
-openpyxl>=3.1.0
