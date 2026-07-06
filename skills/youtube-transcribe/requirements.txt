@@ -1,4 +1,0 @@
-# LindaAI youtube-transcribe skill dependencies
-# Captions path needs only yt-dlp. Whisper fallback adds faster-whisper.
-yt-dlp>=2024.1.0
-faster-whisper>=1.0.0
