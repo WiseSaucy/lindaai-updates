@@ -1,16 +1,16 @@
 ---
 name: linda-trigger
-description: Run a deal through the Sauce Underwriter — Boss47's locked formula for wholesale MAO and fix-and-flip walk-away. Use when the user says "underwrite this deal", "what should I offer", "MAO", "max allowable offer", "Sauce Underwriter", "run the numbers", "wholesale MAO", "fix and flip walk-away", "is this a good wholesale", "is this a good flip", "what's the buy price", "what's the dispo price", "run a flip analysis", "/linda-trigger", "pull the trigger", "trigger on this deal", "trigger the MAO", "linda trigger", "/linda-trigger", "/linda-uw", "Sauce numbers", "Boss47 numbers", or any request involving evaluating a single-family or small-multi residential deal for a wholesale assignment or fix-and-flip exit.
+description: Run a deal through the Sauce Underwriter — Boss's locked formula for wholesale MAO and fix-and-flip walk-away. Use when the user says "underwrite this deal", "what should I offer", "MAO", "max allowable offer", "Sauce Underwriter", "run the numbers", "wholesale MAO", "fix and flip walk-away", "is this a good wholesale", "is this a good flip", "what's the buy price", "what's the dispo price", "run a flip analysis", "/linda-trigger", "pull the trigger", "trigger on this deal", "trigger the MAO", "linda trigger", "/linda-trigger", "/linda-deals", "Sauce numbers", "Boss numbers", or any request involving evaluating a single-family or small-multi residential deal for a wholesale assignment or fix-and-flip exit.
 tier: gold
 tags: [real-estate, wholesale, fix-and-flip, MAO, underwriting, deal-analysis, sauce-formula]
 ---
 
 # 🤠 Linda Trigger — Pull the Trigger on the MAO
 
-> When Bandit's done huntin', it's Trigger time. This is the Sauce Underwriter — Boss47's locked formula for wholesale MAO + fix-and-flip walk-away. **Pull the trigger when the numbers say green.**
+> When Bandit's done huntin', it's Trigger time. This is the Sauce Underwriter — Boss's locked formula for wholesale MAO + fix-and-flip walk-away. **Pull the trigger when the numbers say green.**
 
-> Boss47's locked formula for wholesale + fix-and-flip deals.
-> Source: `Sauce Underwriter.xlsx` (Boss47's personal calculator).
+> Boss's locked formula for wholesale + fix-and-flip deals.
+> Source: `Sauce Underwriter.xlsx` (Boss's personal calculator).
 > Locked 2026-06-09 — anyone underwriting a deal in LindaAI runs THIS math.
 
 ---
@@ -187,7 +187,7 @@ Close with: red/yellow/green verdict + ONE recommended next action:
 
 ## 🚨 DO NOT DEVIATE
 
-- These are Boss47's LOCKED formulas. Do NOT make up new ones.
+- These are Boss's LOCKED formulas. Do NOT make up new ones.
 - If user wants a different formula, run THIS first, then offer alternates.
 - If user wants a DIFFERENT deal type (multifamily, MHP, RV park, land, commercial) → use the specialized skill (linda-dealpack, linda-bandit, etc.). This skill is for SINGLE-FAMILY + SMALL-MULTI residential wholesale/flip ONLY.
 
@@ -223,5 +223,5 @@ def sauce_uw(sqft, arv, repair_level, wholesale_fee=15000, profit_override=None,
 
 ---
 
-— LOCKED 2026-06-09 by 🤠 Bandit + 🔥 Forge. Source: Boss47's Sauce Underwriter.xlsx.
+— LOCKED 2026-06-09 by 🤠 Bandit + 🔥 Forge. Source: Boss's Sauce Underwriter.xlsx.
 — © 2022-2026 Daniel Wise · LindaAI · Built by Daniel Wise

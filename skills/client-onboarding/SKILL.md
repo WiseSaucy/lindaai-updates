@@ -350,7 +350,7 @@ Client Summary:
 
 **AI:** Creates all 5 files: contact entry with full info, project file scoped to 3 vehicle TCs at $6,000 total, welcome email referencing TC services, onboarding checklist customized for TC deals (adding items like "collect vehicle info sheets", "verify titles", "confirm buyer details"), and a kickoff agenda focused on vehicle details and timeline. Updates both README indexes. Reports everything created.
 
-**User:** "New client: Sarah Chen, SellFi consulting engagement, $5K/month retainer"
+**User:** "New client: Sarah Chen, LaunchPad consulting engagement, $5K/month retainer"
 
 **AI:** Creates full onboarding package for a consulting client. Adapts the checklist and agenda for a retainer-style engagement. Welcome email references monthly deliverables and check-in cadence.
 

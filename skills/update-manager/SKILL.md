@@ -36,7 +36,7 @@ Response shape:
   "tier": "platinum",
   "count": 51,
   "skills": [
-    {"name": "linda-brief", "sha256": "abc123…", "size": 18723},
+    {"name": "morning-briefing", "sha256": "abc123…", "size": 18723},
     {"name": "linda-mail",  "sha256": "def456…", "size": 21055},
     …
   ],
@@ -94,7 +94,7 @@ curl -s "https://lindaai-api-production.up.railway.app/v1/sync/agent/$KEY/$agent
 
 Tier: Platinum
 ✓ 47 skills up to date
-+ 3 new skills added: linda-coliving, linda-grantfit, linda-brand
++ 3 new skills added: linda-coliving, linda-grantfit, personal-brand-audit
 ~ 1 skill updated: linda-deals (improved cap-rate logic)
 - 0 skills removed
 

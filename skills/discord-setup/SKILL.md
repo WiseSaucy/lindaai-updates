@@ -7,7 +7,7 @@ description: Set up the LindaAI Discord bridge so the user can chat with LindaAI
 
 Walks the customer through creating their Discord bot + wiring it to their Claude Max subscription (or API key fallback) so they can chat with LindaAI from Discord using `/linda` slash commands.
 
-**Target time: 10-15 minutes.** Every step below was field-tested during Boss47's own install — every gotcha that bit him has a patch in here so it never bites a customer.
+**Target time: 10-15 minutes.** Every step below was field-tested during Boss's own install — every gotcha that bit him has a patch in here so it never bites a customer.
 
 ---
 

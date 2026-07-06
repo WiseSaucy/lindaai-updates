@@ -3,12 +3,13 @@
 postiz_post.py — LindaAI · linda-postiz-post
 
 Auto-schedules a finished content pack across all connected Postiz channels
-at per-platform optimal MDT times. Reads creds from ~/.lindaai/postiz.json
+at per-platform optimal LOCAL times (customer timezone). Reads creds from
+~/.lindaai/postiz.json
 and captions from PUBLISH_PACK.md.
 
 Usage:
   python3 postiz_post.py --project /path/to/pack
-  python3 postiz_post.py --pack-name "Hustling"
+  python3 postiz_post.py --pack-name "my-first-reel"
   python3 postiz_post.py --project /path/to/pack --platforms tiktok,instagram --schedule-mode now
   python3 postiz_post.py --project /path/to/pack --dry-run    # build plan, no API writes
 
@@ -27,14 +28,27 @@ HOME = Path.home()
 POSTIZ_CREDS = HOME / ".lindaai" / "postiz.json"
 HISTORY = HOME / ".lindaai" / "postiz-history.jsonl"
 
-MDT = timezone(timedelta(hours=-6))
+# Customer's local timezone — from client.json "timezone" (IANA name) if set,
+# otherwise the machine's system timezone. Never a hardcoded zone.
+def _local_tz():
+    cfg = HOME / ".lindaai" / "client.json"
+    try:
+        tzname = json.loads(cfg.read_text()).get("timezone")
+        if tzname:
+            from zoneinfo import ZoneInfo
+            return ZoneInfo(tzname)
+    except Exception:
+        pass
+    return datetime.now().astimezone().tzinfo
 
-PLATFORM_TIMES_MDT = {
+LOCAL_TZ = _local_tz()
+
+PLATFORM_TIMES_LOCAL = {
     "tiktok":       (20, 23),
     "instagram":    (20, 47),
     "facebook":     (19, 33),
     "youtube":      (18, 17),
-    "youtube-long": "weekend-morning",  # Special: next Saturday 10:00 AM MDT
+    "youtube-long": "weekend-morning",  # Special: next Saturday 10:00 AM local
     "x":            (13, 43),
 }
 
@@ -79,19 +93,29 @@ def resolve_archive_media(pack_dir):
 
 
 def next_weekend_morning_utc():
-    """Next Saturday 10:00 AM MDT in UTC."""
-    now_mdt = datetime.now(MDT)
-    days_until_saturday = (5 - now_mdt.weekday()) % 7  # Saturday is weekday 5
-    if days_until_saturday == 0 and now_mdt.hour >= 10:
+    """Next Saturday 10:00 AM local time, in UTC."""
+    now_local = datetime.now(LOCAL_TZ)
+    days_until_saturday = (5 - now_local.weekday()) % 7  # Saturday is weekday 5
+    if days_until_saturday == 0 and now_local.hour >= 10:
         days_until_saturday = 7
-    target = now_mdt.replace(hour=10, minute=0, second=0, microsecond=0) + timedelta(days=days_until_saturday)
+    target = now_local.replace(hour=10, minute=0, second=0, microsecond=0) + timedelta(days=days_until_saturday)
     return target.astimezone(timezone.utc)
 
-SEARCH_DIRS = [
-    HOME / "Desktop" / "Sauce and Family Content",
-    HOME / "Desktop" / "Sauce and Family content",
-    HOME / "Desktop" / "LindaAI-OG" / "content-packs",
-]
+def _search_dirs():
+    """Content folder comes from the customer's config (client.json
+    'content_dir'), never a hardcoded personal path. Falls back to cwd."""
+    dirs = []
+    cfg = HOME / ".lindaai" / "client.json"
+    try:
+        content_dir = json.loads(cfg.read_text()).get("content_dir")
+        if content_dir:
+            dirs.append(Path(content_dir).expanduser())
+    except Exception:
+        pass
+    dirs.append(Path.cwd())
+    return dirs
+
+SEARCH_DIRS = _search_dirs()
 
 
 def die(msg, code=1):
@@ -126,7 +150,7 @@ def resolve_pack(project, pack_name):
             if needle in folder.name.lower():
                 matches.append(folder)
     if not matches:
-        die(f"No content pack matching '{pack_name}'. Searched: {[str(d) for d in SEARCH_DIRS]}")
+        die(f"No content pack matching '{pack_name}'. Searched: {[str(d) for d in SEARCH_DIRS]}. Set content_dir in ~/.lindaai/client.json to point me at your content folder.")
     matches.sort(key=lambda p: p.stat().st_mtime, reverse=True)
     if len(matches) > 1:
         print(f"📣 Holler — Multiple packs matched '{pack_name}':")
@@ -184,13 +208,13 @@ def resolve_media(platform, pack_dir):
 
 
 def next_slot_utc(platform):
-    slot_def = PLATFORM_TIMES_MDT[platform]
+    slot_def = PLATFORM_TIMES_LOCAL[platform]
     if slot_def == "weekend-morning":
         return next_weekend_morning_utc()
     h, m = slot_def
-    now_mdt = datetime.now(MDT)
-    slot = now_mdt.replace(hour=h, minute=m, second=0, microsecond=0)
-    if slot <= now_mdt:
+    now_local = datetime.now(LOCAL_TZ)
+    slot = now_local.replace(hour=h, minute=m, second=0, microsecond=0)
+    if slot <= now_local:
         slot += timedelta(days=1)
     return slot.astimezone(timezone.utc)
 
@@ -351,7 +375,7 @@ def main():
     ap.add_argument("--project", help="Absolute path to a content pack folder")
     ap.add_argument("--pack-name", help="Fuzzy pack name to search for")
     ap.add_argument("--platforms", default="all", help="Comma list: tiktok,instagram,facebook,youtube,x (or 'all')")
-    ap.add_argument("--schedule-mode", default="auto", help="'auto' (per-platform MDT optimal), 'now', or ISO 8601 timestamp")
+    ap.add_argument("--schedule-mode", default="auto", help="'auto' (per-platform local optimal), 'now', or ISO 8601 timestamp")
     ap.add_argument("--dry-run", action="store_true", help="Build the plan, don't call the API")
     ap.add_argument("--yes", action="store_true", help="Skip the interactive go-gate (still NOT recommended; the gate exists for safety)")
     ap.add_argument("--no-youtube-long", action="store_true", help="Skip auto-detection of YouTube long-form (archive/*.mp4 + long-form caption)")
@@ -365,11 +389,11 @@ def main():
     pack = resolve_pack(args.project, args.pack_name)
     pack_md = pack / "PUBLISH_PACK.md"
     if not pack_md.exists():
-        die(f"No PUBLISH_PACK.md in {pack}. Run /sauce-cuts first.")
+        die(f"No PUBLISH_PACK.md in {pack}. Run your content pipeline first.")
 
     captions = parse_captions(pack_md)
     if args.platforms == "all":
-        plat_list = [p for p in PLATFORM_TIMES_MDT.keys() if p != "youtube-long"]
+        plat_list = [p for p in PLATFORM_TIMES_LOCAL.keys() if p != "youtube-long"]
         # Auto-add youtube-long if pack supports it
         if not args.no_youtube_long and "youtube-long" in captions and resolve_archive_media(pack) is not None:
             plat_list.append("youtube-long")
@@ -429,8 +453,8 @@ def main():
             "when_utc": when,
             "mode": mode,
         })
-        when_mdt = when.astimezone(MDT)
-        when_str = when_mdt.strftime("%-I:%M %p MDT (%a %m/%d)")
+        when_local = when.astimezone(LOCAL_TZ)
+        when_str = when_local.strftime("%-I:%M %p (%a %m/%d)")
         print(f"  ✓ {plat:<10} → {integ.get('name','?'):<40} → {when_str} → {media.name}")
 
     if warnings:
@@ -446,7 +470,7 @@ def main():
         return
 
     if not args.yes:
-        print(f"\n📣 Holler — {len(plan)} posts above will be queued in Postiz against Boss47's LIVE social accounts.")
+        print(f"\n📣 Holler — {len(plan)} posts above will be queued in Postiz against your LIVE social accounts.")
         print("Type 'go' to confirm and fire. Anything else aborts.")
         try:
             answer = input("> ").strip().lower()
@@ -476,8 +500,8 @@ def main():
         )
         if status in (200, 201):
             rid = parse_post_id(resp)
-            when_mdt = item["when_utc"].astimezone(MDT).strftime("%-I:%M %p MDT")
-            print(f"  ✅ {item['platform']:<10} @ {when_mdt} (id: {rid})")
+            when_local = item["when_utc"].astimezone(LOCAL_TZ).strftime("%-I:%M %p")
+            print(f"  ✅ {item['platform']:<10} @ {when_local} (id: {rid})")
             results[item["platform"]] = {"id": rid, "status": "ok"}
         else:
             print(f"  ❌ {item['platform']:<10} FAILED ({status}): {resp[:300]}")
@@ -485,7 +509,7 @@ def main():
 
     record = {
         "project": pack.name,
-        "scheduled_at": datetime.now(MDT).isoformat(),
+        "scheduled_at": datetime.now(LOCAL_TZ).isoformat(),
         "platforms": [p["platform"] for p in plan],
         "results": results,
         "mode": args.schedule_mode,

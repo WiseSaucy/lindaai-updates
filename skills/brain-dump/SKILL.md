@@ -142,7 +142,7 @@ User provides information
     ├── Is about today's events, decisions, or reflections?
     |       → brain/daily/{YYYY-MM-DD}.md
     |
-    ├── Is domain knowledge (T.O.P. Method, SellFi, creative finance)?
+    ├── Is domain knowledge (your frameworks, products, industry)?
     |       → brain/knowledge-base/{relevant-subfolder}/
     |
     ├── Is a technical plan, spec, or architecture decision?
@@ -201,13 +201,13 @@ Files updated: 3
 
 ## Example Usage
 
-**User:** "Brain dump: talked to Marcus today, he's interested in being a TC for TOP Wheels. His email is marcus@email.com. Also, I posted 3 TikToks today. And I think we should add a referral system to SellFi."
+**User:** "Brain dump: talked to Marcus today, he's interested in being a TC for Summit Auto. His email is marcus@email.com. Also, I posted 3 TikToks today. And I think we should add a referral system to LaunchPad."
 
 **AI Action:**
-1. Creates `brain/people/marcus.md` from template with role=potential TC, email, context about TOP Wheels interest
+1. Creates `brain/people/marcus.md` from template with role=potential TC, email, context about Summit Auto interest
 2. Updates `brain/people/README.md` index
 3. Appends to `brain/daily/2026-03-02.md` — logged 3 TikTok posts under accomplishments
-4. Appends to `brain/projects/sellfi-platform.md` or creates a note in the SellFi project about referral system feature idea
+4. Appends to `brain/projects/launchpad-platform.md` or creates a note in the LaunchPad project about referral system feature idea
 5. Reports what was filed and where
 
 ## Error Handling

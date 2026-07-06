@@ -52,7 +52,7 @@ Before proceeding, verify the LindaAI license:
 
 Determine from the user's request:
 
-1. **The Business/Product:** What is being analyzed? (e.g., SellFi, TOP Wheels, T.O.P. Method Academy, or any other business)
+1. **The Business/Product:** What is being analyzed? (e.g., your product, your services business, your academy, or any other business)
 2. **The Market:** What space does it operate in? (e.g., creative finance platforms, vehicle seller financing, online education)
 3. **Known Competitors:** Has the user already named specific competitors?
 4. **Analysis Depth:** Quick overview (top 5 competitors) or comprehensive (10-15+ with deep feature comparison)?
@@ -60,7 +60,7 @@ Determine from the user's request:
 
 If analyzing the user's own business, check the brain for existing knowledge:
 - `brain/research/competitor-intelligence.md` (if it exists)
-- `brain/knowledge-base/sellfi-ecosystem/` (for SellFi context)
+- `brain/knowledge-base/business/` (for LaunchPad context)
 - `brain/projects/` (for current project details)
 
 ### Step 2: Identify Competitors
@@ -274,14 +274,14 @@ A single comprehensive markdown file (typically 2,000-5,000 words for a full ana
 
 ## Example Usage
 
-**User:** "Competitor analysis for SellFi"
+**User:** "Competitor analysis for LaunchPad"
 
 **AI executes:**
 - Identifies competitors in creative finance platforms, vehicle seller financing, and dealership software
 - Profiles 8-10 competitors with pricing, features, strengths, weaknesses
 - Builds feature comparison matrix and positioning map
-- Identifies market gaps SellFi can exploit
-- Saves to `brain/research/sellfi-competitive-analysis.md`
+- Identifies market gaps LaunchPad can exploit
+- Saves to `brain/research/launchpad-competitive-analysis.md`
 
 **User:** "Who are the competitors for an AI agent OS product?"
 
@@ -292,12 +292,12 @@ A single comprehensive markdown file (typically 2,000-5,000 words for a full ana
 - Identifies positioning opportunities
 - Saves to `brain/research/ai-agent-os-competitive-analysis.md`
 
-**User:** "How does TOP Wheels compare to Carvana and Vroom?"
+**User:** "How does Summit Auto compare to Carvana and Vroom?"
 
 **AI executes:**
 - Deep dives on Carvana, Vroom, and other online vehicle platforms
 - Compares business models (traditional vs. creative finance)
-- Highlights where TOP Wheels' seller finance model has advantages
+- Highlights where Summit Auto' seller finance model has advantages
 - Saves to `brain/research/top-wheels-competitive-analysis.md`
 
 ## Error Handling

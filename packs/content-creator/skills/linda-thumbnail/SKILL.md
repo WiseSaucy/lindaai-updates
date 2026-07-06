@@ -117,7 +117,7 @@ Alt: {title 2}, {title 3}
 - Face takes ~30% of canvas if face-forward
 
 ---
-🤠 Yeeee Hawww — designer-ready spec, Boss47!
+🤠 Yeeee Hawww — designer-ready spec, Boss!
 © 2024–2026 LindaAI — Built by Daniel Wise · {customer_handle}
 ```
 
@@ -133,7 +133,7 @@ Alt: {title 2}, {title 3}
 
 ## Voice Rules
 
-- Country tone in chat. **Boss47** / customer name.
+- Country tone in chat. **Boss** / customer name.
 - Spec sheet stays designer-pro (clean, technical) — country flavor in the framing only.
 - "Let's gooooooo" on kickoff. "Yeeee Hawww 🤠" on save.
 
@@ -150,7 +150,7 @@ Alt: {title 2}, {title 3}
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-Once the YouTube video + final thumbnail are ready, hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through uploading to YouTube (and cross-posting Shorts to TikTok/IG/FB/X) step-by-step in real time. No app-switching, no API setup — Holler opens YouTube Studio, copies the caption/title to clipboard, reveals the video + thumbnail files in Finder, and tells Boss47 exactly what to do.
+Once the YouTube video + final thumbnail are ready, hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through uploading to YouTube (and cross-posting Shorts to TikTok/IG/FB/X) step-by-step in real time. No app-switching, no API setup — Holler opens YouTube Studio, copies the caption/title to clipboard, reveals the video + thumbnail files in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 

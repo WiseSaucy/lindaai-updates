@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-06 — 🛡️ Full 157-skill content audit (multi-agent sweep)
+
+**What happened:** the whole crew — 15 reader agents + adversarial verifiers — read every single skill file end to end. Result: cleaner copy across the board.
+
+- 🧹 86+ skill files scrubbed of founder-specific branding — your PDFs and posts now carry YOUR handle, not ours
+- 🕐 Content-calendar timezone now asks YOU instead of assuming Denver time
+- ✅ Every fix verified + audit-22 green before this shipped
+
+**All tiers.** Just type `/linda-sync` and you're current.
+
+Yeeee Hawww 🤠
+
+---
+
 ## 2026-06-28 — 🏕️ RV Park Underwriter rolls in
 
 **What's new:**

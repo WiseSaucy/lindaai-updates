@@ -412,13 +412,13 @@ A single comprehensive markdown file containing the full financial snapshot (rev
 - Includes year-over-year comparison if prior data exists
 - Saves to `brain/research/financial-snapshot-2026-03-03.md`
 
-**User:** "I run SellFi and TOP Wheels. SellFi is pre-revenue. TOP Wheels does about $15K/month. Combined expenses are $6K. How do things look?"
+**User:** "I run LaunchPad and Summit Auto. LaunchPad is pre-revenue. Summit Auto does about $15K/month. Combined expenses are $6K. How do things look?"
 
 **AI executes:**
-- Separate P&L for each business: SellFi ($0 revenue, X% of shared expenses), TOP Wheels ($15K revenue, X% of shared expenses)
+- Separate P&L for each business: LaunchPad ($0 revenue, X% of shared expenses), Summit Auto ($15K revenue, X% of shared expenses)
 - Consolidated view: $15K revenue, $6K expenses, $9K net
-- Cash flow projection showing pre-revenue SellFi as a cost center
-- Recommendations focused on: getting SellFi to revenue, controlling pre-launch costs, maximizing TOP Wheels while SellFi ramps
+- Cash flow projection showing pre-revenue LaunchPad as a cost center
+- Recommendations focused on: getting LaunchPad to revenue, controlling pre-launch costs, maximizing Summit Auto while LaunchPad ramps
 - Saves to `brain/research/financial-snapshot-2026-03-03.md`
 
 ## Error Handling

@@ -9,7 +9,7 @@ version: 1.0.0
 
 ## Overview
 
-Most operators run Monday.com as their project board, but they don't actually look at it daily. Linda Monday closes that loop. Bidirectional sync via Monday's GraphQL API: Linda pulls boards, items, statuses, owners, and timelines; generates a weekly digest of what moved / what stalled / what's coming due; and writes back updates Boss47 dictates ("mark task 432 done", "move the Burlington lead to negotiation"). Now Monday is actually the source of truth — and Boss47 sees it without opening the app.
+Most operators run Monday.com as their project board, but they don't actually look at it daily. Linda Monday closes that loop. Bidirectional sync via Monday's GraphQL API: Linda pulls boards, items, statuses, owners, and timelines; generates a weekly digest of what moved / what stalled / what's coming due; and writes back updates Boss dictates ("mark task 432 done", "move the Burlington lead to negotiation"). Now Monday is actually the source of truth — and Boss sees it without opening the app.
 
 ## When This Skill Applies
 
@@ -29,7 +29,7 @@ Standard LindaAI license verification.
 ### Step 1: API Setup (First Run)
 
 If `brain/operator/integrations/monday.json` doesn't exist:
-1. Walk Boss47 through generating a Monday.com API token (Profile → Admin → API → Generate)
+1. Walk Boss through generating a Monday.com API token (Profile → Admin → API → Generate)
 2. Save to `brain/operator/integrations/monday.json`:
 ```json
 {
@@ -93,7 +93,7 @@ Generate `brain/operator/integrations/monday-digest-{YYYY-WW}.md`:
 
 ## Stuck (no movement 14+ days)
 - [Marketing] Launch landing page rebuild — owner: Drew — last update 23 days ago
-- [Acquisitions] Cold-call list build — owner: Boss47 — last update 17 days ago
+- [Acquisitions] Cold-call list build — owner: Boss — last update 17 days ago
 
 ## Coming Due (next 7 days)
 - [Compliance] Annual filing for [Your Business LLC] — due Tue
@@ -105,13 +105,13 @@ Generate `brain/operator/integrations/monday-digest-{YYYY-WW}.md`:
 
 ### Step 5: Write Back (On Command)
 
-Boss47 dictates updates; Linda issues mutations:
+Boss dictates updates; Linda issues mutations:
 - Update status: `change_simple_column_value` mutation
 - Create item: `create_item` mutation
 - Add update note: `create_update` mutation
 - Move group: `move_item_to_group` mutation
 
-Always confirm before write-back: "Boss47 — gonna mark item 4321 'Done' on Acquisitions board. Confirm?"
+Always confirm before write-back: "Boss — gonna mark item 4321 'Done' on Acquisitions board. Confirm?"
 
 ### Step 6: Save & Notify
 
@@ -136,7 +136,7 @@ Always confirm before write-back: "Boss47 — gonna mark item 4321 'Done' on Acq
 
 **User:** "Run my Monday weekly digest."
 
-**LindaAI:** "Let's gooooooo Boss47!" Pulls 4 watched boards, diffs against last week. "Yeeee Hawww 🤠 — 12 closed, 7 moved forward, 4 stuck. Big stuck one: Drew's landing page, 23 days. Want me to ping him via linda-mail?"
+**LindaAI:** "Let's gooooooo Boss!" Pulls 4 watched boards, diffs against last week. "Yeeee Hawww 🤠 — 12 closed, 7 moved forward, 4 stuck. Big stuck one: Drew's landing page, 23 days. Want me to ping him via linda-mail?"
 
 **User:** "Mark item 4321 as done on the Acquisitions board."
 
@@ -148,9 +148,9 @@ Always confirm before write-back: "Boss47 — gonna mark item 4321 'Done' on Acq
 
 ## Voice & Tone
 
-- Country, fast. **Boss47.**
+- Country, fast. **Boss.**
 - "Let's gooooooo!" on sync kickoff. "Yeeee Hawww 🤠" when digest is locked.
-- On stuck items: "Boss47 — Drew's been stuck on that landing page 23 days. Want me to nudge him?"
+- On stuck items: "Boss — Drew's been stuck on that landing page 23 days. Want me to nudge him?"
 
 ## Brand Rules
 
@@ -160,14 +160,14 @@ Always confirm before write-back: "Boss47 — gonna mark item 4321 'Done' on Acq
 
 - **Feeds → linda-bizops** — digest summary surfaces on operator dashboard
 - **Feeds → linda-mail** — auto-draft pings to stuck-item owners
-- **Feeds ← linda-actions** — meeting action items can post to Monday boards
+- **Feeds ← meeting-to-actions** — meeting action items can post to Monday boards
 - **Feeds ↔ linda-pipeline** — RE pipeline stages can mirror to a Monday board
 
 ## Error Handling
 
-- **API token rejected (401):** Stop, ask Boss47 to regenerate token.
+- **API token rejected (401):** Stop, ask Boss to regenerate token.
 - **Rate limit hit (429):** Back off + retry with exponential delay (Monday limit 10 req/sec).
-- **Board ID unknown:** Pull all boards, ask Boss47 to pick.
+- **Board ID unknown:** Pull all boards, ask Boss to pick.
 - **GraphQL error on mutation:** Show full error, do not silently skip.
 - **No license:** Country howdy and stop.
 

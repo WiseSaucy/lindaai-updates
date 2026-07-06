@@ -1,30 +1,27 @@
 ---
 name: linda-postiz-post
-description: This skill should be used when the user asks to "post via Postiz", "schedule with Postiz", "post my pack via Postiz", "postiz schedule", "schedule the reel through Postiz", "blast via Postiz", "auto-schedule postiz", "queue this in Postiz", "send to Postiz", "publish via Postiz", "Postiz cross-post", "post the [name] pack to Postiz", "schedule [pack name] across all platforms", or wants finished content auto-scheduled to TikTok, Instagram, Facebook, YouTube Shorts, and Twitter/X via the connected Postiz Cloud account at per-platform optimal MDT times — no manual clicking, no Ayrshare, no walkthrough.
-version: 1.0.0
+description: This skill should be used when the user asks to "post via Postiz", "schedule with Postiz", "post my pack via Postiz", "postiz schedule", "schedule the reel through Postiz", "blast via Postiz", "auto-schedule postiz", "auto-publish", "queue this in Postiz", "send to Postiz", "publish via Postiz", "Postiz cross-post", "post the [name] pack to Postiz", or wants finished content auto-scheduled to TikTok, Instagram, Facebook, YouTube Shorts, and Twitter/X via the connected Postiz Cloud account at per-platform optimal local times. This is the automation engine — it's normally reached via /linda-post-walkthrough, the publishing front door, which routes here automatically when Postiz is connected.
+version: 2.0.0
 ---
-> ⚙️🤠 **Publishing engine (Postiz) — the content skills call me to auto-schedule finished posts** at per-platform optimal times. Works behind `content-batch`, `content-repurpose`, `social-media-calendar`, and `deal-marketing-package`. Callable directly too.
 
 # Linda Postiz Post — Automated Multi-Platform Publisher (via Postiz Cloud API)
 
 ## Overview
 
-📣 **Holler** (Social Media) drives this one. The user has Postiz Cloud connected via API key (stored in `~/.lindaai/postiz.json`). This skill reads a finished content pack — captions in `PUBLISH_PACK.md`, MP4s on disk — uploads the media to Postiz, then schedules a separate post to each of the 5 connected channels at that platform's optimal MDT slot. One command. Zero manual clicks.
+📣 **Holler** (Social Media) drives this one. The user has Postiz Cloud connected via API key (stored in `~/.lindaai/postiz.json`). This skill reads a finished content pack — captions in `PUBLISH_PACK.md`, MP4s on disk — uploads the media to Postiz, then schedules a separate post to each of the connected channels at that platform's optimal LOCAL slot. One command. Zero manual clicks.
 
-**No Ayrshare. No walkthrough. No clipboard juggling.** This is the fully-automated path for users who took the time to wire Postiz into LindaAI.
+**No walkthrough. No clipboard juggling.** This is the fully-automated path for users who took the time to wire Postiz into LindaAI. Users normally land here via `/linda-post-walkthrough` (the front door), which auto-routes to this skill when Postiz creds are present.
 
 ## When This Skill Applies
 
-- "Postiz, post the wife reel"
-- "Holler, schedule the Hustling pack via Postiz"
-- "Auto-post the latest sauce-cuts project through Postiz"
+- "Postiz, post my latest pack"
+- "Holler, schedule this pack via Postiz"
+- "Auto-post the latest project through Postiz"
 - "Blast today's pack via Postiz"
-- "Schedule the Tono skit to all platforms in Postiz"
-- "Postiz-schedule the LeBron-Wade reel for tonight"
-- Any request where the user wants Postiz to do the work AND has a finished pack ready
+- "Postiz-schedule my-first-reel for tonight"
+- Routed here automatically from `/linda-post-walkthrough` when Postiz is connected
 
-> Use `/linda-post-walkthrough` instead when the user wants manual click-through coaching with no API.
-> Use `/linda-social-post` instead when the user has Ayrshare set up (not Postiz).
+> Use `/linda-post-walkthrough` for all general "post my content" requests — it routes here when Postiz is wired, or runs the manual click-through coaching when it isn't.
 
 ## License + Postiz Setup Check (Required First Step)
 
@@ -38,32 +35,34 @@ Before doing anything:
 
 | Input | Required | Notes |
 |---|---|---|
-| Project folder OR pack name | Yes | Either an absolute path OR a fuzzy pack name ("Hustling", "wife reel", "Tono") |
+| Project folder OR pack name | Yes | Either an absolute path OR a fuzzy pack name ("my-first-reel", "spring promo") |
 | Platforms (comma list) | No | Default: all 5 — tiktok,instagram,facebook,youtube,x — plus `youtube-long` auto-included if pack supports it |
-| Schedule mode | No | `auto` (default — per-platform optimal MDT times) · `now` · explicit ISO 8601 |
+| Schedule mode | No | `auto` (default — per-platform optimal LOCAL times) · `now` · explicit ISO 8601 |
 | `--no-youtube-long` | No | Opt out of auto-adding the YT long-form when pack has `archive/*.mp4` + long-form caption |
 | `--reset` | No | Delete previously-queued posts for this pack (from history) before rescheduling — useful when retrying with edits |
 
-If the user provides a pack name (e.g. "Hustling"), search common content directories:
-- `~/Desktop/Sauce and Family Content/` (Boss47's personal — case-sensitive!)
-- `~/Desktop/Sauce and Family content/` (lowercase variant)
-- `~/Desktop/LindaAI-OG/content-packs/`
-- Current working directory
+### Where the content lives (customer's content folder)
 
-Match the most recent folder whose name contains the keyword (case-insensitive). If multiple matches, ask the user to pick.
+The content folder comes from **the customer's config, never a hardcoded path**:
 
-## Auto-Time Schedule (Boss47 MDT — UTC-6)
+1. Read `content_dir` from the customer's `client.json` (or `brain/config/content_dir.md`).
+2. If not set, ask ONCE where their finished packs live, then save the answer so we never ask again.
+3. Also check the current working directory.
 
-Same windows as `/linda-post-walkthrough` and `/linda-social-post` — kept identical so behavior is predictable regardless of skill used:
+If the user provides a pack name, match the most recent folder in the content folder whose name contains the keyword (case-insensitive). If multiple matches, ask the user to pick.
 
-| Platform | Default pick (MDT) | UTC equivalent |
-|---|---|---|
-| TikTok | **8:23 PM** | 02:23 next-day |
-| Instagram Reels | **8:47 PM** | 02:47 next-day |
-| Facebook Reels | **7:33 PM** | 01:33 next-day |
-| YouTube Shorts | **6:17 PM** | 00:17 next-day |
-| Twitter/X | **1:43 PM** | 19:43 same-day |
-| YouTube Long-Form | **next Saturday 10:00 AM** | next Saturday 16:00 UTC |
+## Auto-Time Schedule (Customer's Local Timezone)
+
+Use the **customer's timezone** — from `client.json` (`timezone`) or the machine's system timezone. Same windows as `/linda-post-walkthrough`, kept identical so behavior is predictable regardless of path:
+
+| Platform | Default pick (local) |
+|---|---|
+| TikTok | **8:23 PM** |
+| Instagram Reels | **8:47 PM** |
+| Facebook Reels | **7:33 PM** |
+| YouTube Shorts | **6:17 PM** |
+| Twitter/X | **1:43 PM** |
+| YouTube Long-Form | **next Saturday 10:00 AM** |
 
 ## YouTube Long-Form Auto-Detection
 
@@ -75,7 +74,7 @@ If a pack includes BOTH:
 
 Off-minute picks (`:17`, `:23`, `:33`, `:43`, `:47`) avoid the `:00/:30` traffic spike.
 
-If today's optimal slot for a platform has already passed in MDT, schedule for **tomorrow** at that slot.
+If today's optimal slot for a platform has already passed in the customer's local time, schedule for **tomorrow** at that slot.
 
 ## Caption Parser
 
@@ -137,11 +136,11 @@ If a platform's MP4 is missing AND no fallback exists, **skip that platform** wi
 ```
 📣 Holler — Postiz schedule plan for "{pack name}":
 
-  1. TikTok        → {customer_handle}        → 8:23 PM MDT (tonight)  → TIKTOK.mp4
-  2. Instagram     → {customer_handle}        → 8:47 PM MDT (tonight)  → FB-IG.mp4
-  3. Facebook      → Daniel Wise       → 7:33 PM MDT (tonight)  → FB-IG.mp4
-  4. YouTube Shorts→ Daniel Wise       → 6:17 PM MDT (tomorrow) → YOUTUBE.mp4
-  5. Twitter/X     → {customer_handle}        → 1:43 PM MDT (tomorrow) → TIKTOK.mp4
+  1. TikTok        → {customer_handle}   → 8:23 PM (tonight)  → TIKTOK.mp4
+  2. Instagram     → {customer_handle}   → 8:47 PM (tonight)  → FB-IG.mp4
+  3. Facebook      → {customer_page}     → 7:33 PM (tonight)  → FB-IG.mp4
+  4. YouTube Shorts→ {customer_channel}  → 6:17 PM (tomorrow) → YOUTUBE.mp4
+  5. Twitter/X     → {customer_handle}   → 1:43 PM (tomorrow) → TIKTOK.mp4
 
 5 posts will be queued in Postiz. Say "go" to schedule, "preview" to see captions first, or "skip x" to drop a platform.
 ```
@@ -182,7 +181,7 @@ For each platform in the plan, send a **separate** `POST {api_url}/posts` (becau
 
 Notes:
 - `__type` matches the platform identifier from `/integrations` exactly: `tiktok`, `instagram-standalone`, `facebook`, `youtube`, `x`.
-- `date` MUST be UTC ISO 8601 with `Z` suffix. Convert from MDT (UTC-6) by adding 6 hours.
+- `date` MUST be UTC ISO 8601 with `Z` suffix. Convert from the customer's local timezone to UTC.
 - For `now` mode, set `type: "now"` and use current UTC time for `date`.
 - Capture each response's post `id` for the success report.
 
@@ -195,7 +194,7 @@ After all POSTs land, hit `GET {api_url}/posts?startDate=...&endDate=...` coveri
 Append a record to `~/.lindaai/postiz-history.jsonl`:
 
 ```json
-{"project":"03-Hustling-For-Family","scheduled_at":"2026-05-27T21:30:00-06:00","platforms":["tiktok","instagram","facebook","youtube","x"],"post_ids":{"tiktok":"...","instagram":"...","facebook":"...","youtube":"...","x":"..."},"mode":"auto"}
+{"project":"my-first-reel","scheduled_at":"2026-05-27T21:30:00-06:00","platforms":["tiktok","instagram","facebook","youtube","x"],"post_ids":{"tiktok":"...","instagram":"...","facebook":"...","youtube":"...","x":"..."},"mode":"auto"}
 ```
 
 Final wrap-up message:
@@ -203,11 +202,11 @@ Final wrap-up message:
 ```
 📣 Holler — Yeeee Hawww! 🤠 Pack scheduled via Postiz!
 
-  ✅ TikTok        @ 8:23 PM MDT  (post id: cmpqz...)
-  ✅ Instagram     @ 8:47 PM MDT  (post id: cmpqz...)
-  ✅ Facebook      @ 7:33 PM MDT  (post id: cmpqz...)
-  ✅ YouTube Shorts@ 6:17 PM MDT  (post id: cmpqz...)
-  ✅ Twitter/X     @ 1:43 PM MDT  (post id: cmpqz...)
+  ✅ TikTok        @ 8:23 PM  (post id: cmpqz...)
+  ✅ Instagram     @ 8:47 PM  (post id: cmpqz...)
+  ✅ Facebook      @ 7:33 PM  (post id: cmpqz...)
+  ✅ YouTube Shorts@ 6:17 PM  (post id: cmpqz...)
+  ✅ Twitter/X     @ 1:43 PM  (post id: cmpqz...)
 
 Logged to ~/.lindaai/postiz-history.jsonl
 View the queue at platform.postiz.com/launches
@@ -231,7 +230,7 @@ python3 scripts/postiz_post.py \
 Or by pack name:
 ```
 python3 scripts/postiz_post.py \
-  --pack-name "Hustling" \
+  --pack-name "my-first-reel" \
   --platforms all \
   --schedule-mode auto
 ```
@@ -241,7 +240,7 @@ The script handles everything in Steps 1-9. Holler narrates the plan/result; the
 ## What to NEVER Do
 
 - **NEVER** auto-publish without explicit "go" from the user (Step 5 gate).
-- **NEVER** post to a Facebook page you do NOT own — always confirm the FB integration is "Daniel Wise" (or the user's primary page name).
+- **NEVER** post to a Facebook page the user does NOT own — always confirm the FB integration is the user's primary page name.
 - **NEVER** truncate a caption silently — if Twitter is over 280, trim and warn in the plan output.
 - **NEVER** upload a file if it's already been uploaded in this run (use the in-memory cache to avoid wasted bytes).
 - **NEVER** schedule a post for a time that's already passed — bump to the same slot tomorrow.
@@ -251,7 +250,7 @@ The script handles everything in Steps 1-9. Holler narrates the plan/result; the
 | Issue | Holler's response |
 |---|---|
 | `~/.lindaai/postiz.json` missing | "No Postiz creds. Run the Postiz hookup first or use `/linda-post-walkthrough`." |
-| `PUBLISH_PACK.md` missing | "Can't find the pack file in `{folder}`. Run `/sauce-cuts` first." |
+| `PUBLISH_PACK.md` missing | "Can't find the pack file in `{folder}`. Run your content pipeline first." |
 | Integration for a requested platform not in `/integrations` | Skip that platform, list it in the warning section of the plan. |
 | MP4 missing AND no fallback | Skip platform, warn in plan. |
 | Upload returns non-200 | Retry once with 2s backoff, then halt with the error. |
@@ -261,26 +260,26 @@ The script handles everything in Steps 1-9. Holler narrates the plan/result; the
 
 ## Example Usage
 
-**User:** "Holler, schedule the Hustling pack via Postiz"
+**User:** "Holler, schedule the spring promo pack via Postiz"
 
 **Holler:**
 1. License + Postiz cred check ✅
-2. Finds `~/Desktop/Sauce and Family Content/1-Sauce-Skits/03-Hustling-For-Family/`
+2. Finds `{content_dir}/spring-promo/`
 3. Parses PUBLISH_PACK.md → 4 captions found (no Twitter — will fall back to TikTok caption trimmed to 280)
 4. Fetches Postiz integrations → maps 5 channels
 5. Shows plan, asks "go"
 6. User: "go"
 7. Uploads TIKTOK.mp4, FB-IG.mp4, YOUTUBE.mp4 (3 unique files)
-8. Schedules 5 posts at MDT optimal slots
+8. Schedules 5 posts at optimal local slots
 9. Reports IDs + logs to history
 
-**User:** "Postiz, blast the Tono skit but skip YouTube"
+**User:** "Postiz, blast my-first-reel but skip YouTube"
 
 **Holler:** runs with `--platforms tiktok,instagram,facebook,x`, leaves YT alone.
 
 **User:** "Postiz-schedule the latest pack for 9pm tonight on all platforms"
 
-**Holler:** uses `--schedule-mode 2026-05-27T21:00:00-06:00` — same time on every platform.
+**Holler:** uses `--schedule-mode <tonight 9pm local as ISO 8601>` — same time on every platform.
 
 ---
 

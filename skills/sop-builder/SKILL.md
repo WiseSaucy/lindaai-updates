@@ -111,7 +111,7 @@ Produce the full SOP following this structure (matching the brain template):
 [What event or condition starts this workflow. Be precise.]
 - Example: "When a new seller lead submits the website intake form"
 - Example: "Every Monday at 9:00 AM"
-- Example: "When Mike says 'send the contract to [name]'"
+- Example: "When the boss says 'send the contract to [name]'"
 
 ## Inputs Required
 

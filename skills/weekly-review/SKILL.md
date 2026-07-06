@@ -236,7 +236,7 @@ Also update `brain/goals.md` weekly priorities section if the user approves.
 
 **User:** "Weekly review"
 
-**AI:** Reads all daily logs from the past 7 days, project files, and goals. Generates a full review showing 4 of 6 planned items completed, SellFi behind schedule, content creation slipping for the 3rd consecutive week. Plans next week with SellFi launch as the only top priority. Saves to `brain/daily/weekly-review-2026-03-02.md`.
+**AI:** Reads all daily logs from the past 7 days, project files, and goals. Generates a full review showing 4 of 6 planned items completed, LaunchPad behind schedule, content creation slipping for the 3rd consecutive week. Plans next week with LaunchPad launch as the only top priority. Saves to `brain/daily/weekly-review-2026-03-02.md`.
 
 **User:** "What slipped this week?"
 
