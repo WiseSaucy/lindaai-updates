@@ -183,9 +183,14 @@ def compute(wb):
     if "Offer Structures" in wb.sheetnames:
         of = wb["Offer Structures"]
         tdscr = gv(of, "B5", 1.35); tcoc = gv(of, "B6", 0.10)
-        k = pmt(intr / 12, amort * 12, -1) * 12
-        mao_dscr = noi / (tdscr * ltv * k) if (tdscr and ltv and k) else 0
-        mao_coc = ((noi - tcoc * capex) / (ltv * k + tcoc * (1 - ltv + close_pct))) if (ltv * k + tcoc * (1 - ltv + close_pct)) else 0
+        # MAO uses the Offer tab's own levers (falling back to Underwriting),
+        # so the report matches what the workbook's MAO block shows
+        m_ltv = gv(of, "B7", 0) or ltv
+        m_rate = gv(of, "B8", 0) or intr
+        m_amort = gv(of, "B9", 0) or amort
+        k = pmt(m_rate / 12, m_amort * 12, -1) * 12
+        mao_dscr = noi / (tdscr * m_ltv * k) if (tdscr and m_ltv and k) else 0
+        mao_coc = ((noi - tcoc * capex) / (m_ltv * k + tcoc * (1 - m_ltv + close_pct))) if (m_ltv * k + tcoc * (1 - m_ltv + close_pct)) else 0
         d["mao"] = max(0, min(mao_dscr, mao_coc))
         d["tdscr"], d["tcoc"] = tdscr, tcoc
         offers = []
@@ -211,16 +216,17 @@ def compute(wb):
                                    (bankloan * br + carry * cr) / (bankloan + carry) if (bankloan + carry) else 0)))
         d["offers"] = offers
 
-    # ---- scorecard verdict + red flags ----
-    d["verdict"] = ("GO" if (d["dscr"] >= 1.35 and d["coc"] >= 0.10)
-                    else ("CONDITIONAL" if (d["dscr"] >= 1.35 or d["coc"] >= 0.10) else "NO-GO"))
+    # ---- scorecard verdict + red flags (uses the workbook's editable targets) ----
+    v_dscr = d.get("tdscr", 1.35); v_coc = d.get("tcoc", 0.10)
+    d["verdict"] = ("GO" if (d["dscr"] >= v_dscr and d["coc"] >= v_coc)
+                    else ("CONDITIONAL" if (d["dscr"] >= v_dscr or d["coc"] >= v_coc) else "NO-GO"))
     flags = []
     if "norm" in d and d["norm"]["seller_oer"] and d["norm"]["seller_oer"] < 0.30:
         flags.append(f"Seller expense ratio {pct(d['norm']['seller_oer'])} is under 30% — NOI likely inflated (Linda: 'fiction').")
-    if d["dscr"] < 1.35:
-        flags.append(f"DSCR {mult(d['dscr'])} is below the 1.35x floor — financing risk.")
-    if d["coc"] < 0.10:
-        flags.append(f"Cash-on-cash {pct(d['coc'])} is below the 10% target.")
+    if d["dscr"] < v_dscr:
+        flags.append(f"DSCR {mult(d['dscr'])} is below the {mult(v_dscr)} floor — financing risk.")
+    if d["coc"] < v_coc:
+        flags.append(f"Cash-on-cash {pct(d['coc'])} is below the {pct(v_coc,0)} target.")
     if d["caprate"] < d["intr"]:
         flags.append(f"Cap rate {pct(d['caprate'])} is below interest {pct(d['intr'])} — negative leverage (losing money day one).")
     if d["grm"] > 10:
