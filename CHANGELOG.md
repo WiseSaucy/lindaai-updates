@@ -31,7 +31,7 @@ Howdy partners — big restock landed in your barn today:
 - 🍽️ **Restaurant Pack** now included (12 skills — menus, shifts, inventory, reviews)
 - 🏕️ **linda-rvpark** — end-to-end RV park & campground underwriting joined the Real Estate Pro pack
 
-Every pack now carries a version number. Pack updates over /linda-sync ride the secure license-gated channel — rolling out next. Ride easy — Yeeee Hawww 🤠
+Every pack now carries a version number. Pack updates now ride the secure license-gated channel — type /linda-sync and your packs refresh automatically. Ride easy — Yeeee Hawww 🤠
 
 ## 2026-07-06 — 🛡️ Full 157-skill content audit (multi-agent sweep)
 
