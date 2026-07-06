@@ -196,7 +196,7 @@ Gather:
 > - 📊 If your capital partner wants the full underwrite, hand the deal to `/linda-deals`
 > - 💼 When the partner says yes, hand to **Closer** via `/linda-closer` to push to signed term sheet
 > - 🚂 When the JV's signed and the deal moves, fire the LOI via `/linda-loi`
-> - 📞 If you need to prep for the JV pitch call, run `/linda-meeting` for the meeting prep
+> - 📞 If you need to prep for the JV pitch call, run `/meeting-prep` for the meeting prep
 >
 > Want me to wrangle more partners, or set up another raise?
 

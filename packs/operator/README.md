@@ -39,7 +39,7 @@ The Operator Pack is LindaAI's flagship pack for people who run more than one bu
 
 ## What you can do today
 
-1. "Boss47 — pull my Mercury March CSV and run the books for [Your Business]." — `linda-books`
+1. "Boss — pull my Mercury March CSV and run the books for [Your Business]." — `linda-books`
 2. "Snap this receipt — Home Depot $284 for property repairs." — `linda-deductions`
 3. "Run my BizOps dashboard." — `linda-bizops`
 4. "File this lease for the Burlington duplex." — `linda-files`

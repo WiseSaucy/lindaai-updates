@@ -404,14 +404,14 @@ A single comprehensive markdown file containing the full brand audit (snapshot, 
 
 ## Example Usage
 
-**User:** "Brand audit — @mikedavis on Instagram and @mikedavis on Twitter, website is sellfi.io"
+**User:** "Brand audit — @yourhandle on Instagram and @yourhandle on Twitter, website is yourcompany.com"
 
 **AI executes:**
 - Researches all three channels plus Google search presence
 - Scores each platform, identifies gaps in messaging consistency
 - Compares positioning to 4 competitors in the creative finance space
 - Builds a 30-day plan focused on Instagram and Twitter growth
-- Generates 5 content pillars tied to SellFi and the T.O.P. Method
+- Generates 5 content pillars tied to your business and signature framework
 - Creates 3 bio options and 5 tagline suggestions
 - Saves to `brain/research/brand-audit-2026-03-03.md`
 

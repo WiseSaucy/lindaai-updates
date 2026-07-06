@@ -230,10 +230,10 @@ Need your signature by Friday so we can get you started next week.
 
 Any questions, shoot me a text.
 
-—Mike
+—[Your Name]
 ```
 
-**User:** "Cold email to a car dealership owner about seller financing through SellFi"
+**User:** "Cold email to a car dealership owner about seller financing through LaunchPad"
 
 **AI drafts:** A short, value-first outreach explaining how seller financing could increase their sales volume, with a clear CTA to schedule a 15-minute call.
 

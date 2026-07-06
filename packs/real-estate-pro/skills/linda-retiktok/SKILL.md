@@ -242,7 +242,7 @@ Format (must match `/linda-post-walkthrough` parser exactly — uses `### TikTok
 
 ---
 
-## Posting Schedule (Boss47 MDT — UTC-6)
+## Posting Schedule (Boss MDT — UTC-6)
 
 | Platform | Optimal time |
 |---|---|

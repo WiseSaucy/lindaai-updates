@@ -28,7 +28,7 @@ This is the bridge between "I made the content" and "the content is live." No mo
 
 ### Step 0: License Check
 
-Verify `~/.claude/linda-license.json` (file exists, not expired, status `active`, optional server validation via `api_url`). If any check fails, halt with the standard country-voice license message and tell Boss47 to email support@send.lindaai-brain.com.
+Verify `~/.claude/linda-license.json` (file exists, not expired, status `active`, optional server validation via `api_url`). If any check fails, halt with the standard country-voice license message and tell Boss to email support@send.lindaai-brain.com.
 
 ### Step 1: Inputs
 
@@ -46,7 +46,7 @@ If the user points to an existing project folder that already has hook + script 
 
 ### Step 2: Pull Sources
 
-> ✍️ "Let's gooooooo Boss47 — Inkslinger's pullin' your hook, script, and brand voice."
+> ✍️ "Let's gooooooo Boss — Inkslinger's pullin' your hook, script, and brand voice."
 
 Look in this order:
 1. Explicit paste in the chat
@@ -130,7 +130,7 @@ Save to:
 brain/content-creator/posts/{project}/PUBLISH_PACK.md
 ```
 
-If the user gave an explicit project folder (e.g. a sauce-cuts output), save the PUBLISH_PACK.md THERE instead so the walkthrough can find it next to the MP4s.
+If the user gave an explicit project folder (e.g. a content-pipeline output), save the PUBLISH_PACK.md THERE instead so the walkthrough can find it next to the MP4s.
 
 Also save the source inputs alongside for traceability:
 ```
@@ -185,7 +185,7 @@ In chat, give a quick summary:
 ---
 
 ✍️ Inkslinger — pack ready. Handing to 📣 Holler for posting.
-Run `/linda-post-walkthrough {project}` when you're ready to go live.
+Run `/linda-post-walkthrough {project}` when you're ready to go live — 📣 Holler walks you through it, or auto-schedules via Postiz if it's connected.
 
 © 2024–2026 LindaAI — Built by Daniel Wise · {customer_handle}
 ```
@@ -194,7 +194,7 @@ Run `/linda-post-walkthrough {project}` when you're ready to go live.
 
 **User:** "Linda, make a publish pack for the wife credit reel — script's in brain/content-creator/scripts/2026-05-27-wife-credit/"
 
-**Inkslinger:** "Let's gooooooo Boss47!" Reads the script, builds 5 platform captions, saves `PUBLISH_PACK.md` to `brain/content-creator/posts/wife-credit-2026-05-27/`. Hands off: "📣 Holler is ready — run `/linda-post-walkthrough wife-credit-2026-05-27`. Yeeee Hawww 🤠"
+**Inkslinger:** "Let's gooooooo Boss!" Reads the script, builds 5 platform captions, saves `PUBLISH_PACK.md` to `brain/content-creator/posts/wife-credit-2026-05-27/`. Hands off: "📣 Holler is ready — run `/linda-post-walkthrough wife-credit-2026-05-27`. Yeeee Hawww 🤠"
 
 **User:** "Inkslinger, package my next MHP tour as a publish pack — all 5 platforms."
 
@@ -246,12 +246,12 @@ Run `/linda-post-walkthrough {project}` when you're ready to go live.
 
 ## Error Handling
 
-- **No source content found:** Ask Boss47 once for the topic / hook / script — don't guess and write garbage.
+- **No source content found:** Ask Boss once for the topic / hook / script — don't guess and write garbage.
 - **Project folder name collision:** Append `-v2`, `-v3` and let the creator pick.
 - **No CTA specified:** Default to "Follow for more" on TikTok/IG, "Subscribe" on YT, leave Twitter CTA-free.
 - **Source script over-length for X:** Auto-trim the X version, add a note: "X version trimmed from {N} to 280 chars — review before posting."
 - **`brain/content-creator/posts/` missing:** Create it.
-- **PUBLISH_PACK.md already exists in target folder:** Confirm overwrite with Boss47, OR append `-v2` to filename.
+- **PUBLISH_PACK.md already exists in target folder:** Confirm overwrite with Boss, OR append `-v2` to filename.
 - **Heading drift:** If the parser ever fails on Holler's side, double-check headings match `### TikTok` / `### Instagram Reels` / `### Facebook Reels` / `### YouTube Shorts` / `### Twitter/X` exactly.
 
 ## What Inkslinger Never Does

@@ -17,13 +17,13 @@ After all platforms are processed, logs a record to
 ~/.lindaai/post-walkthrough-history.jsonl for use by /linda-pulse and friends.
 
 Usage:
-    walkthrough.py --project /path/to/sauce-cuts-folder \
+    walkthrough.py --project /path/to/project-folder \
                    [--platforms tiktok,instagram,facebook,youtube,twitter] \
                    [--schedule-mode auto|now] \
                    [--non-interactive]   # for testing — skips the input prompts
 
 Reads per-platform captions from <project>/PUBLISH_PACK.md using the same
-parser format as linda-social-post (### TikTok, ### Instagram Reels, etc).
+parser format as linda-postiz-post (### TikTok, ### Instagram Reels, etc).
 
 macOS-first. Linux/Windows fall back gracefully:
   - pbcopy → xclip (Linux) → clip.exe (Windows) → inline print
@@ -51,14 +51,14 @@ from pathlib import Path
 
 HISTORY_PATH = Path.home() / ".lindaai" / "post-walkthrough-history.jsonl"
 
-# MDT (UTC-6) optimal posting times — matches linda-social-post exactly so
-# customers get the same coaching whether they auto-post or walk through.
-OPTIMAL_MDT = {
-    "tiktok":    {"hour": 20, "minute": 23, "label": "8:23 PM MDT"},
-    "instagram": {"hour": 20, "minute": 47, "label": "8:47 PM MDT"},
-    "facebook":  {"hour": 19, "minute": 33, "label": "7:33 PM MDT"},
-    "youtube":   {"hour": 18, "minute": 17, "label": "6:17 PM MDT"},
-    "twitter":   {"hour": 13, "minute": 43, "label": "1:43 PM MDT"},
+# Optimal posting times in the CUSTOMER'S LOCAL timezone — matches
+# linda-postiz-post exactly so customers get the same coaching either way.
+OPTIMAL_LOCAL = {
+    "tiktok":    {"hour": 20, "minute": 23, "label": "8:23 PM"},
+    "instagram": {"hour": 20, "minute": 47, "label": "8:47 PM"},
+    "facebook":  {"hour": 19, "minute": 33, "label": "7:33 PM"},
+    "youtube":   {"hour": 18, "minute": 17, "label": "6:17 PM"},
+    "twitter":   {"hour": 13, "minute": 43, "label": "1:43 PM"},
 }
 
 PLATFORM_URLS = {
@@ -158,7 +158,7 @@ SECTION_MAP = {
 
 
 def parse_publish_pack(path: Path) -> dict[str, str]:
-    """Extract per-platform captions from a sauce-cuts PUBLISH_PACK.md.
+    """Extract per-platform captions from a PUBLISH_PACK.md.
 
     Returns {"tiktok": "...", "instagram": "...", ...}.
     """
@@ -290,7 +290,7 @@ def next_optimal_slot(platform_key: str, mode: str = "auto") -> tuple[str, str]:
     """
     if mode == "now":
         return ("now", "right now (no schedule — hit Publish, not Schedule)")
-    pick = OPTIMAL_MDT[platform_key]
+    pick = OPTIMAL_LOCAL[platform_key]
     now = datetime.now()
     target = now.replace(hour=pick["hour"], minute=pick["minute"], second=0, microsecond=0)
     if target <= now:
@@ -298,8 +298,8 @@ def next_optimal_slot(platform_key: str, mode: str = "auto") -> tuple[str, str]:
         when = "tomorrow"
     else:
         when = "tonight" if pick["hour"] >= 17 else "today"
-    iso = target.strftime("%Y-%m-%dT%H:%M:%S-06:00")
-    return (iso, f"{pick['label']} ({when})")
+    iso = target.astimezone().isoformat()  # local timezone offset
+    return (iso, f"{pick['label']} your local time ({when})")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -316,7 +316,7 @@ def normalize_platforms(raw: str | None) -> list[str]:
         if not p:
             continue
         p = PLATFORM_ALIASES.get(p, p)
-        if p in OPTIMAL_MDT:
+        if p in OPTIMAL_LOCAL:
             out.append(p)
         else:
             print(f"  [warn] Unknown platform '{p}' — skipping", file=sys.stderr)
@@ -441,7 +441,7 @@ def main() -> int:
     parser.add_argument("--platforms", default=None,
                         help="Comma list. Default: tiktok,instagram,facebook,youtube,twitter")
     parser.add_argument("--schedule-mode", choices=["auto", "now"], default="auto",
-                        help="auto = per-platform optimal MDT times. now = no schedule.")
+                        help="auto = per-platform optimal local times. now = no schedule.")
     parser.add_argument("--non-interactive", action="store_true",
                         help="Skip input prompts (test/CI mode). Auto-marks every platform 'done'.")
     args = parser.parse_args()
@@ -455,7 +455,7 @@ def main() -> int:
     if not pack_path.is_file():
         print(
             f"❌ PUBLISH_PACK.md not found in {project_dir}\n"
-            f"   📣 Holler — Run /sauce-cuts on this folder first, or point me at one\n"
+            f"   📣 Holler — Run your content pipeline on this folder first, or point me at one\n"
             f"   that already has a publish pack.",
             file=sys.stderr,
         )
@@ -466,7 +466,7 @@ def main() -> int:
         print(
             f"❌ Couldn't parse any captions from {pack_path}\n"
             f"   📣 Holler — make sure the file has '### TikTok', '### Instagram Reels',\n"
-            f"   etc headings. See linda-social-post for the format.",
+            f"   etc headings. See /linda-postiz-post for the format.",
             file=sys.stderr,
         )
         return 1

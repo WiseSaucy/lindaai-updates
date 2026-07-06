@@ -59,7 +59,7 @@ The creator industry's biggest tax is posting friction — opening 5 apps, copyi
 
 ## Swap rule
 
-You can swap up to **12 skills** for any other LindaAI skill at your tier. Don't shoot YouTube? Trade `linda-thumbnail` for `linda-onboard` or `linda-sop` — whatever fits the way you build.
+You can swap up to **12 skills** for any other LindaAI skill at your tier. Don't shoot YouTube? Trade `linda-thumbnail` for `client-onboarding` or `sop-builder` — whatever fits the way you build.
 
 **Platinum unlocks every skill and every pack** — full studio access, no swap needed.
 

@@ -110,7 +110,7 @@ brain/content-creator/brand-deals/
 {what's next + by when}
 
 ---
-🤠 Yeeee Hawww — logged in the pipeline, Boss47!
+🤠 Yeeee Hawww — logged in the pipeline, Boss!
 © 2024–2026 LindaAI — Built by Daniel Wise · {customer_handle}
 ```
 
@@ -130,7 +130,7 @@ brain/content-creator/brand-deals/
 
 ## Voice Rules
 
-- Country tone in chat. **Boss47** / customer name.
+- Country tone in chat. **Boss** / customer name.
 - Outreach itself uses CREATOR's brand voice — pro, friendly, confident — country only if creator's brand is country.
 - "Let's gooooooo" on kickoff. "Yeeee Hawww 🤠" when logged or drafted.
 
@@ -147,7 +147,7 @@ brain/content-creator/brand-deals/
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-After this skill produces post-ready content (sponsor announcement post, "I'm partnering with X" reveal, deliverable Reel/Short for a signed brand deal), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss47 exactly what to do.
+After this skill produces post-ready content (sponsor announcement post, "I'm partnering with X" reveal, deliverable Reel/Short for a signed brand deal), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 

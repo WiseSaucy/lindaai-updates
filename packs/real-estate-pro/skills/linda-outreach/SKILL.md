@@ -302,7 +302,7 @@ Best,
 [Your Name]
 [Phone]
 [Email]
-[Website — e.g., sellfi.io]
+[Website — e.g., yourcompany.com]
 ```
 
 ### Step 7: Draft Cold Call Script
@@ -414,7 +414,7 @@ Each file is a standalone markdown document ready to use. The README indexes eve
 ## Example Usage
 
 **Single property:**
-"Draft outreach for 1422 Maple Dr, Memphis TN 38108. Owner is Patricia Williams. She's an absentee owner — lives in California, property has been vacant for 8 months. I want all channels. My info: Mike Davis, TOP Wheels, 555-123-4567, mike@sellfi.io"
+"Draft outreach for 1422 Maple Dr, Memphis TN 38108. Owner is Patricia Williams. She's an absentee owner — lives in California, property has been vacant for 8 months. I want all channels. My info: Jordan Ellis, Blue Ridge Homes, 555-123-4567, jordan@blueridgehomes.com"
 
 **Batch mode:**
 "I've got 5 pre-foreclosure leads. Draft text messages and letters for all of them:
@@ -441,7 +441,7 @@ Each file is a standalone markdown document ready to use. The README indexes eve
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-After this skill produces post-ready content (a "looking for sellers in {market}" public-facing post, an "I buy houses" social ad, a seller-success testimonial post), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss47 exactly what to do.
+After this skill produces post-ready content (a "looking for sellers in {market}" public-facing post, an "I buy houses" social ad, a seller-success testimonial post), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 

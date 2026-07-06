@@ -237,7 +237,7 @@ A structured meeting summary (as shown above) plus updates to relevant brain fil
 - Meeting summary with 1 decision (fee structure) and 3 action items
 - Creates `brain/people/marcus.md` with role=TC, context, fee agreement
 - Appends to today's daily log
-- Updates TOP Wheels project file with new TC pipeline activity
+- Updates Summit Auto project file with new TC pipeline activity
 - Flags: "Action item for you: Send TC agreement via Dropbox Sign to Marcus"
 
 **User:** [Pastes a 45-minute Zoom transcript]
@@ -248,12 +248,12 @@ A structured meeting summary (as shown above) plus updates to relevant brain fil
 - Files everything appropriately
 - Presents the summary with "5 decisions made, 8 action items identified, 3 follow-ups needed"
 
-**User:** "Debrief from the Squad Up Summit meeting — we decided to do a live demo of SellFi on stage, John will handle the AV setup, I need to prep a 10-minute pitch, and we should follow up with the event organizer about the time slot"
+**User:** "Debrief from the Growth Summit meeting — we decided to do a live demo of LaunchPad on stage, John will handle the AV setup, I need to prep a 10-minute pitch, and we should follow up with the event organizer about the time slot"
 
 **AI produces:**
 - 1 decision (live demo on stage)
 - 3 action items (John: AV setup, User: prep pitch, User: follow up with organizer)
-- Updates SellFi project file
+- Updates LaunchPad project file
 - Logs to daily
 
 ## Error Handling

@@ -137,7 +137,7 @@ CONTACT
 [Name]
 [Phone]
 [Email]
-[Website — e.g., sellfi.io]
+[Website — e.g., yourcompany.com]
 ```
 
 ### Step 2: Create Social Media Posts
@@ -398,7 +398,7 @@ All files are saved as markdown in the deal folder. The README.md serves as the 
 
 ## Example Usage
 
-**User:** "Create a marketing package for this deal: 2847 Westfield Blvd, Indianapolis IN 46205. 3/2 brick ranch, 1,600 sqft, built 1955. I'm selling it seller-finance: $175,000, $10,000 down, 6% interest, 30-year amortization with a 7-year balloon. Rents for $1,500/mo. ARV is around $195,000. New roof 2024, updated kitchen, fenced yard. Target: investors and owner-occupants who can't get bank financing. Contact: Mike Davis, 555-123-4567, mike@sellfi.io"
+**User:** "Create a marketing package for this deal: 2847 Westfield Blvd, Indianapolis IN 46205. 3/2 brick ranch, 1,600 sqft, built 1955. I'm selling it seller-finance: $175,000, $10,000 down, 6% interest, 30-year amortization with a 7-year balloon. Rents for $1,500/mo. ARV is around $195,000. New roof 2024, updated kitchen, fenced yard. Target: investors and owner-occupants who can't get bank financing. Contact: Jordan Ellis, 555-123-4567, jordan@blueridgehomes.com"
 
 **LindaAI creates the full package:**
 
@@ -427,7 +427,7 @@ All saved to `~/Desktop/lindaai/output/deal-marketing/2847-westfield-blvd-indian
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-After this skill produces post-ready content (deal one-pager image, IG/FB carousel post, "off-market deal alert" announcement, JV/wholesale buyer blast), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss47 exactly what to do.
+After this skill produces post-ready content (deal one-pager image, IG/FB carousel post, "off-market deal alert" announcement, JV/wholesale buyer blast), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 

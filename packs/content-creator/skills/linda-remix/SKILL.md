@@ -43,10 +43,10 @@ Standard LindaAI license verification (`~/.claude/linda-license.json` — exists
 
 ### Step 2: Read the Anchor
 
-> ✍️ "Let's gooooooo Boss47 — Inkslinger's gonna squeeze every drop outta this one."
+> ✍️ "Let's gooooooo Boss — Inkslinger's gonna squeeze every drop outta this one."
 
 If anchor is a transcript / text / paste, read it directly.
-If anchor is a video file, look for a sibling `.txt` / `.srt` / `transcript.md` first; if none, ask Boss47 to drop a transcript (or run sauce-cuts first to get one).
+If anchor is a video file, look for a sibling `.txt` / `.srt` / `transcript.md` first; if none, ask Boss to drop a transcript (or run sauce-cuts first to get one).
 If anchor is a URL, extract title + description + (if possible) transcript.
 
 Identify:
@@ -202,7 +202,7 @@ Chat summary:
 
 **User:** "Linda, remix my latest YouTube video — the 30-min one on buying my first MHP."
 
-**Inkslinger:** "Let's gooooooo Boss47!" Pulls the transcript, finds 3 best 45-sec moments → 3 TikTok cuts, builds a 7-slide carousel of the deal numbers, drafts an 8-tweet thread, writes a LinkedIn post on the lessons, and an email newsletter. Saves everything. Hands off: "📣 Holler ready — `/linda-post-walkthrough mhp-first-deal-tiktok-A`. Yeeee Hawww 🤠"
+**Inkslinger:** "Let's gooooooo Boss!" Pulls the transcript, finds 3 best 45-sec moments → 3 TikTok cuts, builds a 7-slide carousel of the deal numbers, drafts an 8-tweet thread, writes a LinkedIn post on the lessons, and an email newsletter. Saves everything. Hands off: "📣 Holler ready — `/linda-post-walkthrough mhp-first-deal-tiktok-A`. Yeeee Hawww 🤠"
 
 **User:** "Atomize this podcast episode — skip LinkedIn, I'm not on there."
 
@@ -235,8 +235,8 @@ Chat summary:
 
 ## Error Handling
 
-- **No transcript for video anchor:** Ask Boss47 to drop a `.txt` or `.srt` or run `/sauce-cuts` first. Don't guess.
-- **Anchor is too thin (< 200 words):** Tell Boss47 — "Anchor's too short for 7 derivatives. Let's pull 3-4 instead." Get confirm.
+- **No transcript for video anchor:** Ask Boss to drop a `.txt` or `.srt` or run `/sauce-cuts` first. Don't guess.
+- **Anchor is too thin (< 200 words):** Tell Boss — "Anchor's too short for 7 derivatives. Let's pull 3-4 instead." Get confirm.
 - **Anchor format unclear:** Ask once — is this a video, podcast, blog, or talk?
 - **`brain/content-creator/remix/` missing:** Create with subfolders.
 - **One platform doesn't make sense for anchor:** Skip cleanly with a note, don't force.

@@ -125,7 +125,7 @@ brain/content-creator/analytics/
 {ONE thing to stop doing}
 
 ---
-🤠 Yeeee Hawww — week's tape is broken down, Boss47!
+🤠 Yeeee Hawww — week's tape is broken down, Boss!
 © 2024–2026 LindaAI — Built by Daniel Wise · {customer_handle}
 ```
 
@@ -141,7 +141,7 @@ brain/content-creator/analytics/
 
 ## Voice Rules
 
-- Country tone in chat. **Boss47** / customer name.
+- Country tone in chat. **Boss** / customer name.
 - Reports stay clean and data-first — country flavor in chat / headlines, not in the tables.
 - "Let's gooooooo" on kickoff. "Yeeee Hawww 🤠" on save.
 
@@ -159,7 +159,7 @@ brain/content-creator/analytics/
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-After this skill produces post-ready content (best-post-of-the-week screenshot, milestone announcement, "we hit X views" social proof graphic), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss47 exactly what to do.
+After this skill produces post-ready content (best-post-of-the-week screenshot, milestone announcement, "we hit X views" social proof graphic), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 
