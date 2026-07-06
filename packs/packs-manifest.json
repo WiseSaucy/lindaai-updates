@@ -1,0 +1,281 @@
+{
+  "version": "1.2.0",
+  "updated": "2026-07-06",
+  "product": "LindaAI",
+  "model": "Pack + Pick",
+  "rules": {
+    "tier_required": true,
+    "one_pack_per_install": true,
+    "swap_cap_equals_pack_size": true,
+    "swap_pool": "any_skill_available_at_customer_tier",
+    "platinum_unlocks_all_packs": true,
+    "tier_names_locked": [
+      "Bronze",
+      "Silver",
+      "Gold",
+      "Platinum"
+    ],
+    "tier_names_forbidden": [
+      "Core",
+      "Pro",
+      "Starter",
+      "Basic",
+      "Premium",
+      "Enterprise",
+      "Elite"
+    ]
+  },
+  "tier_pack_allowance": {
+    "bronze": {
+      "packs_included": 1,
+      "swap_cap": "pack_size"
+    },
+    "silver": {
+      "packs_included": 1,
+      "swap_cap": "pack_size"
+    },
+    "gold": {
+      "packs_included": 1,
+      "swap_cap": "pack_size"
+    },
+    "platinum": {
+      "packs_included": "ALL",
+      "swap_cap": "unlimited"
+    }
+  },
+  "packs": {
+    "real-estate-pro": {
+      "display_name": "Real Estate Pro",
+      "emoji": "\ud83c\udfe1",
+      "tagline": "Hunt, underwrite, market, and close deals",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-deals",
+        "linda-rents",
+        "linda-property",
+        "linda-dealpack",
+        "linda-outreach",
+        "linda-invest",
+        "linda-negotiate",
+        "linda-pipeline",
+        "linda-loi",
+        "linda-airbnb",
+        "linda-coliving",
+        "linda-voicedeal",
+        "linda-bandit",
+        "linda-closer",
+        "linda-retiktok",
+        "linda-trigger",
+        "linda-wrangler",
+        "linda-zillow"
+      ],
+      "agents_unlocked": [
+        "bandit",
+        "closer",
+        "wrangler"
+      ],
+      "version": "1.1"
+    },
+    "construction-pm": {
+      "display_name": "Construction PM",
+      "emoji": "\ud83c\udfd7\ufe0f",
+      "tagline": "Daily field reports, WIP tracking, project health",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-dwr",
+        "linda-wip",
+        "linda-projecttrack",
+        "linda-jobhealth",
+        "linda-changeorder",
+        "linda-submittal",
+        "linda-schedule",
+        "linda-subs",
+        "linda-punchlist",
+        "linda-rfi",
+        "invoice-generator",
+        "email-drafter",
+        "project-pulse",
+        "kpi-dashboard",
+        "sop-builder",
+        "hiring-screener"
+      ],
+      "agents_unlocked": [
+        "tally",
+        "wrangler",
+        "scout"
+      ],
+      "version": "1.0"
+    },
+    "landscaper": {
+      "display_name": "Landscaper",
+      "emoji": "\ud83c\udf3f",
+      "tagline": "Routes, estimates, crews, seasonal services",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-route",
+        "linda-estimate",
+        "linda-crew",
+        "linda-seasonal",
+        "linda-propcard",
+        "linda-visitlog",
+        "invoice-generator",
+        "follow-up",
+        "project-pulse",
+        "lead-tracker",
+        "email-drafter",
+        "kpi-dashboard",
+        "linda-yardleads",
+        "linda-yardposts"
+      ],
+      "agents_unlocked": [
+        "wrangler",
+        "tally",
+        "ranger"
+      ],
+      "version": "1.0"
+    },
+    "hvac-plumbing": {
+      "display_name": "HVAC / Plumbing",
+      "emoji": "\ud83d\udd27",
+      "tagline": "Dispatch, service tickets, maintenance contracts",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-dispatch",
+        "linda-ticket",
+        "linda-maintain",
+        "linda-parts",
+        "linda-warranty",
+        "linda-techroute",
+        "invoice-generator",
+        "follow-up",
+        "project-pulse",
+        "lead-tracker",
+        "email-drafter",
+        "kpi-dashboard",
+        "linda-emergency",
+        "linda-gmb",
+        "linda-trades-leads"
+      ],
+      "agents_unlocked": [
+        "wrangler",
+        "tally",
+        "ranger"
+      ],
+      "version": "1.0"
+    },
+    "restaurant": {
+      "display_name": "Restaurant Owner",
+      "emoji": "\ud83c\udf7d\ufe0f",
+      "tagline": "Inventory, shifts, reviews, menu engineering",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-inventory",
+        "linda-shifts",
+        "linda-reviews",
+        "linda-menu",
+        "linda-invoice",
+        "linda-followup",
+        "linda-pulse",
+        "linda-leads",
+        "linda-mail",
+        "linda-kpi",
+        "linda-posts",
+        "linda-calendar"
+      ],
+      "agents_unlocked": [
+        "mercantile",
+        "holler",
+        "ranger"
+      ],
+      "version": "1.0"
+    },
+    "content-creator": {
+      "display_name": "Content Creator",
+      "emoji": "\ud83c\udfac",
+      "tagline": "Hooks, scripts, batch posting, brand deals, analytics",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-hooks",
+        "linda-script",
+        "linda-batch",
+        "linda-branddeal",
+        "linda-analytics",
+        "linda-thumbnail",
+        "linda-posts",
+        "linda-remix",
+        "linda-calendar",
+        "linda-mail",
+        "linda-pulse",
+        "linda-kpi"
+      ],
+      "agents_unlocked": [
+        "inkslinger",
+        "holler",
+        "drawl"
+      ],
+      "version": "1.0"
+    },
+    "life-coach": {
+      "display_name": "Life Coach",
+      "emoji": "\ud83e\udded",
+      "tagline": "Client intake, session notes, programs, accountability",
+      "min_tier": "bronze",
+      "core_skills": [
+        "linda-intake",
+        "linda-session",
+        "linda-program",
+        "linda-accountability",
+        "linda-clientcoach",
+        "linda-coachcontent",
+        "invoice-generator",
+        "follow-up",
+        "project-pulse",
+        "lead-tracker",
+        "email-drafter",
+        "social-media-calendar",
+        "linda-coachleads",
+        "linda-coachposts"
+      ],
+      "agents_unlocked": [
+        "grit",
+        "doc",
+        "ranger"
+      ],
+      "version": "1.0"
+    },
+    "operator": {
+      "display_name": "Operator",
+      "emoji": "\u2699\ufe0f",
+      "tagline": "Run the whole damn operation \u2014 accounting, property, tenants, vendors, files, taxes, all of it",
+      "min_tier": "silver",
+      "core_skills": [
+        "linda-books",
+        "linda-taxprep",
+        "linda-deductions",
+        "linda-files",
+        "linda-monday",
+        "linda-notion",
+        "linda-tenants",
+        "linda-pmfind",
+        "linda-bgcheck",
+        "linda-vendor",
+        "linda-payroll",
+        "linda-compliance",
+        "linda-cashops",
+        "linda-bizops"
+      ],
+      "agents_unlocked": [
+        "tally",
+        "wrangler",
+        "ranger"
+      ],
+      "version": "1.0"
+    }
+  },
+  "selection_flow": [
+    "1. Choose tier (Bronze / Silver / Gold / Platinum)",
+    "2. Choose ONE industry pack (Platinum unlocks all)",
+    "3. Review pack skills \u2014 keep all OR swap up to pack_size with any other tier-available skill",
+    "4. Confirm and install"
+  ]
+}
