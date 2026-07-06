@@ -3,7 +3,7 @@
 # Downloads + installs LindaAI tier-appropriate files based on license.
 #
 # Usage (customer-facing):
-#   curl -s https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/bootstrap/install.sh | bash -s -- <LICENSE_KEY>
+#   curl -s https://app.lindaai-brain.com/bootstrap/install.sh | bash -s -- <LICENSE_KEY>
 #
 # © 2026 LindaAI — Built by Daniel Wise
 
@@ -11,7 +11,7 @@ set -e
 
 LICENSE_KEY="${1:-}"
 API="https://lindaai-api-production.up.railway.app"
-CDN="https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main"
+CDN="https://app.lindaai-brain.com"
 CLAUDE_DIR="$HOME/.claude"
 SKILLS_DIR="$CLAUDE_DIR/skills"
 AGENTS_DIR="$CLAUDE_DIR/agents"

@@ -24,14 +24,14 @@ Yeeee Hawww 🤠
 Howdy partners — big restock landed in your barn today:
 
 **New in your barn:**
-- 🏗️ **Construction PM Pack** now pullable via /linda-sync (10 skills — change orders, RFIs, submittals, punch lists, daily reports)
-- 🔧 **HVAC & Plumbing Pack** now pullable (9 skills — dispatch, tech routing, parts, estimates, maintenance plans)
-- 🌱 **Landscaper Pack** now pullable (8 skills — crew dispatch, routes, seasonal planning, yard leads)
-- 🧭 **Life Coach Pack** now pullable (8 skills — client files, sessions, accountability, discovery leads)
-- 🍽️ **Restaurant Pack** now pullable (12 skills — menus, shifts, inventory, reviews)
+- 🏗️ **Construction PM Pack** now included in every new install (10 skills — change orders, RFIs, submittals, punch lists, daily reports)
+- 🔧 **HVAC & Plumbing Pack** now included (9 skills — dispatch, tech routing, parts, estimates, maintenance plans)
+- 🌱 **Landscaper Pack** now included (8 skills — crew dispatch, routes, seasonal planning, yard leads)
+- 🧭 **Life Coach Pack** now included (8 skills — client files, sessions, accountability, discovery leads)
+- 🍽️ **Restaurant Pack** now included (12 skills — menus, shifts, inventory, reviews)
 - 🏕️ **linda-rvpark** — end-to-end RV park & campground underwriting joined the Real Estate Pro pack
 
-Every pack in the manifest now carries a version number so /linda-sync can tell you exactly what's new. Ride easy — Yeeee Hawww 🤠
+Every pack now carries a version number. Pack updates over /linda-sync ride the secure license-gated channel — rolling out next. Ride easy — Yeeee Hawww 🤠
 
 ## 2026-07-06 — 🛡️ Full 157-skill content audit (multi-agent sweep)
 
