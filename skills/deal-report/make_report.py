@@ -216,6 +216,29 @@ def compute(wb):
                                    (bankloan * br + carry * cr) / (bankloan + carry) if (bankloan + carry) else 0)))
         d["offers"] = offers
 
+    # ---- operator & value-add capital overlay (hands-off hold) ----
+    if "Operator & Capital" in wb.sheetnames:
+        oc = wb["Operator & Capital"]
+        op_mo = gv(oc, "B6", 0)
+        nbo = noi + mgmt                       # NOI before operator = NOI + its management line
+        op_yr = op_mo * 12
+        noi_op = nbo - op_yr
+        cf_op = noi_op - ads
+        capital = gv(oc, "B16") + gv(oc, "B17") + gv(oc, "B18") + gv(oc, "B19")
+        cash_all = cash + capital
+        snbo = gv(oc, "B25", 0)
+        scf = (snbo - op_yr - ads) if snbo else 0
+        d["op"] = dict(
+            op_mo=op_mo, op_yr=op_yr, nbo=nbo, noi_op=noi_op,
+            cf_op_yr=cf_op, cf_op_mo=cf_op / 12.0,
+            max_op_mo=(nbo - ads) / 12.0 if ads else float("inf"),
+            dscr_op=(noi_op / ads if ads else float("inf")),
+            capital=capital, cash_all=cash_all,
+            coc_true=(cf_op / cash_all if cash_all else 0),
+            snbo=snbo, scf_yr=scf, scf_mo=scf / 12.0,
+            scoc=(scf / cash_all if (snbo and cash_all) else 0),
+        )
+
     # ---- scorecard verdict + red flags (uses the workbook's editable targets) ----
     v_dscr = d.get("tdscr", 1.35); v_coc = d.get("tcoc", 0.10)
     d["verdict"] = ("GO" if (d["dscr"] >= v_dscr and d["coc"] >= v_coc)
@@ -233,6 +256,8 @@ def compute(wb):
         flags.append(f"GRM {mult(d['grm'])} is over 10 — priced high vs. income.")
     if "norm" in d and d["norm"]["haircut"] > 0:
         flags.append(f"Normalizing the NOI cuts {money(d['norm']['haircut'])} — ~{money(d['norm']['overpay'])} of overpayment risk.")
+    if "op" in d and d["op"]["op_mo"] and d["op"]["cf_op_mo"] < 0:
+        flags.append(f"After a {money(d['op']['op_mo'])}/mo operator, cash flow is {money(d['op']['cf_op_mo'])}/mo today — you can only afford up to {money(d['op']['max_op_mo'])}/mo until stabilized.")
     d["flags"] = flags or ["No major red flags on the screening metrics — still verify the T-12 and condition."]
     return d
 
@@ -367,9 +392,22 @@ def render_pdf(d, path, logo=None):
             c.drawString(x, y - 0.02 * inch, v)
         y -= 0.5 * inch
 
-    header("5 Key Metrics")
-    kvrow([("NOI", money(d["noi"])), ("Cap Rate", pct(d["caprate"])),
-           ("DSCR", mult(d["dscr"])), ("Cash Flow", money(d["cfbt"])), ("Cash-on-Cash", pct(d["coc"]))])
+    _op = d.get("op") or {}
+    if _op.get("op_mo"):
+        header("5 Key Metrics  ·  after operator")
+        kvrow([("NOI (a/ op)", money(_op["noi_op"])), ("Cap Rate", pct(d["caprate"])),
+               ("DSCR (a/ op)", mult(_op["dscr_op"])), ("Cash Flow / mo", money(_op["cf_op_mo"])),
+               ("True CoC", pct(_op["coc_true"]))])
+        c.setFillColor(GREY); c.setFont("Helvetica", 8.3)
+        _l = (f"Operator {money(_op['op_mo'])}/mo  ·  max operator {money(_op['max_op_mo'])}/mo  ·  "
+              f"value-add capital {money(_op['capital'])}  ·  all-in cash {money(_op['cash_all'])}")
+        if _op.get("snbo"):
+            _l += f"  ·  stabilized {money(_op['scf_mo'])}/mo ({pct(_op['scoc'])})"
+        c.drawString(m + 4, y + 0.10 * inch, _l); y -= 0.22 * inch
+    else:
+        header("5 Key Metrics")
+        kvrow([("NOI", money(d["noi"])), ("Cap Rate", pct(d["caprate"])),
+               ("DSCR", mult(d["dscr"])), ("Cash Flow", money(d["cfbt"])), ("Cash-on-Cash", pct(d["coc"]))])
 
     header("Property Snapshot")
     kvrow([("Price", money(d["price"])), ("Sites", f"{int(d['sites'])}"),
@@ -497,6 +535,21 @@ def render_pptx(d, path, logo=None):
         s = slide(f"Offer Structures   (MAO {money(d['mao'])})")
         rows = [f"{o['name']}:  {money(o['price'])}  ·  DSCR {mult(o['dscr']) if o['dscr']!=float('inf') else 'n/a'}  ·  CoC {pct(o['coc'])}  ->  {o['verdict']}" for o in d["offers"]]
         bullets(s, rows, size=18)
+
+    # 4b — operator & value-add capital (hands-off hold)
+    if (d.get("op") or {}).get("op_mo"):
+        o = d["op"]; s = slide("Operator & Value-Add Capital")
+        rows = [
+            f"Operator fee:  {money(o['op_mo'])} / month   ({money(o['op_yr'])} / yr)",
+            f"NOI after operator:  {money(o['noi_op'])}   ·   DSCR {mult(o['dscr_op'])}",
+            f"Cash flow after operator:  {money(o['cf_op_mo'])} / month",
+            f"Most operator you can afford today:  {money(o['max_op_mo'])} / month",
+            f"Value-add capital:  {money(o['capital'])}   ·   all-in cash {money(o['cash_all'])}",
+            f"True cash-on-cash (today):  {pct(o['coc_true'])}",
+        ]
+        if o.get("snbo"):
+            rows.append(f"Stabilized:  {money(o['scf_mo'])} / month   ·   true CoC {pct(o['scoc'])}")
+        bullets(s, rows, size=19)
 
     # 5 — risks / red flags
     s = slide("Risks & Red Flags")

@@ -877,6 +877,71 @@ of["A49"]="Don't pay the seller for value YOU create (rent bumps, occupancy, uti
 of["A49"].font=NOTE
 
 # =============================================================================
+# SHEET — OPERATOR & VALUE-ADD CAPITAL (hands-off hold: pay an operator; size the build)
+# =============================================================================
+oc = wb.create_sheet("Operator & Capital")
+oc.sheet_view.showGridLines=False
+oc.column_dimensions["A"].width=42
+oc.column_dimensions["B"].width=18
+oc.column_dimensions["C"].width=42
+merge_title(oc, "A1:C1", "OPERATOR & VALUE-ADD CAPITAL")
+oc["A2"]=("A hands-off hold: always pay a professional operator, and size the capital to finish/expand. "
+          "This tab overlays the Underwriting tab so the returns reflect what you ACTUALLY pocket.")
+oc["A2"].font=NOTE
+Uoc="Underwriting!"
+OCk={}
+def oc_in(row,label,val,fmt,note="",key=None):
+    oc[f"A{row}"]=label; oc[f"A{row}"].font=LABEL
+    c=oc[f"B{row}"]; c.value=val; c.font=INPUTF; c.fill=INPUT_FILL; c.border=BORDER
+    c.number_format=fmt; c.alignment=Alignment(horizontal="right")
+    if note: oc[f"C{row}"]=note; oc[f"C{row}"].font=NOTE
+    if key: OCk[key]=f"B{row}"
+def oc_calc(row,label,formula,fmt,note="",bold=False,fill=None,key=None):
+    oc[f"A{row}"]=label; oc[f"A{row}"].font=BOLD if bold else LABEL
+    c=oc[f"B{row}"]; c.value=formula; c.font=BOLD if bold else LABEL
+    c.number_format=fmt; c.alignment=Alignment(horizontal="right")
+    if fill: c.fill=fill
+    if note: oc[f"C{row}"]=note; oc[f"C{row}"].font=NOTE
+    if key: OCk[key]=f"B{row}"
+
+sec(oc,4,"OPERATOR  (this is a hands-off hold — always budget one)","A:C")
+oc_calc(5,"NOI before operator", f"={Uoc}{R['noi']}+{Uoc}{R['mgmt']}", CUR2,
+        "= Underwriting NOI + its management line (added back)", key="nbo")
+oc_in(6,"Operator Fee ($ / month)", 4000, CUR2,
+      "flat full-service operator; market mgmt runs ~10-12% of EGI", key="op_mo")
+oc_calc(7,"Operator Fee (annual)", f"={OCk['op_mo']}*12", CUR2, key="op_yr")
+oc_calc(8,"NOI after operator", f"={OCk['nbo']}-{OCk['op_yr']}", CUR2, bold=True, fill=KEY_FILL, key="noi_op")
+oc_calc(9,"Annual Debt Service (from Underwriting)", f"={Uoc}{R['ads']}", CUR2, key="ads_oc")
+oc_calc(10,"Cash Flow after operator (annual)", f"={OCk['noi_op']}-{OCk['ads_oc']}", CUR2, bold=True, key="cf_yr")
+oc_calc(11,"Cash Flow after operator (MONTHLY)", f"={OCk['cf_yr']}/12", CUR2, bold=True, fill=KEY_FILL, key="cf_mo")
+oc_calc(12,"Max operator you can afford ($/mo)", f"=({OCk['nbo']}-{OCk['ads_oc']})/12", CUR2,
+        "break-even ceiling on today's income", bold=True, fill=WARN_FILL, key="op_max")
+oc_calc(13,"DSCR after operator", f'=IF({OCk["ads_oc"]}=0,"n/a",{OCk["noi_op"]}/{OCk["ads_oc"]})', MULT, key="dscr_op")
+
+sec(oc,15,"VALUE-ADD CAPITAL  (sources & uses — ON TOP of the down payment)","A:C")
+oc_in(16,"Finish cabins", 0, CUR2, "usually highest ROI — near-term income", key="cap_cabin")
+oc_in(17,"Finish house / interior", 0, CUR2, "often marginal — manager housing or defer", key="cap_house")
+oc_in(18,"Expand pads / development", 0, CUR2, "phased — needs utilities + permits", key="cap_pad")
+oc_in(19,"Infrastructure / contingency", 0, CUR2, "septic/sewer eval, reserve", key="cap_infra")
+oc_calc(20,"Total Value-Add Capital", "=SUM(B16:B19)", CUR2, bold=True, fill=TOTAL_FILL, key="cap_tot")
+oc_calc(21,"Total Cash Invested (all-in)", f"={Uoc}{R['cash']}+{OCk['cap_tot']}", CUR2,
+        "down + closing + day-one capex + value-add", bold=True, fill=KEY_FILL, key="cash_all")
+oc_calc(22,"True Cash-on-Cash (today, after operator)", f'=IF({OCk["cash_all"]}=0,0,{OCk["cf_yr"]}/{OCk["cash_all"]})',
+        PCT, "today's cash flow / all-in cash invested", key="coc_true")
+
+sec(oc,24,"STABILIZED  (once the build is done — enter your target NOI)","A:C")
+oc_in(25,"Stabilized NOI before operator", 0, CUR2, "cabins leased, rents to market, house online", key="snbo")
+oc_calc(26,"Stabilized NOI after operator", f'=IF({OCk["snbo"]}=0,0,{OCk["snbo"]}-{OCk["op_yr"]})', CUR2, bold=True, key="snoi_op")
+oc_calc(27,"Stabilized Cash Flow (annual)", f'=IF({OCk["snbo"]}=0,0,{OCk["snoi_op"]}-{OCk["ads_oc"]})', CUR2, key="scf_yr")
+oc_calc(28,"Stabilized Cash Flow (MONTHLY)", f'=IF({OCk["snbo"]}=0,0,{OCk["scf_yr"]}/12)', CUR2, bold=True, fill=KEY_FILL, key="scf_mo")
+oc_calc(29,"Stabilized True Cash-on-Cash", f'=IF(OR({OCk["snbo"]}=0,{OCk["cash_all"]}=0),0,{OCk["scf_yr"]}/{OCk["cash_all"]})',
+        PCT, bold=True, fill=KEY_FILL, key="scoc")
+
+oc["A31"]=("RULE: don't pay the seller for value YOU create with this capital (cabins, house, expansion). "
+           "Require him to finish income-marketed items before close, or credit you the cost.")
+oc["A31"].font=NOTE
+
+# =============================================================================
 # SHEET — READ ME (insert first)
 # =============================================================================
 rm = wb.create_sheet("Read Me", 0)
@@ -927,6 +992,7 @@ lines=[
  "  • Deal Scorecard — Linda's metrics + 5 hacks rated GOOD/OK/BAD with its go / conditional / no-go verdict.",
  "  • Underwriting  — the engine. Fill the YELLOW cells; everything else is a formula.",
  "  • Normalization — rebuild the seller's NOI with Linda's 4 adjustments; shows the overpayment risk.",
+ "  • Operator & Capital — a hands-off hold: pay an operator, size the value-add capital, see TRUE cash-on-cash.",
  "  • Offer Structures — Linda's 4-column engine: Seller / Conventional / Partial carry / Full carry, two-lien",
  "      debt stack, blended rate, and the auto-solved Maximum Allowable Offer (MAO).",
  "  • Income Detail — optional. Build income from your site mix (long-term + seasonal nightly).",
@@ -960,8 +1026,8 @@ for ln in lines:
     r+=1
 
 # ---- tab order --------------------------------------------------------------
-order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Normalization","Offer Structures",
-       "Income Detail","Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
+order=["Read Me","Deal Summary","Deal Scorecard","Underwriting","Normalization","Operator & Capital",
+       "Offer Structures","Income Detail","Actuals vs Pro Forma","Pro Forma & Returns","Sensitivity","Loan Sizing"]
 wb._sheets.sort(key=lambda s: order.index(s.title))
 wb.active = 0
 
