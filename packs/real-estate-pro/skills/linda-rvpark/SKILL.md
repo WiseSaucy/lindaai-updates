@@ -60,8 +60,11 @@ Before proceeding, verify the LindaAI license:
 | A video where only the **narration** matters | `python3 ~/.claude/skills/youtube-transcribe/transcribe.py <url>` | same |
 | "make me the report" / "I need a one-pager" (after underwriting) | `python3 ~/.claude/skills/deal-report/make_report.py "Deal - <park>.xlsx" --pdf --pptx` | hand over the branded PDF / PowerPoint |
 
+When you build `deal.json`, also capture the hands-off-hold inputs so the operator and capital flow through: `operator_fee_monthly`, `value_add_capital` (`cabins` / `house` / `expansion` / `contingency`), and `stabilized_noi_before_operator`. Full schema: `~/.claude/skills/rv-park-autofill/deal_input.example.json`.
+
 **Rules of the trail:**
 - **Never tell the user to run another skill.** You orchestrate the engines; they just talk to you. One command in, full answer out.
+- **This is a hands-off hold** — always include an operator fee and report **cash flow after operator** and **true cash-on-cash** (on all-in cash, not just the down). See Sections 8.5–8.6.
 - If an engine isn't installed or a Python dep is missing, **don't block the deal** — fall back to doing that step by hand (read the doc yourself, normalize manually, write the summary in chat) and keep riding.
 - Always finish with the **underwriting analysis + GO / CONDITIONAL / NO-GO verdict.** The branded report is optional — offer it, don't force it.
 
@@ -192,6 +195,32 @@ Show the **normalized NOI** alongside the seller's NOI and quantify the gap. Tra
 | **Total Annual Debt Service** | 1st + 2nd | DSCR is calculated off **this** total, not one loan |
 | **Cost of Capital (optional)** | If borrowing the down payment | Adds to debt service and lowers DSCR accordingly |
 
+### Section 8.5 — Operator Cost (this is a hands-off hold)
+
+🤠 *Assume every RV park is professionally operated, never owner-run — always budget an operator, and show cash flow **after** it.* The workbook's **Operator & Capital** tab handles this.
+
+- **NOI before operator** = the normalized NOI with its management line added back, so the operator becomes the single management cost.
+- **Operator fee** — two ways to enter it:
+  - **Market management** ≈ 10–12% of collected revenue (a light third-party PM).
+  - **Full-service / live-on-site operator** — a flat monthly fee. Real quotes for a hands-on turnaround team run **$7,500–$12,500/mo** (see the FireFly Cove benchmark). That's a *turnaround* rate — use it for a defined stabilization sprint, then drop to steady-state.
+- **Cash flow after operator** = NOI before operator − operator fee − total debt service. This is what the owner actually pockets — report it as the headline monthly number.
+- **Max operator you can afford** = (NOI before operator − annual debt service) ÷ 12. Name this ceiling out loud — above it, the owner feeds the deal.
+
+### Section 8.6 — Value-Add Capital (Sources & Uses)
+
+The stabilized numbers assume capital is spent to unlock them. Size it **on top of the down payment** and rank by return on the capital:
+
+| Project | Typical cost | Rule of thumb |
+|---------|-------------|---------------|
+| **Finish cabins / near-complete units** | Bid it | Usually the **highest ROI** — near-term income |
+| **Finish a house / interior** | ~$60–90/sqft | Often **marginal** — do it only for manager housing, else defer |
+| **Expand pads / development** | ~$8–15K/pad | Phased growth — needs utility capacity + permits |
+| **Infrastructure / contingency** | Reserve | Septic/sewer eval, deferred capex |
+
+- **Total Cash Invested (all-in)** = down + closing + day-one capex + value-add capital.
+- **True Cash-on-Cash** = cash flow (after operator) ÷ all-in cash. Always report the *true* CoC — CoC on the down payment alone overstates the return.
+- **RULE:** don't pay the seller for value **you** create with this capital. Require him to finish income-marketed items before close, or credit you the cost.
+
 ### Section 9 — The Bad Day Test (stress test)
 
 Deals don't fall apart on good days. Before making an offer, break it on purpose:
@@ -233,6 +262,8 @@ List the upside separately — it's your return and your exit, not the seller's.
 | **Occupancy improvement** | Closing an occupancy gap is usually a management problem, not a real-estate one |
 | **Expense reduction** | Convert owner-paid utilities to ratio/bill-back — moves cost to guests |
 | **Additional revenue** | Laundry, self-storage, covered parking, camp store |
+
+**The stabilization playbook (what the operator executes to move NOI):** rents to market, occupancy recovery (usually a management fix), finish and lease near-complete units (cabins), place idle buildings in service, tighten collections and verify utility rebilling, activate online booking for transient premium, and evaluate expansion on excess land. Map each lever to a dollar impact and a phase (0–12 mo build → stabilized), and set a **Stabilized NOI (before operator)** target on the Operator & Capital tab so the true stabilized cash-on-cash flows through. A distressed-park turnaround (e.g. the FireFly Cove case: 79%→93% occupancy, +$14,675/mo recovered in 90 days) is the aggressive version of this same playbook.
 
 ## Output Format
 

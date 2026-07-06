@@ -54,6 +54,9 @@ N = {"egi": "B11", "tax": "B15", "ins": "B16", "util": "B17", "rm": "B18",
      "mgmt": "B19", "capex": "B20", "pay": "B21", "admin": "B22"}
 # Normalization tab — Linda's rule cells (kept in sync with any JSON overrides)
 N_RULES = {"mgmt_pct": "B5", "rm_pct": "B6", "capex_pct": "B7", "tax_bump": "B8"}
+# Operator & Capital tab — input cells
+OC = {"op_mo": "B6", "cap_cabin": "B16", "cap_house": "B17", "cap_pad": "B18",
+      "cap_infra": "B19", "snbo": "B25"}
 # expected labels in column A (sanity check that the template hasn't shifted)
 U_CHECK = {"B8": "Number of RV Sites", "B9": "Purchase Price", "B27": "Property Taxes"}
 N_CHECK = {"B11": "Effective Gross Income", "B15": "Property Taxes"}
@@ -209,19 +212,42 @@ def main():
             of["B9"] = f["amortization_years"]
             for col in "BCDE": of[f"{col}21"] = f["amortization_years"]
 
+    # ---- Operator & Capital: hands-off hold economics ----
+    op_mo = num(d, "operator_fee_monthly", default=None)
+    vac = d.get("value_add_capital", {})
+    snbo = num(d, "stabilized_noi_before_operator", default=None)
+    if "Operator & Capital" in wb.sheetnames:
+        ocw = wb["Operator & Capital"]
+        if op_mo is not None:
+            ocw[OC["op_mo"]] = op_mo
+        ocw[OC["cap_cabin"]] = num(vac, "cabins")
+        ocw[OC["cap_house"]] = num(vac, "house")
+        ocw[OC["cap_pad"]]   = num(vac, "expansion")
+        ocw[OC["cap_infra"]] = num(vac, "contingency")
+        if snbo is not None:
+            ocw[OC["snbo"]] = snbo
+
     out = args.out or f"Deal - {d.get('property_name','RV Park')}.xlsx"
     wb.save(out)
 
     # quick echo so the agent/user can sanity-check
     opex_seller = s_tax + s_ins + s_util + s_rm + s_mgmt + s_capex + s_pay + s_admin
     opex_norm = n_tax + s_ins + s_util + n_rm + (eff_mgmt_pct * egi) + n_capex + s_pay + s_admin
+    norm_noi = egi - opex_norm
+    noi_before_op = norm_noi + eff_mgmt_pct * egi          # add mgmt back; operator is the single mgmt line
+    op_yr = (op_mo or 0) * 12
+    cap_tot = num(vac, "cabins") + num(vac, "house") + num(vac, "expansion") + num(vac, "contingency")
     print(json.dumps({
         "ok": True, "out": out, "sites": sites, "asking_price": price,
         "EGI": round(egi), "seller_NOI": round(egi - opex_seller),
-        "normalized_NOI": round(egi - opex_norm),
+        "normalized_NOI": round(norm_noi),
         "seller_expense_ratio": round(opex_seller / egi, 4) if egi else None,
         "normalized_expense_ratio": round(opex_norm / egi, 4) if egi else None,
-        "noi_haircut": round((egi - opex_seller) - (egi - opex_norm)),
+        "noi_haircut": round((egi - opex_seller) - norm_noi),
+        "operator_fee_monthly": op_mo, "operator_fee_annual": round(op_yr) if op_mo else None,
+        "NOI_before_operator": round(noi_before_op),
+        "NOI_after_operator": round(noi_before_op - op_yr) if op_mo else None,
+        "value_add_capital_total": round(cap_tot) if cap_tot else None,
     }, indent=2))
 
 
