@@ -1,10 +1,10 @@
 # LindaAI Bootstrap Installer — Windows (PowerShell)
 #
 # Usage:
-#   irm https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/bootstrap/install.ps1 | iex
+#   irm https://app.lindaai-brain.com/bootstrap/install.ps1 | iex
 #   (then paste license key when prompted)
 # OR:
-#   powershell -Command "& { iwr -useb https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/bootstrap/install.ps1 | iex }"
+#   powershell -Command "& { iwr -useb https://app.lindaai-brain.com/bootstrap/install.ps1 | iex }"
 #
 # © 2026 LindaAI — Built by Daniel Wise
 
@@ -13,7 +13,7 @@ param(
 )
 
 $API = "https://lindaai-api-production.up.railway.app"
-$CDN = "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main"
+$CDN = "https://app.lindaai-brain.com"
 $ClaudeDir = Join-Path $env:USERPROFILE ".claude"
 $SkillsDir = Join-Path $ClaudeDir "skills"
 $AgentsDir = Join-Path $ClaudeDir "agents"
