@@ -17,8 +17,7 @@
       "operator"
     ],
     "internal_only": [
-      "credit-repair",
-      "grant-hunter"
+      "credit-repair"
     ],
     "quota_per_tier": {
       "bronze": 1,
