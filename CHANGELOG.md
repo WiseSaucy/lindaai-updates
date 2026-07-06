@@ -5,6 +5,20 @@
 
 ---
 
+## 2026-07-06 — 🧹 Catalog cleanup + RV park underwriting live
+
+**Leaner and meaner:**
+
+- 🎯 **`/linda-trigger`** now in the sync catalog — the Sauce Underwriter pulls down clean on every Gold+ sync
+- 🏕️ **`/linda-rvpark`** now pullable — full RV park + campground underwriting end to end (Gold+)
+- 🧹 **8 redundant skills retired** (invest, actions, finance, swot, compete, network, outreach, kajabi) — their jobs are covered better by the tools that stayed. Your next `/linda-sync` tidies them out of your install automatically. Less clutter, clearer lineup.
+
+**The underwriting lineup now:** `/linda-trigger` (flips + wholesale) · `/linda-deals` (multifamily + creative finance) · `/linda-airbnb` (short-term rentals) · `/linda-coliving` (rent-by-room) · `/linda-rvpark` (RV parks) · `/linda-rents` (comps).
+
+Yeeee Hawww 🤠
+
+---
+
 ## 2026-07-06 — Pack Barn Fully Stocked 🤠
 
 Howdy partners — big restock landed in your barn today:
