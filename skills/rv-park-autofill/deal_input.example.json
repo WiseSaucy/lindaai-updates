@@ -41,5 +41,14 @@
     "rm_pct": 0.05,
     "capex_pct": 0.03,
     "tax_bump": 0.20
-  }
+  },
+
+  "operator_fee_monthly": 4000,
+  "value_add_capital": {
+    "cabins": 120000,
+    "house": 0,
+    "expansion": 0,
+    "contingency": 50000
+  },
+  "stabilized_noi_before_operator": 230000
 }
