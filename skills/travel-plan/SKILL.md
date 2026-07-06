@@ -55,7 +55,7 @@ Parse what the user provided. Required inputs (ask for anything missing):
 |-------|----------|---------|
 | Destination | Yes | "Los Angeles", "NYC", "Austin, TX" |
 | Dates | Yes | "March 4-8", "next Tuesday through Friday", "3 nights" |
-| Purpose | Yes | "Business — Squad Up Summit conference", "visiting a property", "vacation" |
+| Purpose | Yes | "Business — Growth Summit conference", "visiting a property", "vacation" |
 | Departure city | Needed for flights | "Phoenix", infer from user profile if available |
 | Budget range | Helpful | "mid-range", "$200/night max for hotel", "no budget constraint" |
 | Specific meetings/events | Helpful | "Meeting at 123 Main St at 2pm Tuesday", "Conference at Convention Center all day Wednesday" |
@@ -341,9 +341,9 @@ Save to: `brain/research/travel-{destination-slug}-{YYYY-MM-DD}.md`
 
 ## Example Usage
 
-**User:** "I'm going to LA March 4-8 for the Squad Up Summit conference"
+**User:** "I'm going to LA March 4-8 for the Growth Summit conference"
 
-**AI:** Researches LA weather for March, the Squad Up Summit venue and schedule, hotel options near the event, ground transportation from the nearest airport. Builds a full trip brief: flight search criteria from the user's home city, 3 hotel options ranked by proximity to the venue, daily itinerary blocking conference sessions and networking events, restaurant picks near the venue and hotel, LA-appropriate packing list, and a pre-trip timeline starting one week out. Saves to `brain/research/travel-los-angeles-2026-03-03.md`.
+**AI:** Researches LA weather for March, the Growth Summit venue and schedule, hotel options near the event, ground transportation from the nearest airport. Builds a full trip brief: flight search criteria from the user's home city, 3 hotel options ranked by proximity to the venue, daily itinerary blocking conference sessions and networking events, restaurant picks near the venue and hotel, LA-appropriate packing list, and a pre-trip timeline starting one week out. Saves to `brain/research/travel-los-angeles-2026-03-03.md`.
 
 **User:** "/travel-plan Austin March 15-17 meeting with investors"
 

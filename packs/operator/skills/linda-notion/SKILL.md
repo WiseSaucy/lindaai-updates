@@ -29,8 +29,8 @@ Standard LindaAI license verification.
 ### Step 1: API Setup (First Run)
 
 If `brain/operator/integrations/notion.json` doesn't exist:
-1. Walk Boss47 through creating a Notion internal integration at notion.so/my-integrations
-2. Boss47 shares each target database/page with the integration (Notion permission model)
+1. Walk Boss through creating a Notion internal integration at notion.so/my-integrations
+2. Boss shares each target database/page with the integration (Notion permission model)
 3. Save to `brain/operator/integrations/notion.json`:
 ```json
 {
@@ -77,7 +77,7 @@ Common queries:
 }
 ```
 
-Confirm before write: "Boss47 — gonna create a new Deal page 'Burlington Duplex LOI' in your Deals DB. Confirm?"
+Confirm before write: "Boss — gonna create a new Deal page 'Burlington Duplex LOI' in your Deals DB. Confirm?"
 
 ### Step 5: Update Page
 
@@ -112,11 +112,11 @@ If a watched DB has a Date property + a Status property, surface on operator's c
 
 **User:** "Pull my Notion Deals database and show me what's in negotiation."
 
-**LindaAI:** "Let's gooooooo Boss47!" Queries DB, returns 4 deals in Negotiation stage with key fields. "Yeeee Hawww 🤠 — Burlington duplex farthest along, due-diligence due Friday."
+**LindaAI:** "Let's gooooooo Boss!" Queries DB, returns 4 deals in Negotiation stage with key fields. "Yeeee Hawww 🤠 — Burlington duplex farthest along, due-diligence due Friday."
 
 **User:** "Push my last meeting notes to Notion under the Liz database."
 
-**LindaAI:** Pulls last meeting from `linda-actions` output, formats as Notion page, confirms target DB, creates page.
+**LindaAI:** Pulls last meeting from `meeting-to-actions` output, formats as Notion page, confirms target DB, creates page.
 
 **User:** "Find me everything in Notion tagged 'Liz'."
 
@@ -124,7 +124,7 @@ If a watched DB has a Date property + a Status property, surface on operator's c
 
 ## Voice & Tone
 
-- Country, helpful. **Boss47.**
+- Country, helpful. **Boss.**
 - "Let's gooooooo!" on kickoff. "Yeeee Hawww 🤠" when synced.
 
 ## Brand Rules
@@ -135,14 +135,14 @@ If a watched DB has a Date property + a Status property, surface on operator's c
 ## Cross-Skill Hooks
 
 - **Feeds ↔ linda-pipeline** — RE deals can mirror between Notion and `brain/leads/`
-- **Feeds ↔ linda-actions** — meeting action items can post into Notion task DB
+- **Feeds ↔ meeting-to-actions** — meeting action items can post into Notion task DB
 - **Feeds → linda-bizops** — Notion calendar events surface on dashboard
 - **Feeds ↔ linda-files** — Notion-stored docs can register in filing cabinet
 - **Feeds ← linda-pulse** — project pulse can read project status from Notion
 
 ## Error Handling
 
-- **401 unauthorized:** Token expired or DB not shared with integration — guide Boss47 to re-share.
+- **401 unauthorized:** Token expired or DB not shared with integration — guide Boss to re-share.
 - **Schema mismatch on write:** Show what Linda expected vs what's there, do not silently skip.
 - **Rate limit (429):** Notion limit ~3 req/sec — back off and retry.
 - **Database too large (>100 pages):** Paginate with cursor.

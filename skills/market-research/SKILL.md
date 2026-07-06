@@ -240,7 +240,7 @@ If `brain/research/` does not exist, create it.
 
 **User:** "Research the market for creative finance vehicle platforms in the US"
 
-**AI:** Runs 6-8 web searches, finds market size data for auto finance, alternative lending, and vehicle marketplaces. Builds TAM/SAM/SOM estimates, identifies competitors (Carvana, Vroom, traditional dealers, SubTo community), analyzes trends (dealer-to-consumer shift, AI in lending, rising interest rates pushing creative solutions), identifies opportunities (no dominant creative finance platform for vehicles exists). Saves report.
+**AI:** Runs 6-8 web searches, finds market size data for auto finance, alternative lending, and vehicle marketplaces. Builds TAM/SAM/SOM estimates, identifies competitors (Carvana, Vroom, traditional dealers), analyzes trends (dealer-to-consumer shift, AI in lending, rising interest rates pushing creative solutions), identifies opportunities (no dominant creative finance platform for vehicles exists). Saves report.
 
 **User:** "How big is the AI SaaS market?"
 
@@ -248,7 +248,7 @@ If `brain/research/` does not exist, create it.
 
 **User:** "I want a deep dive on the online education market for real estate investing"
 
-**AI:** Deep dive with multiple searches, detailed competitive analysis (Kajabi, Teachable, Udemy courses, BiggerPockets, SubTo), pricing analysis, student demographics, conversion rates, and specific opportunities for a new entrant.
+**AI:** Deep dive with multiple searches, detailed competitive analysis (Kajabi, Teachable, Udemy courses, BiggerPockets), pricing analysis, student demographics, conversion rates, and specific opportunities for a new entrant.
 
 **User:** "Is there a market for AI-powered business operating systems?"
 

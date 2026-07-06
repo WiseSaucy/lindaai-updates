@@ -7,7 +7,7 @@ description: Set up the LindaAI Telegram bridge so the user can chat with their 
 
 Walks the customer through creating their Telegram bot + wiring it to their Claude Max subscription (or API key fallback) so they can text LindaAI from their phone.
 
-**Target time: 10-15 minutes.** Every step below was field-tested during Boss47's own bridge setup — same gotchas as Discord are pre-patched.
+**Target time: 10-15 minutes.** Every step below was field-tested during Boss's own bridge setup — same gotchas as Discord are pre-patched.
 
 ---
 

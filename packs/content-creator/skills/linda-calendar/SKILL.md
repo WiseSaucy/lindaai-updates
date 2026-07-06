@@ -39,12 +39,12 @@ Standard LindaAI license verification (`~/.claude/linda-license.json`). Halt wit
 | Niche / topic pillars | Yes | 3-5 pillars (e.g. education / story / behind-scenes / promo) |
 | Start date | No | Defaults to next Monday |
 | Theme day preferences | Optional | e.g. "Mondays = motivation, Fridays = recap" |
-| Creator timezone | No | Defaults MDT (Boss47); ask if unknown |
+| Creator timezone | No | Ask the customer their timezone on first run — never assume; ask if unknown |
 | Auto-route to /linda-batch | No | Default YES — calendar feeds straight into batch writing |
 
 ### Step 2: Pick Theme Days
 
-> 📣 "Let's gooooooo Boss47 — Holler's drawing up the programming grid."
+> 📣 "Let's gooooooo Boss — Holler's drawing up the programming grid."
 
 Default theme day archetypes (mix and match — creator's choice):
 
@@ -81,7 +81,7 @@ Example weekly grid for TikTok 1/day + IG 5/wk + YouTube 1/wk + Newsletter 1/wk:
 
 ### Step 4: Add Optimal Post Times
 
-Use platform-optimal windows tuned to creator's timezone. Default MDT (Boss47-aligned, same times as `/linda-post-walkthrough`):
+Use platform-optimal windows tuned to creator's timezone. Use the customer's confirmed timezone (same structure as `/linda-post-walkthrough`):
 
 | Platform | Prime time (MDT) | Window |
 |----------|------------------|--------|
@@ -147,7 +147,7 @@ NEXT STEPS in order:
 I'll keep the calendar source of truth — when posts go live, the
 status column in calendar.csv updates to "posted."
 
-Yeeee Hawww! 🤠 You just locked a month of programming, Boss47.
+Yeeee Hawww! 🤠 You just locked a month of programming, Boss.
 ```
 
 ## Output Format
@@ -195,7 +195,7 @@ Chat summary:
 
 **User:** "Linda, build me a 30-day content calendar — TikTok daily, IG 5x/week, YouTube 1x/week. Pillars: real estate education, deal stories, behind the scenes, mindset."
 
-**Holler:** "Let's gooooooo Boss47!" Picks theme days (Mon market take, Tue deal teardown, Wed jobsite BTS, Thu case study, Fri AMA). Builds 30-day grid with 30 TikToks + 20 IG + 4 YouTube = 54 posts. Saves calendar files. Auto-routes to `/linda-batch`. "Yeeee Hawww 🤠 — 54 posts planned, batch running now."
+**Holler:** "Let's gooooooo Boss!" Picks theme days (Mon market take, Tue deal teardown, Wed jobsite BTS, Thu case study, Fri AMA). Builds 30-day grid with 30 TikToks + 20 IG + 4 YouTube = 54 posts. Saves calendar files. Auto-routes to `/linda-batch`. "Yeeee Hawww 🤠 — 54 posts planned, batch running now."
 
 **User:** "Holler, what should I post this week? TikTok and X only, 5 days."
 
@@ -246,8 +246,8 @@ If creator's cadence > 25/week, Holler flags it with a warning and offers a "sus
 - **Window > 30 days requested:** Confirm — that's a big calendar. Offer to do 30-day chunks.
 - **Platforms include podcast or YouTube long but no cadence specified:** Default to 1/wk each.
 - **`brain/content-creator/calendar/` missing:** Create it.
-- **`--auto-batch` set but `/linda-batch` not available (tier check):** Save calendar, tell Boss47 to upgrade or run manually.
-- **Timezone unclear:** Ask once. Default MDT only for Boss47-confirmed customers.
+- **`--auto-batch` set but `/linda-batch` not available (tier check):** Save calendar, tell Boss to upgrade or run manually.
+- **Timezone unclear:** Ask once. Only use a timezone the customer has confirmed.
 
 ## What Holler Never Does
 

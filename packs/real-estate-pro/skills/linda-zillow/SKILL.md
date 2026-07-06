@@ -354,7 +354,7 @@ Format matches `/linda-post-walkthrough` parser for the social cross-post platfo
 
 ---
 
-## Posting Schedule (Boss47 MDT — UTC-6)
+## Posting Schedule (Boss MDT — UTC-6)
 
 **Listing platforms** — post during business hours (10 AM – 4 PM MDT) when listing agents and buyer's agents are active.
 
@@ -393,7 +393,7 @@ For the **social cross-post**, run `/linda-post-walkthrough` and point it at thi
 > - 📋 Copy the Zillow/Redfin/Realtor/MLS content into each platform's dashboard (no API for those — manual upload)
 > - 📣 Run `/linda-post-walkthrough` for the social cross-post (TikTok/IG/FB/YT/X) — guided publish
 > - 📞 If buyers start hitting back, hand the lead pipeline to **Closer** via `/linda-closer`
-> - 🚂 When you've got a verbal yes, fire the purchase docs via `/linda-loi` or `/linda-contract`
+> - 🚂 When you've got a verbal yes, fire the purchase docs via `/linda-loi` or `/contract-review`
 > - 🛒 For Facebook Marketplace / LinkedIn / Craigslist, copy from the standalone sections above
 >
 > Need a fresh listing for another property?
@@ -405,7 +405,7 @@ For the **social cross-post**, run `/linda-post-walkthrough` and point it at thi
 - **Always include investor-relevant numbers** for investor/wholesale/MHP listings. Cap rate, gross rent, expense ratio, cash flow at standard LTV. No "great cash flow!" without the number.
 - **Always include FAQ.** Most listings skip it — including it converts on-the-fence buyers and saves the user time on repeat questions.
 - **Always match the `/linda-post-walkthrough` PUBLISH_PACK format** for the 5 social platforms (TikTok / IG Reels / FB Reels / YT Shorts / Twitter).
-- **Never expose Boss47 identity in public-facing content** (per agent standard).
+- **Never expose Boss identity in public-facing content** (per agent standard).
 - **Save every listing pack** to `brain/real-estate-pro/linda-zillow/listings/` so the user has a content history.
 
 ## Error Handling

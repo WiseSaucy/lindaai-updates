@@ -166,7 +166,7 @@ TODAY'S PRIORITY ACTIONS:
 
 **User:** "Pulse check"
 
-**AI:** Reads all project files, generates the full pulse report showing 6 active projects, 2 needing attention, 1 behind schedule. Highlights that SellFi is behind its March deadline and deal flow has been paused too long. Recommends 3 priority actions for today.
+**AI:** Reads all project files, generates the full pulse report showing 6 active projects, 2 needing attention, 1 behind schedule. Highlights that LaunchPad is behind its March deadline and deal flow has been paused too long. Recommends 3 priority actions for today.
 
 **User:** "What needs my attention today?"
 

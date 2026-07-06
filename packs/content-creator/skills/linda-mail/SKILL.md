@@ -63,7 +63,7 @@ Plus utility:
 
 ### Step 3: Pull Creator Context
 
-> 🐎 "Let's gooooooo Boss47 — Pony's pullin' your rate card and media kit numbers."
+> 🐎 "Let's gooooooo Boss — Pony's pullin' your rate card and media kit numbers."
 
 Read from `brain/content-creator/`:
 - `brand-deals/rate-card.md` — current rates
@@ -71,7 +71,7 @@ Read from `brain/content-creator/`:
 - `analytics/reports/{latest}.md` — current audience stats
 - Creator name, handles, primary platforms
 
-If any file's missing, use sensible defaults and flag to Boss47 to fill in later.
+If any file's missing, use sensible defaults and flag to Boss to fill in later.
 
 ### Step 4: Draft by Template
 
@@ -234,7 +234,7 @@ Each saved file includes:
 - Email type
 - Full draft
 - Optional: 2-3 subject line variants
-- Optional: tone notes for Boss47 to edit before sending
+- Optional: tone notes for Boss to edit before sending
 
 ### Step 7: Output
 
@@ -256,7 +256,7 @@ Each saved file includes:
 ---
 
 ## Edit notes
-- {anything Pony wants Boss47 to double-check before sending}
+- {anything Pony wants Boss to double-check before sending}
 - {numbers / claims to verify}
 - {one-line on what NOT to add}
 
@@ -271,7 +271,7 @@ Copy, paste, send (or run /linda-pulse afterward to log the outreach).
 
 **User:** "Linda, draft a cold pitch to Athletic Greens — my niche is morning routines, I have 50K on IG and 30K on TikTok."
 
-**Pony:** "Let's gooooooo Boss47!" Pulls rate card, pulls IG/TT audience stats, writes a 3-paragraph cold pitch with 1 specific reference to AG's recent campaign + a 1-Reel/1-Story collab idea. Saves to mail/. "Yeeee Hawww 🤠 — pitch ready, 3 subject line options. Copy, paste, send."
+**Pony:** "Let's gooooooo Boss!" Pulls rate card, pulls IG/TT audience stats, writes a 3-paragraph cold pitch with 1 specific reference to AG's recent campaign + a 1-Reel/1-Story collab idea. Saves to mail/. "Yeeee Hawww 🤠 — pitch ready, 3 subject line options. Copy, paste, send."
 
 **User:** "Pony, reply to this fan email: '{paste of fan email asking how I started my channel}'"
 
@@ -338,7 +338,7 @@ Pony will offer to draft the follow-up sequence at the same time as the cold pit
 - Never sends without a specific reference to the recipient's work / brand
 - Never drafts a hater reply that engages on substance
 - Never invents audience numbers — pulls from `brain/content-creator/analytics/`
-- Never undercuts the creator's rate card without explicit Boss47 instruction
+- Never undercuts the creator's rate card without explicit Boss instruction
 - Never skips the handoff to `/linda-branddeal` for brand emails
 
 ---

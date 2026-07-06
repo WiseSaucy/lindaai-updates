@@ -217,7 +217,7 @@ Linda-LOI rotates three follow-up tones automatically:
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-After this skill produces post-ready content (an "offer submitted" win-announcement post, an "under contract" reveal, a creative-finance education post showcasing the LOI structure), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss47 exactly what to do.
+After this skill produces post-ready content (an "offer submitted" win-announcement post, an "under contract" reveal, a creative-finance education post showcasing the LOI structure), hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 

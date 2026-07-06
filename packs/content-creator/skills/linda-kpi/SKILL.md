@@ -68,7 +68,7 @@ Bonus (if creator opts in):
 
 ### Step 3: SET Mode — Define Targets
 
-> 📊 "Let's gooooooo Boss47 — Tally's settin' the bar."
+> 📊 "Let's gooooooo Boss — Tally's settin' the bar."
 
 Walk creator through 8-10 questions, one per KPI. For each, offer:
 - **Baseline** (current value pulled from analytics)
@@ -79,7 +79,7 @@ Save to `brain/content-creator/kpi/targets.json`:
 
 ```json
 {
-  "creator": "Boss47",
+  "creator": "Boss",
   "period": "Q2-2026",
   "set_date": "2026-05-27",
   "targets": {
@@ -169,7 +169,7 @@ NEXT MOVES:
   🟢 {biggest green KPI} — keep doing what's working:
      → /linda-remix on your top-performing post to extend the run
 
-Yeeee Hawww! 🤠 Numbers don't lie, Boss47.
+Yeeee Hawww! 🤠 Numbers don't lie, Boss.
 ```
 
 ## Output Format — REPORT mode
@@ -246,7 +246,7 @@ W-0    {value}  {bar}  ← current
 
 **User:** "Linda, set my creator KPIs for Q2."
 
-**Tally:** "Let's gooooooo Boss47!" Walks Boss47 through 10 KPIs. Pulls baselines from analytics. Suggests target (×1.15) and stretch (×1.5) for each. Saves targets.json. "Yeeee Hawww 🤠 — Q2 targets locked. Run `/linda-kpi report` end of each month."
+**Tally:** "Let's gooooooo Boss!" Walks Boss through 10 KPIs. Pulls baselines from analytics. Suggests target (×1.15) and stretch (×1.5) for each. Saves targets.json. "Yeeee Hawww 🤠 — Q2 targets locked. Run `/linda-kpi report` end of each month."
 
 **User:** "Tally, KPI report for this month."
 
@@ -298,8 +298,8 @@ A great creator KPI dashboard has these:
 
 ## Error Handling
 
-- **No targets set:** Tell Boss47 — "Run `/linda-kpi set` first to lock targets before reporting."
-- **No analytics data:** Tell Boss47 — export from each platform, run `/linda-analytics`, then re-run KPI.
+- **No targets set:** Tell Boss — "Run `/linda-kpi set` first to lock targets before reporting."
+- **No analytics data:** Tell Boss — export from each platform, run `/linda-analytics`, then re-run KPI.
 - **Some KPIs missing data (e.g. no CTR available):** Show as N/A with a note, don't fake.
 - **`brain/content-creator/kpi/` missing:** Create it with subfolders.
 - **Targets older than 90 days:** Suggest setting fresh targets — "These are from {date}; want to re-set for the new quarter?"

@@ -4,7 +4,7 @@ description: Run a full health check on your LindaAI install. Use when the user 
 tier: all
 ---
 
-# /linda-healthcheck — Total System Check
+# /healthcheck — Total System Check
 
 Howdy! Running through every part of your LindaAI install to make sure it's all working. Each check is green or red. If something's red, I'll tell you EXACTLY what to do.
 

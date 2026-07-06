@@ -96,7 +96,7 @@ brain/content-creator/scripts/{YYYY-MM-DD}-{slug}/
 
 ---
 **Word count:** {N} | **Est. read time:** {sec}
-🤠 Yeeee Hawww — script's locked, Boss47!
+🤠 Yeeee Hawww — script's locked, Boss!
 © 2024–2026 LindaAI — Built by Daniel Wise · {customer_handle}
 ```
 
@@ -114,7 +114,7 @@ VO file is the same lines, no headers or brackets, ready for ElevenLabs / Descri
 
 ## Voice Rules
 
-- Country tone in chat. **Boss47** / customer name.
+- Country tone in chat. **Boss** / customer name.
 - Script itself stays in CREATOR's voice — not country, unless creator IS country.
 - "Let's gooooooo" on start. "Yeeee Hawww 🤠" on save.
 
@@ -131,7 +131,7 @@ VO file is the same lines, no headers or brackets, ready for ElevenLabs / Descri
 
 ## 🤝 Handoff to `/linda-post-walkthrough`
 
-Once the script is shot, edited, and the final MP4 is ready to publish, hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss47 through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss47 exactly what to do.
+Once the script is shot, edited, and the final MP4 is ready to publish, hand off to **`/linda-post-walkthrough`** so 📣 Holler can walk Boss through posting it to TikTok/IG/FB/YT/X step-by-step in real time. No app-switching, no API setup — Holler opens the right URL, copies the caption to clipboard, reveals the file in Finder, and tells Boss exactly what to do.
 
 Trigger phrase: **"walk me through posting this"** or just **"post this"**.
 

@@ -53,7 +53,7 @@ Parse what the user provided. Required inputs (ask for anything missing):
 
 | Input | Required | Example |
 |-------|----------|---------|
-| Event name | Yes | "Squad Up Summit", "RE Investors Meetup", "TechCrunch Disrupt" |
+| Event name | Yes | "Growth Summit", "RE Investors Meetup", "TechCrunch Disrupt" |
 | Event date(s) | Yes | "March 11", "March 11-13" |
 | Event location | Helpful | "Los Angeles", "Marriott Downtown Phoenix" |
 | Attendee info | Yes (one of these) | List of names, event URL, speaker list, attendee PDF |
@@ -349,9 +349,9 @@ Save to: `brain/research/networking-{event-slug}-{YYYY-MM-DD}.md`
 
 ## Example Usage
 
-**User:** "Prep me for the Squad Up Summit on March 11 — here's the attendee list: Pace Morby, Jamil Damji, Mike Banks, Brent Daniels, Jerry Green"
+**User:** "Prep me for the Growth Summit on March 11 — here's the attendee list: Jordan Reyes, Amir Patel, Casey Banks, Dana Brooks, Terry Green"
 
-**AI:** Researches each person. Pace Morby — SubTo community founder, real estate educator, 2M+ social following, recently launched a new mastermind. Prioritizes based on user's goals from goals.md (SellFi launch, T.O.P. Method). Creates Tier 1/2/3 rankings, conversation starters specific to each person's recent activity, event strategy for the Summit, and personalized follow-up emails. Saves to `brain/research/networking-squad-up-summit-2026-03-03.md`.
+**AI:** Researches each person. Jordan Reyes — investing community founder, educator, large social following, recently launched a new mastermind. Prioritizes based on the user's goals from goals.md. Creates Tier 1/2/3 rankings, conversation starters specific to each person's recent activity, event strategy for the Summit, and personalized follow-up emails. Saves to `brain/research/networking-squad-up-summit-2026-03-03.md`.
 
 **User:** "/networking-intel RE Investors Meetup https://www.meetup.com/phoenix-re-investors/events/12345"
 
@@ -365,7 +365,7 @@ Save to: `brain/research/networking-{event-slug}-{YYYY-MM-DD}.md`
 
 **AI:** Searches for TechCrunch Disrupt speaker list, sponsor companies, and notable attendees from prior years. Cross-references against user's goals (AI, SaaS, fintech). Builds target profiles for the top 10 most relevant people to seek out.
 
-**User:** "I met these people at the event — help me follow up: Pace Morby (talked about SubTo partnership), Mike Banks (interested in SellFi demo)"
+**User:** "I met these people at the event — help me follow up: Jordan Reyes (talked about a partnership), Casey Banks (interested in a product demo)"
 
 **AI:** Generates highly personalized follow-up emails for each person, referencing the specific conversation topic. Suggests timing and channel (email vs. text vs. LinkedIn) for each follow-up. Creates brain/people/ entries for each new contact.
 
