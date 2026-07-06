@@ -195,7 +195,7 @@ u_input(29, "Utilities (water/sewer/trash/elec)", 36000, CUR2, "owner-paid porti
 u_input(30, "Repairs & Maintenance", 15000, CUR2, key="rm")
 u_input(31, "Payroll / Onsite Manager", 24000, CUR2, key="pay")
 u_input(32, "Marketing, Admin, Office", 8000, CUR2, key="admin")
-u_calc (33, "Management Fee", f'={R["mgmt_pct"]}*{R["egi"]}', CUR2, "= mgmt % x EGI", key="mgmt")
+u_calc (33, "Management Fee", f'={R["mgmt_pct"]}*{R["egi"]}', CUR2, "mgmt % x EGI", key="mgmt")
 u_calc (34, "Replacement Reserves", f'={R["res_site"]}*{R["sites"]}', CUR2, key="reserves")
 u_calc (35, "Total Operating Expenses", "=SUM(B27:B34)", CUR2, bold=True, fill=TOTAL_FILL, key="opex")
 u_calc (36, "Operating Expense Ratio", f'={R["opex"]}/{R["egi"]}', PCT, "OpEx / EGI", key="oer")
@@ -531,11 +531,11 @@ ls_calc(11, "Interest Rate", f"=Underwriting!{R['intr']}", PCT2, key="rate")
 ls_calc(12, "Amortization (yrs)", f"=Underwriting!{R['amort']}", CUR, key="amort")
 ls_calc(13, "Annual Debt Constant (per $1 loan)",
         f"=PMT({LS['rate']}/12,{LS['amort']}*12,-1)*12", '0.0000',
-        "= annual debt service per $1 borrowed", key="k")
+        "annual debt service per $1 borrowed", key="k")
 
 sec(ls, 15, "MAXIMUM SUPPORTABLE LOAN", "A:C")
 ls_calc(16, "Max Annual Debt Service (DSCR)", f"={LS['noi']}/{LS['tdscr']}", CUR2,
-        "= NOI / target DSCR", key="maxads")
+        "NOI / target DSCR", key="maxads")
 ls_calc(17, "Max Loan — DSCR constrained", f"={LS['maxads']}/{LS['k']}", CUR2, key="loan_dscr")
 ls_calc(18, "Max Loan — Debt-Yield constrained", f"={LS['noi']}/{LS['tdy']}", CUR2, key="loan_dy")
 ls_calc(19, "Binding Max Loan", f"=MIN({LS['loan_dscr']},{LS['loan_dy']})", CUR2,

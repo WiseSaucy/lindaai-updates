@@ -23,12 +23,22 @@ the moment the file is opened in Excel / Google Sheets.
 """
 import argparse
 import json
+import os
 import sys
 
 try:
     import openpyxl
 except ImportError:
     sys.exit("Missing dependency: openpyxl  (pip install openpyxl)")
+
+
+def pmt(rate, nper, pv):
+    """Excel-equivalent PMT (returns positive payment for negative pv)."""
+    if nper == 0:
+        return 0.0
+    if rate == 0:
+        return -pv / nper
+    return -(pv * rate) / (1 - (1 + rate) ** (-nper))
 
 # --- cell maps (MUST match build_rv_underwriting.py) ------------------------
 U = {  # Underwriting tab
@@ -42,6 +52,8 @@ U = {  # Underwriting tab
 # Normalization tab — seller-reported column (B)
 N = {"egi": "B11", "tax": "B15", "ins": "B16", "util": "B17", "rm": "B18",
      "mgmt": "B19", "capex": "B20", "pay": "B21", "admin": "B22"}
+# Normalization tab — Linda's rule cells (kept in sync with any JSON overrides)
+N_RULES = {"mgmt_pct": "B5", "rm_pct": "B6", "capex_pct": "B7", "tax_bump": "B8"}
 # expected labels in column A (sanity check that the template hasn't shifted)
 U_CHECK = {"B8": "Number of RV Sites", "B9": "Purchase Price", "B27": "Property Taxes"}
 N_CHECK = {"B11": "Effective Gross Income", "B15": "Property Taxes"}
@@ -72,9 +84,21 @@ def num(d, *keys, default=0.0):
 def main():
     ap = argparse.ArgumentParser(description="Fill the RV park underwriting template from deal JSON.")
     ap.add_argument("deal_json")
-    ap.add_argument("--template", default="RV_Park_Underwriting.xlsx")
+    ap.add_argument("--template", default=None,
+                    help="path to RV_Park_Underwriting.xlsx (default: the copy shipped with this skill)")
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
+
+    if args.template is None:
+        here = os.path.dirname(os.path.abspath(__file__))
+        for cand in (os.path.join(here, "RV_Park_Underwriting.xlsx"),
+                     "RV_Park_Underwriting.xlsx",
+                     os.path.join(here, "..", "..", "RV_Park_Underwriting.xlsx")):
+            if os.path.exists(cand):
+                args.template = cand
+                break
+        else:
+            sys.exit("Template RV_Park_Underwriting.xlsx not found — pass --template /path/to/it")
 
     with open(args.deal_json, "r", encoding="utf-8") as fh:
         d = json.load(fh)
@@ -140,21 +164,50 @@ def main():
     if "rent_growth" in d: uw[U["rent_g"]] = d["rent_growth"]
     if "expense_growth" in d: uw[U["exp_g"]] = d["expense_growth"]
 
-    # ---- write Normalization (seller-reported column) ----
+    # ---- write Normalization (seller-reported column + rule overrides) ----
     nm[N["egi"]] = egi
     nm[N["tax"]] = s_tax; nm[N["ins"]] = s_ins; nm[N["util"]] = s_util; nm[N["rm"]] = s_rm
     nm[N["mgmt"]] = s_mgmt; nm[N["capex"]] = s_capex; nm[N["pay"]] = s_pay; nm[N["admin"]] = s_admin
+    # keep the tab's rule cells in sync with any JSON overrides so the
+    # Normalization tab, Underwriting tab and reports all tell the same story
+    nm[N_RULES["mgmt_pct"]] = mgmt_pct
+    nm[N_RULES["rm_pct"]] = rm_pct
+    nm[N_RULES["capex_pct"]] = capex_pct
+    nm[N_RULES["tax_bump"]] = tax_bump
 
-    # ---- Offer Structures: seed asking price + financing where present ----
+    # ---- normalized NOI + financing (used for the MAO seed below) ----
+    opex_norm_ = (n_tax + s_ins + s_util + n_rm + (eff_mgmt_pct * egi)
+                  + n_capex + s_pay + s_admin)
+    noi_norm = egi - opex_norm_
+    ltv = f.get("ltv", 0.70) or 0.70
+    rate = f.get("interest_rate", 0.07) or 0.07
+    amort = f.get("amortization_years", 25) or 25
+    close_pct = f.get("closing_pct", 0.03) or 0.03
+    icapex = f.get("initial_capex", 0) or 0
+
+    # ---- Offer Structures: seed prices + financing where present ----
     if "Offer Structures" in wb.sheetnames:
         of = wb["Offer Structures"]
-        for col in ("B", "D", "E"):    # B=asking, D=partial carry, E=full carry default to asking
+        for col in ("B", "D", "E"):    # B=asking, D=partial carry, E=full carry hold asking price
             of[f"{col}18"] = price
-        if "ltv" in f or "interest_rate" in f:
-            if f.get("ltv") is not None: of["B7"] = f["ltv"]
-            if f.get("interest_rate") is not None:
-                of["B8"] = f["interest_rate"]
-                for col in "BCDE": of[f"{col}20"] = f["interest_rate"]
+        # Offer 1 (Conventional) = the deal's own MAO, not the template's demo number
+        k = pmt(rate / 12, amort * 12, -1) * 12
+        p_dscr = noi_norm / (1.35 * ltv * k) if (ltv and k) else 0
+        denom = ltv * k + 0.10 * (1 - ltv + close_pct)
+        p_coc = (noi_norm - 0.10 * icapex) / denom if denom else 0
+        mao = max(0, min(p_dscr, p_coc))
+        # floor to the nearest $1k — rounding UP would push the offer past its own MAO
+        of["C18"] = int(mao // 1000) * 1000 if mao else price
+        # keep the MAO block + offer rows on the deal's actual financing
+        if f.get("ltv") is not None:
+            of["B7"] = f["ltv"]
+            of["C19"] = f["ltv"]          # conventional offer bank %
+        if f.get("interest_rate") is not None:
+            of["B8"] = f["interest_rate"]
+            for col in "BCDE": of[f"{col}20"] = f["interest_rate"]
+        if f.get("amortization_years") is not None:
+            of["B9"] = f["amortization_years"]
+            for col in "BCDE": of[f"{col}21"] = f["amortization_years"]
 
     out = args.out or f"Deal - {d.get('property_name','RV Park')}.xlsx"
     wb.save(out)

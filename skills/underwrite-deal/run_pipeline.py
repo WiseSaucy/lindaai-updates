@@ -26,7 +26,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FILL = os.path.join(HERE, "..", "rv-park-autofill", "fill_template.py")
 REPORT = os.path.join(HERE, "..", "deal-report", "make_report.py")
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
-DEFAULT_TEMPLATE = os.path.join(REPO, "RV_Park_Underwriting.xlsx")
+# prefer the template shipped with the autofill skill; fall back to repo root
+_CANDIDATES = [os.path.join(HERE, "..", "rv-park-autofill", "RV_Park_Underwriting.xlsx"),
+               os.path.join(REPO, "RV_Park_Underwriting.xlsx")]
+DEFAULT_TEMPLATE = next((p for p in _CANDIDATES if os.path.exists(p)), _CANDIDATES[0])
 DEFAULT_LOGO = os.path.join(HERE, "..", "deal-report", "assets", "wise-certified-logo.png")
 
 

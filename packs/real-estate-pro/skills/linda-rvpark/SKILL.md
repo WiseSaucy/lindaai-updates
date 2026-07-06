@@ -55,7 +55,7 @@ Before proceeding, verify the LindaAI license:
 | What the user gives you | What you run **silently** | Then |
 |--------------------------|----------------------------|------|
 | Just numbers in chat | nothing | go straight to the underwriting below |
-| A T-12 / P&L / OM / rent roll (PDF, Excel, image, or pasted text) | `python3 ~/.claude/skills/rv-park-autofill/fill_template.py <file> --template ~/.claude/skills/rv-park-autofill/RV_Park_Underwriting.xlsx --out "Deal - <park>.xlsx"` — extracts + normalizes into the workbook | read the normalized numbers back, then underwrite |
+| A T-12 / P&L / OM / rent roll (PDF, Excel, image, or pasted text) | **First read the documents yourself** and extract the deal data into `deal.json` (schema: `~/.claude/skills/rv-park-autofill/deal_input.example.json`), then run `python3 ~/.claude/skills/rv-park-autofill/fill_template.py deal.json --out "Deal - <park>.xlsx"` — it normalizes the NOI and fills the workbook (template ships with the skill; `--template` only if using a custom one) | read the normalized numbers from the script's JSON echo, then underwrite |
 | A deal walkthrough **video / YouTube link** where on-screen visuals matter (slides, spreadsheets) | `python3 ~/.claude/skills/video-scrape/extract.py <url>` | pull the financials from the frames + transcript, then underwrite |
 | A video where only the **narration** matters | `python3 ~/.claude/skills/youtube-transcribe/transcribe.py <url>` | same |
 | "make me the report" / "I need a one-pager" (after underwriting) | `python3 ~/.claude/skills/deal-report/make_report.py "Deal - <park>.xlsx" --pdf --pptx` | hand over the branded PDF / PowerPoint |
