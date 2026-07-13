@@ -20,6 +20,6 @@ Forms currently point at `action="#"` (placeholders — they do NOT store emails
    nobody gets emails about the wrong book.
 
 ## Checkout (when health book is ready)
-Gumroad product link replaces the waitlist CTA on `books/health.html`;
-coaching page gets Gumroad/Stripe checkout links for the $149 playbook and
+A checkout link (Stripe) replaces the waitlist CTA on `books/health.html`;
+the coaching page gets Stripe checkout links for the $149 playbook and
 $99/mo coaching.

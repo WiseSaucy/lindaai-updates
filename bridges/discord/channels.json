@@ -1,0 +1,168 @@
+{
+  "_README": [
+    "LindaAI Discord — per-channel command map (CUSTOMER DEFAULT).",
+    "This is the ONE file you edit to control which slash commands belong to which channel.",
+    "Each channel is fully ISOLATED: its commands only work in its channel, and its ask",
+    "command tells Claude to ONLY use that channel's skills (no crossings).",
+    "",
+    "Out of the box you get TWO channels:",
+    "  #deals    — the Sauce Underwriter: /underwrite (wholesale MAO + fix-and-flip P&L),",
+    "              /flip, /comps. Paste a bare address with message triggers on and it",
+    "              auto-underwrites.",
+    "  #linda-ai — your general assistant: /brief /mail /followup /research.",
+    "Rename them, add channels for your own businesses, or move commands — just edit this",
+    "file and restart the bot. No code changes needed.",
+    "",
+    "How channel matching works:",
+    "  - The bot matches a Discord channel by NAME (case-insensitive, spaces/dashes ignored),",
+    "    by CATEGORY (any channel/forum/thread under a matching category inherits the entry),",
+    "    or by a hard-pinned channel ID. Priority: id > category > name.",
+    "",
+    "Each channel has:",
+    "  key            internal id (no spaces)",
+    "  names          list of channel-name spellings that map here",
+    "  id             OPTIONAL Discord channel ID override (left-click channel -> Copy Channel ID)",
+    "  label          human label shown in replies",
+    "  domain         one-line description Claude uses to stay in its lane",
+    "  ask_command    the catch-all slash command for this channel (e.g. /deals <message>)",
+    "  skills         the ONLY skills Claude may use in this channel (prevents crossings).",
+    "                 Skills you don't own are skipped with a startup warning — harmless.",
+    "  quick_commands marquee one-shot slash commands unique to this channel",
+    "  template       OPTIONAL on a quick_command: 'underwrite' or 'flip' pins that command",
+    "                 to the locked Sauce Underwriter prompt built into bot.py, so it works",
+    "                 even before any skills are installed.",
+    "  auto_underwrite if true + ENABLE_MESSAGE_TRIGGERS=1, a BARE pasted address in this",
+    "                 channel auto-runs the underwriter (needs Message Content Intent).",
+    "  auto_respond   if true + ENABLE_MESSAGE_TRIGGERS=1, plain messages from an owner in",
+    "                 this channel go to this channel's assistant.",
+    "  allowed_users  restrict THIS channel to specific people — set",
+    "                 CHANNEL_ALLOWED_USERS_<KEY>=id1,id2 in ~/.claude/lindaai/discord.env",
+    "                 (never put personal IDs in this file). Empty = every owner.",
+    "  category_names OPTIONAL list of CATEGORY names — best way to cover a whole area."
+  ],
+  "channels": [
+    {
+      "key": "deals",
+      "names": [
+        "deals",
+        "deal",
+        "real-estate",
+        "realestate",
+        "underwriting",
+        "sauce-deals",
+        "sfh",
+        "mfh",
+        "properties"
+      ],
+      "id": "",
+      "label": "Deals — Real Estate",
+      "domain": "real estate investing only: underwriting (wholesale MAO + fix-and-flip P&L via the Sauce Underwriter), rent & sales comps, deal analysis, offers, negotiation, pipeline. Not general assistant work (that's the Linda AI channel).",
+      "ask_command": "deals",
+      "skills": [
+        "linda-deals",
+        "linda-rents",
+        "linda-property",
+        "linda-invest",
+        "linda-dealpack",
+        "linda-negotiate",
+        "linda-pipeline",
+        "deal-analyzer",
+        "deal-report"
+      ],
+      "quick_commands": [
+        {
+          "name": "underwrite",
+          "description": "Sauce Underwriter — wholesale MAO + fix-and-flip P&L (paste the address)",
+          "arg": "address",
+          "arg_desc": "Property address (+ asking price / sqft / rehab level if you have them)",
+          "template": "underwrite"
+        },
+        {
+          "name": "flip",
+          "description": "Fix-and-flip analysis — full P&L if you flip it yourself",
+          "arg": "deal",
+          "arg_desc": "Address, purchase price, rehab budget/level, ARV if known",
+          "template": "flip"
+        },
+        {
+          "name": "comps",
+          "description": "Pull rent + sales comps for an address",
+          "skill": "linda-rents",
+          "arg": "address",
+          "arg_desc": "Property address or ZIP"
+        }
+      ],
+      "auto_underwrite": true,
+      "allowed_users": [],
+      "category_names": [
+        "deals",
+        "real estate",
+        "real-estate",
+        "sauce deals",
+        "sauce-deals"
+      ],
+      "auto_respond": true
+    },
+    {
+      "key": "linda-ai",
+      "names": [
+        "linda-ai",
+        "linda ai",
+        "lindaai",
+        "linda",
+        "general",
+        "assistant"
+      ],
+      "id": "",
+      "label": "Linda AI — Assistant",
+      "domain": "general executive-assistant work only: email, follow-ups, research, briefings, inbox triage, SOPs. Do NOT do real-estate underwriting here (that's the Deals channel).",
+      "ask_command": "linda",
+      "skills": [
+        "morning-briefing",
+        "email-drafter",
+        "follow-up",
+        "inbox-triage",
+        "deep-research"
+      ],
+      "quick_commands": [
+        {
+          "name": "brief",
+          "description": "Morning briefing — what matters today",
+          "skill": "morning-briefing",
+          "arg": "scope",
+          "arg_desc": "Focus area, or type 'everything'"
+        },
+        {
+          "name": "mail",
+          "description": "Draft or triage email",
+          "skill": "email-drafter",
+          "arg": "task",
+          "arg_desc": "Who / what about"
+        },
+        {
+          "name": "followup",
+          "description": "Draft follow-ups",
+          "skill": "follow-up",
+          "arg": "task",
+          "arg_desc": "Who to follow up with and context"
+        },
+        {
+          "name": "research",
+          "description": "Research a topic",
+          "skill": "deep-research",
+          "arg": "topic",
+          "arg_desc": "What to research"
+        }
+      ],
+      "auto_underwrite": false,
+      "allowed_users": [],
+      "category_names": [
+        "linda ai",
+        "linda-ai",
+        "lindaai",
+        "assistant"
+      ],
+      "auto_respond": true
+    }
+  ]
+}

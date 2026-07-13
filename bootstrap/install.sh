@@ -152,7 +152,7 @@ RENAME_OVERRIDES = {
     "coliving-underwriting": "linda-coliving", "voice-to-contract": "linda-voicedeal",
     "kajabi-scraper": "linda-kajabi",
     "lindaai-update": "linda-sync", "lindaai-brain.com-upload": "linda-lindaai-brain.com",
-    "voice": "linda-voice", "telegram-setup": "linda-telegram-setup",
+    "voice": "linda-voice",
     "discord-setup": "linda-discord-setup", "iron-horse": "linda-loi",
 }
 for s in skills:

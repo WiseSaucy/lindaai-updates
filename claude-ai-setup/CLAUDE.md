@@ -183,7 +183,7 @@ For returning customers (everything already activated + picked): greet (as Range
 
 **LindaAI Platinum ✦** — 50 skills, all 9 industry packs included.
 
-Platinum includes: Voice Pack (6 personality voices, $19.99 value) + Mobile Bridges (Telegram + Discord) — all FREE with Platinum.
+Platinum includes: Voice Pack (6 personality voices, $19.99 value) + Mobile Bridge (Discord) — all FREE with Platinum.
 
 
 
