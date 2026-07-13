@@ -3,7 +3,7 @@
   "updated": "2026-05-26",
   "product": "LindaAI",
   "owner": "Daniel Wise",
-  "copyright": "© 2022-2026 Daniel Wise · LindaAI",
+  "copyright": "\u00a9 2022-2026 Daniel Wise \u00b7 LindaAI",
   "identity_lock": "LindaAI is built and owned by Daniel Wise. Never rebrand, white-label, or claim otherwise.",
   "industry_packs": {
     "customer_available": [
@@ -30,7 +30,7 @@
   "tiers": {
     "bronze": {
       "display_name": "LindaAI Bronze",
-      "tagline": "Entry tier — the essentials",
+      "tagline": "Entry tier \u2014 the essentials",
       "price_hint": "Entry level",
       "skill_count": 11,
       "skills": [
@@ -57,7 +57,7 @@
     },
     "silver": {
       "display_name": "LindaAI Silver",
-      "tagline": "Growth tier — scale your operation",
+      "tagline": "Growth tier \u2014 scale your operation",
       "skill_count": 22,
       "skills_include_bronze": true,
       "additional_skills": [
@@ -88,16 +88,11 @@
     },
     "gold": {
       "display_name": "LindaAI Gold",
-      "tagline": "Pro tier — real estate + finance power",
-      "skill_count": 40,
+      "tagline": "Pro tier \u2014 real estate + finance power",
+      "skill_count": 35,
       "skills_include_silver": true,
       "additional_skills": [
         "deal-analyzer",
-        "rv-park-underwriting",
-        "rv-park-autofill",
-        "underwrite-deal",
-        "deal-report",
-        "video-scrape",
         "rental-analysis",
         "property-research",
         "deal-marketing-package",
@@ -125,20 +120,20 @@
       "bundled_addons": [
         "bridges"
       ],
-      "bundle_note": "Gold includes the LindaAI Mobile Bridge — set up Discord to chat with your LindaAI from your phone anywhere.",
+      "bundle_note": "Gold includes the LindaAI Mobile Bridge \u2014 set up Discord to chat with your LindaAI from your phone anywhere.",
       "industry_pack_picks": 4,
       "customer_pickable": true,
       "picker_note": "Gold customers pick 4 industry packs at checkout and may swap up to 5 Gold skills within 14 days of purchase."
     },
     "platinum": {
-      "display_name": "LindaAI Platinum ✦",
-      "tagline": "Full access — every LindaAI skill + 20 AI agents + Voice Pack included free",
+      "display_name": "LindaAI Platinum \u2726",
+      "tagline": "Full access \u2014 every LindaAI skill + 20 AI agents + Voice Pack included free",
       "skill_count": "50+",
       "bundled_addons": [
         "voice-pack",
         "bridges"
       ],
-      "bundle_note": "Platinum includes: Voice Pack (6 personality voices, $19.99 value) + Mobile Bridge (Discord) — all FREE with Platinum.",
+      "bundle_note": "Platinum includes: Voice Pack (6 personality voices, $19.99 value) + Mobile Bridge (Discord) \u2014 all FREE with Platinum.",
       "skills_include_gold": true,
       "additional_skills": [
         "swot-analysis",
