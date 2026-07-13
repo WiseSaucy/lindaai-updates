@@ -25,8 +25,8 @@
   TO STOP / DISABLE:
     launchctl unload ~/Library/LaunchAgents/com.lindaai.discord-bridge.plist
 
-  This mirrors the Telegram bridge plist setup (uses a venv so discord.py
-  resolves cleanly — system python3 doesn't see --user pip installs).
+  Uses a venv so discord.py resolves cleanly (system python3 doesn't see
+  --user pip installs).
 -->
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">

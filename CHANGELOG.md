@@ -5,6 +5,33 @@
 
 ---
 
+## 2026-07-13 — 🏠 Sauce Underwriter baked into Discord + Discord-only bridges
+
+**Your Discord just got a deal desk:**
+
+- 🤠 **The Sauce Underwriter now ships INSIDE the Discord bridge.** New installs get a
+  **#deals** channel with `/underwrite` (wholesale MAO **+** fix-and-flip P&L, all-in % of
+  ARV, and the 70%-rule check) working the moment the bot comes online — the locked
+  formula is built into the bot itself, no skill download needed. `/flip` and `/comps`
+  ride along, plus paste-a-bare-address auto-underwriting (opt-in).
+- 🗂️ **Per-channel isolation.** The bridge is now channel-aware: #deals talks deals,
+  #linda-ai is your assistant (`/brief /mail /followup /research`), and neither crosses
+  into the other. Add channels for your own businesses by editing one file
+  (`channels.json`) — no code.
+- 🏗️ **`setup_channels.py`** — one command builds the Deals + Linda AI channels in your
+  server, deal-structure tags included (Cash / Fix & Flip / Seller Finance / BRRRR /
+  Subject-To / Wholesale).
+- 🛡️ Sturdier bot: per-thread conversation memory with auto-expiry, `/reset`, hard
+  timeouts, multi-owner support, per-channel access control, Google Drive link handling,
+  and Discord file uploads passed through to Claude.
+- 📵 **Telegram bridge retired.** Discord is the one mobile bridge going forward — it's
+  better in every way (channels, forums, threads, tags). Existing Telegram setups keep
+  working; they're just no longer shipped or synced.
+
+Paste an address. Get the numbers. Yeeee Hawww 🤠
+
+---
+
 ## 2026-07-06 — 🧹 Catalog cleanup + RV park underwriting live
 
 **Leaner and meaner:**
