@@ -32,15 +32,14 @@ Paste an address. Get the numbers. Yeeee Hawww 🤠
 
 ---
 
-## 2026-07-06 — 🧹 Catalog cleanup + RV park underwriting live
+## 2026-07-06 — 🧹 Catalog cleanup
 
 **Leaner and meaner:**
 
 - 🎯 **`/linda-trigger`** now in the sync catalog — the Sauce Underwriter pulls down clean on every Gold+ sync
-- 🏕️ **`/linda-rvpark`** now pullable — full RV park + campground underwriting end to end (Gold+)
 - 🧹 **8 redundant skills retired** (invest, actions, finance, swot, compete, network, outreach, kajabi) — their jobs are covered better by the tools that stayed. Your next `/linda-sync` tidies them out of your install automatically. Less clutter, clearer lineup.
 
-**The underwriting lineup now:** `/linda-trigger` (flips + wholesale) · `/linda-deals` (multifamily + creative finance) · `/linda-airbnb` (short-term rentals) · `/linda-coliving` (rent-by-room) · `/linda-rvpark` (RV parks) · `/linda-rents` (comps).
+**The underwriting lineup now:** `/linda-trigger` (flips + wholesale) · `/linda-deals` (multifamily + creative finance) · `/linda-airbnb` (short-term rentals) · `/linda-coliving` (rent-by-room) · `/linda-rents` (comps).
 
 Yeeee Hawww 🤠
 
@@ -56,7 +55,6 @@ Howdy partners — big restock landed in your barn today:
 - 🌱 **Landscaper Pack** now included (8 skills — crew dispatch, routes, seasonal planning, yard leads)
 - 🧭 **Life Coach Pack** now included (8 skills — client files, sessions, accountability, discovery leads)
 - 🍽️ **Restaurant Pack** now included (12 skills — menus, shifts, inventory, reviews)
-- 🏕️ **linda-rvpark** — end-to-end RV park & campground underwriting joined the Real Estate Pro pack
 
 Every pack now carries a version number. Pack updates now ride the secure license-gated channel — type /linda-sync and your packs refresh automatically. Ride easy — Yeeee Hawww 🤠
 
@@ -69,19 +67,6 @@ Every pack now carries a version number. Pack updates now ride the secure licens
 - ✅ Every fix verified + audit-22 green before this shipped
 
 **All tiers.** Just type `/linda-sync` and you're current.
-
-Yeeee Hawww 🤠
-
----
-
-## 2026-06-28 — 🏕️ RV Park Underwriter rolls in
-
-**What's new:**
-
-- 🏕️ **`/rv-park-underwriting`** — NEW skill. LindaAI's one-page RV park & campground underwriting sheet: five key metrics at a glance (NOI, cap rate, DSCR, net profit, cash-on-cash), the seller's numbers vs. three structured offers side by side (conventional / partial seller carry / full seller carry), five 60-second screening hacks, adjustable levers that recalc everything instantly, the full income + T12 expense stack, NOI normalization, a two-lien debt stack, and the "bad day" stress test. Try: *"Underwrite this RV park — [# sites], [$/night], [occupancy %], asking [$ price], T12 attached."*
-- 📦 **real-estate-pro pack** — adds **`linda-rvpark`** under "Underwrite the deal," plus the `rv-park-autofill`, `underwrite-deal`, `deal-report`, `video-scrape`, and `youtube-transcribe` skills for an end-to-end intake → underwrite → branded report pipeline.
-
-**For Platinum + Gold tiers.**
 
 Yeeee Hawww 🤠
 
