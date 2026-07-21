@@ -35,6 +35,7 @@ SPEC = JSON list of ops, executed in order:
 © 2026 LindaAI — Built by Daniel Wise
 """
 import json
+import re
 import sys
 import time
 import urllib.error
@@ -188,6 +189,16 @@ def ensure_channel(kind, name, category=None, tags=None, topic=None):
     return made
 
 
+def _tagkey(s):
+    # Discord moves a leading emoji into the tag's icon slot and stores the
+    # name without it — so compare from the first LETTER onward ("🆕 New" ==
+    # "New", and keycap emojis like 1️⃣ don't leak their digit into the key).
+    s = s or ""
+    m = re.search(r"[A-Za-z].*", s)
+    s = m.group(0) if m else s
+    return re.sub(r"[^0-9a-z]+", "", s.lower())
+
+
 def merge_tags(channel_name, add):
     ch = find_channel(channel_name, types=[15])
     if not ch:
@@ -195,8 +206,13 @@ def merge_tags(channel_name, add):
         return
     live = api("GET", f"/channels/{ch['id']}") or ch
     existing = live.get("available_tags", []) or []
-    have = {norm(t["name"]) for t in existing}
-    new = [t for t in add if norm(t) not in have]
+    have = {_tagkey(t["name"]) for t in existing}
+    new = []
+    for t in add:
+        k = _tagkey(t)
+        if k not in have:
+            have.add(k)
+            new.append(t)
     if not new:
         print(f"  ✓ #{channel_name}: all {len(add)} tags already present")
         return
