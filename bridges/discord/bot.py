@@ -879,6 +879,37 @@ async def on_message(message: "discord.Message"):
         await message.channel.send(c)
 
 
+# ─── HEARTBEAT (optional) ──────────────────────────────────────────────────
+# Set DISCORD_HEARTBEAT_CHANNEL=<channel name> in discord.env and the bridge
+# posts one line a day there (uptime, active conversations). A missing morning
+# line is your alarm that the bot's machine died silently — launchd restarts
+# crashes, but it can't restart a sleeping/dead Mac.
+HEARTBEAT_CHANNEL = os.environ.get("DISCORD_HEARTBEAT_CHANNEL", "").strip()
+_started_at = time.time()
+
+from discord.ext import tasks  # noqa: E402  (discord.py built-in)
+
+
+@tasks.loop(hours=24)
+async def _heartbeat():
+    if not HEARTBEAT_CHANNEL:
+        return
+    target = _norm(HEARTBEAT_CHANNEL)
+    for g in bot.guilds:
+        for ch in g.text_channels:
+            if _norm(ch.name) == target:
+                up = (time.time() - _started_at) / 3600
+                live = sum(1 for _, (sid, ts) in _sessions.items()
+                           if (time.time() - ts) < SESSION_TTL_S)
+                try:
+                    await ch.send(f"🫀 LindaAI bridge alive — up {up:.1f}h, "
+                                  f"{live} active conversation(s), "
+                                  f"{len(CHANNELS)} businesses online.")
+                except Exception:
+                    pass
+                return
+
+
 # ─── READY / SYNC ──────────────────────────────────────────────────────────
 @bot.event
 async def on_ready():
@@ -914,6 +945,10 @@ async def on_ready():
 
     if not GUILD_ID:
         print("  ℹ️  TIP: Set DISCORD_GUILD_ID in discord.env for INSTANT slash-command sync.", flush=True)
+
+    if HEARTBEAT_CHANNEL and not _heartbeat.is_running():
+        _heartbeat.start()
+        print(f"  🫀 Daily heartbeat → #{HEARTBEAT_CHANNEL}", flush=True)
 
 
 # ─── RUN ───────────────────────────────────────────────────────────────────
