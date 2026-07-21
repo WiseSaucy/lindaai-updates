@@ -55,6 +55,7 @@ import os
 import re
 import shutil
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -309,17 +310,36 @@ LINKS_HINT = (
     "drive.google.com/spreadsheets/d/<ID>/export?format=csv for Sheets, "
     "drive.google.com/uc?export=download&id=<ID> for files. If the fetch fails the file "
     "is PRIVATE — say so and ask for 'Anyone with the link (Viewer)' sharing or a direct "
-    "Discord upload, then continue with your best estimates from what you have."
+    "Discord upload, then continue with your best estimates from what you have. "
+    "Discord photo/PDF attachments arrive as LOCAL FILE PATHS — use the Read tool on "
+    "them to actually see the images."
 )
 
 
-def attachments_block(message) -> str:
-    """Discord uploads (photos/PDFs/etc.) as fetchable URLs appended to the prompt."""
+ATTACH_ROOT = Path(tempfile.gettempdir()) / "lindaai-discord-attachments"
+
+
+async def attachments_block(message) -> str:
+    """Download Discord uploads (photos/PDFs/etc.) to local files so Claude can
+    actually SEE them via its Read tool (vision) — not just know their URLs."""
     atts = getattr(message, "attachments", None) or []
     if not atts:
         return ""
-    lines = [f"  - {a.filename}: {a.url}" for a in atts]
-    return "\n\nATTACHED FILES (fetch the ones you need):\n" + "\n".join(lines)
+    dest = ATTACH_ROOT / str(message.id)
+    dest.mkdir(parents=True, exist_ok=True)
+    lines = []
+    for a in atts[:10]:
+        if getattr(a, "size", 0) > 25 * 1024 * 1024:
+            lines.append(f"  - {a.filename}: SKIPPED (over 25MB — repost smaller)")
+            continue
+        p = dest / Path(a.filename).name
+        try:
+            await a.save(p)
+            lines.append(f"  - {p}")
+        except Exception as e:
+            lines.append(f"  - {a.filename}: {a.url}  (local save failed: {type(e).__name__} — fetch the URL instead)")
+    return ("\n\nATTACHED FILES — saved locally; use the Read tool on each path "
+            "(Read renders photos and PDFs so you can SEE them):\n" + "\n".join(lines))
 
 
 def scoped_prompt(chan: dict, user_text: str, skill_hint: str | None = None) -> str:
@@ -400,8 +420,19 @@ Do this:
 5. Output the wholesale table, then the flip P&L table, then say which exit is better and why.
 6. End with ONE recommended next action.
 
-If you genuinely cannot proceed without a number, ask for the single most important
-missing input (usually sqft, ARV, or repair level) — but make your best estimate first.
+RULES — find, don't ask:
+- Do NOT ask me for numbers you can find or derive. The MAO never needs a purchase
+  price. For the flip P&L, Purchase = asking price if known, otherwise the MAO (say which).
+- Hunt the data yourself: WEB-SEARCH the address for list price, sqft, beds/baths, and
+  recent SOLD comps — Zillow/Redfin/Realtor.com search results and snippets, county
+  assessor/property records. Listing sites often block direct page fetches: search
+  snippets usually carry the numbers anyway. Cross-check at least two sources.
+- If PHOTOS are attached, Read every image and SET THE REPAIR LEVEL FROM WHAT YOU SEE:
+  go room by room, list the visible work (kitchen, baths, flooring, paint, roof/HVAC if
+  shown), pick the $psf tier it implies (Move-In 8 / Cosmetic 15 / Regular 39 / Full 65 /
+  Major 100), and use it in the formula. Show the room-by-room scope in your reply.
+- Only if search AND photos leave you truly blind may you ask ONE question — and even
+  then, run the numbers with your best estimate FIRST and show them.
 """
 
 # Flip-focused prompt for /flip — deeper on the self-flip P&L.
@@ -437,6 +468,12 @@ Do this:
 4. Verdict: GREEN profit >= $25k AND ROI >= 15%; YELLOW profit $10-25k or ROI 8-15%;
    RED profit < $10k or ROI < 8%.
 5. End with ONE recommended next action (proceed / renegotiate to $X / wholesale instead / walk).
+
+RULES — find, don't ask: web-search the address for price/sqft/SOLD comps (Zillow/
+Redfin/Realtor snippets, county records) instead of asking me. If photos are attached,
+Read every image and set the repair level from what you SEE (room-by-room scope + the
+$psf tier it implies). Purchase defaults to asking price, else the wholesale MAO. Ask at
+most ONE question, and only after showing best-estimate numbers.
 """
 
 # Named prompt templates a quick_command can opt into via "template" in
@@ -742,7 +779,7 @@ async def on_message(message: "discord.Message"):
     # Anything else (including "do X with <address>") -> the channel assistant,
     # which can still choose to underwrite if that's what the request means.
     # Uploaded files (photos/PDFs) ride along as fetchable URLs either way.
-    extra = attachments_block(message)
+    extra = await attachments_block(message)
     if chan.get("auto_underwrite") and looks_like_bare_address(content):
         prompt = UNDERWRITE_PROMPT.format(addr=content) + extra
     elif chan.get("auto_respond"):
