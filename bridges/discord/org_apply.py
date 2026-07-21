@@ -78,19 +78,29 @@ FAILURES = []
 
 
 def api(method, path, data=None, quiet=False):
-    req = urllib.request.Request(f"https://discord.com/api/v10{path}",
-                                 data=json.dumps(data).encode() if data is not None else None,
-                                 headers=HEADERS, method=method)
-    try:
-        with urllib.request.urlopen(req) as r:
-            body = r.read()
-            return json.loads(body) if body else {}
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode()[:300]
-        if not quiet:
-            print(f"  ⚠️  {method} {path} → {e.code}: {detail}")
-            FAILURES.append((f"{method} {path}", f"{e.code}: {detail}"))
-        return None
+    payload = json.dumps(data).encode() if data is not None else None
+    detail = ""
+    for _ in range(6):
+        req = urllib.request.Request(f"https://discord.com/api/v10{path}",
+                                     data=payload, headers=HEADERS, method=method)
+        try:
+            with urllib.request.urlopen(req) as r:
+                body = r.read()
+                return json.loads(body) if body else {}
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode()[:300]
+            if e.code == 429:  # rate limited — wait exactly as long as Discord asks, retry
+                try:
+                    wait = float(json.loads(detail).get("retry_after", 2))
+                except Exception:
+                    wait = 2.0
+                time.sleep(wait + 0.5)
+                continue
+            break
+    if not quiet:
+        print(f"  ⚠️  {method} {path} → {detail or 'failed after retries'}")
+        FAILURES.append((f"{method} {path}", detail or "failed after retries"))
+    return None
 
 
 def norm(s):
