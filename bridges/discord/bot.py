@@ -59,6 +59,8 @@ import tempfile
 import time
 from pathlib import Path
 
+import aiohttp  # ships with discord.py
+
 # ─── DEPS ──────────────────────────────────────────────────────────────────
 try:
     import discord
@@ -317,6 +319,85 @@ LINKS_HINT = (
 
 
 ATTACH_ROOT = Path(tempfile.gettempdir()) / "lindaai-discord-attachments"
+
+# ─── GOOGLE DRIVE PRE-FETCH ────────────────────────────────────────────────
+# The bridge ATTEMPTS every Drive/Docs link itself before Claude runs, so a
+# link is never declared "private" without a real try. Successes become local
+# files Claude can Read; failures carry the exact HTTP result.
+DRIVE_LINK_RE = re.compile(r"https://(?:drive|docs)\.google\.com/[^\s<>|)\]]+")
+_DRIVE_ID_RES = (re.compile(r"/d/([A-Za-z0-9_-]{10,})"), re.compile(r"[?&]id=([A-Za-z0-9_-]{10,})"))
+_CT_EXT = {"application/pdf": ".pdf", "image/jpeg": ".jpg", "image/png": ".png",
+           "text/csv": ".csv", "text/plain": ".txt",
+           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": ".xlsx",
+           "application/vnd.openxmlformats-officedocument.wordprocessingml.document": ".docx"}
+_DRIVE_MAX = 25 * 1024 * 1024
+
+
+def _drive_candidates(url: str):
+    """(file_id, [(download_url, forced_ext), ...]) for a Drive/Docs link."""
+    fid = None
+    for rx in _DRIVE_ID_RES:
+        m = rx.search(url)
+        if m:
+            fid = m.group(1)
+            break
+    if not fid or "/folders/" in url:
+        return fid, []
+    if "docs.google.com/document" in url:
+        return fid, [(f"https://docs.google.com/document/d/{fid}/export?format=txt", ".txt")]
+    if "docs.google.com/spreadsheets" in url:
+        return fid, [(f"https://docs.google.com/spreadsheets/d/{fid}/export?format=csv", ".csv")]
+    if "docs.google.com/presentation" in url:
+        return fid, [(f"https://docs.google.com/presentation/d/{fid}/export/pdf", ".pdf")]
+    return fid, [(f"https://drive.google.com/uc?export=download&id={fid}", ""),
+                 (f"https://drive.google.com/uc?export=download&confirm=t&id={fid}", "")]
+
+
+async def drive_links_block(text: str, tag) -> str:
+    """Attempt-download every Drive link in text; report exactly what happened."""
+    urls = list(dict.fromkeys(DRIVE_LINK_RE.findall(text or "")))
+    if not urls:
+        return ""
+    dest = ATTACH_ROOT / str(tag)
+    dest.mkdir(parents=True, exist_ok=True)
+    lines = []
+    async with aiohttp.ClientSession() as sess:
+        for url in urls[:5]:
+            fid, cands = _drive_candidates(url)
+            if "/folders/" in url:
+                lines.append(f"  - {url} → FOLDER link: folders can't be fetched even when "
+                             "public — ask for the individual file links or Discord uploads.")
+                continue
+            if not cands:
+                lines.append(f"  - {url} → no file id found in the URL; try WebFetch on it yourself.")
+                continue
+            last = "no attempt"
+            done = False
+            for dl_url, ext in cands:
+                try:
+                    async with sess.get(dl_url, allow_redirects=True,
+                                        timeout=aiohttp.ClientTimeout(total=30)) as r:
+                        ct = (r.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+                        if r.status == 200 and ct != "text/html":
+                            data = await r.content.read(_DRIVE_MAX + 1)
+                            if len(data) > _DRIVE_MAX:
+                                lines.append(f"  - {url} → file is over 25MB; ask for a smaller export or the key pages.")
+                                done = True
+                                break
+                            p = dest / f"drive-{fid}{ext or _CT_EXT.get(ct, '.bin')}"
+                            p.write_bytes(data)
+                            lines.append(f"  - {url} → DOWNLOADED to {p} (use the Read tool on it)")
+                            done = True
+                            break
+                        last = f"HTTP {r.status}, {ct or 'unknown type'}"
+                except Exception as e:
+                    last = type(e).__name__
+            if not done:
+                lines.append(f"  - {url} → ATTEMPTED and failed ({last}). Most likely not link-shared: "
+                             "tell the user you TRIED (quote the error), then ask for 'Anyone with the "
+                             "link (Viewer)' sharing or a direct Discord upload.")
+    return ("\n\nGOOGLE DRIVE LINKS — the bridge already ATTEMPTED each download "
+            "(never claim a link is private beyond what these attempts show):\n" + "\n".join(lines))
 
 
 async def attachments_block(message) -> str:
@@ -619,9 +700,9 @@ def make_ask_handler(chan: dict):
         if await deny_channel_user(interaction, chan):
             return
         await interaction.response.defer(thinking=True)
+        prompt = scoped_prompt(chan, message) + await drive_links_block(message, interaction.id)
         try:
-            reply = await run_claude(scoped_prompt(chan, message),
-                                     session_key_for(chan, interaction.channel))
+            reply = await run_claude(prompt, session_key_for(chan, interaction.channel))
         except Exception as e:
             await interaction.followup.send(f"⚠️ LindaAI hit a snag: {e}")
             return
@@ -646,6 +727,7 @@ def make_quick_handler(chan: dict, spec: dict):
             prompt = template.format(addr=value)
         else:
             prompt = scoped_prompt(chan, value, skill_hint=spec.get("skill"))
+        prompt += await drive_links_block(value, interaction.id)
         try:
             reply = await run_claude(prompt, session_key_for(chan, interaction.channel))
         except Exception as e:
@@ -779,7 +861,7 @@ async def on_message(message: "discord.Message"):
     # Anything else (including "do X with <address>") -> the channel assistant,
     # which can still choose to underwrite if that's what the request means.
     # Uploaded files (photos/PDFs) ride along as fetchable URLs either way.
-    extra = await attachments_block(message)
+    extra = await attachments_block(message) + await drive_links_block(content, message.id)
     if chan.get("auto_underwrite") and looks_like_bare_address(content):
         prompt = UNDERWRITE_PROMPT.format(addr=content) + extra
     elif chan.get("auto_respond"):
