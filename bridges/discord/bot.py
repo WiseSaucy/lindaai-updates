@@ -208,6 +208,12 @@ def load_channels() -> list[dict]:
         env_val = os.environ.get(env_key, "").strip()
         if env_val:
             c["allowed_users"] = [x.strip() for x in env_val.split(",") if x.strip().isdigit()]
+        # quiet_channels: Discord channels (names or IDs) inside this business
+        # where the bot IGNORES plain messages — humans talk freely, slash
+        # commands still work when explicitly invoked.
+        quiet = c.get("quiet_channels", [])
+        c["_quiet_names"] = {_norm(str(x)) for x in quiet if not str(x).strip().isdigit()}
+        c["_quiet_ids"] = {str(x).strip() for x in quiet if str(x).strip().isdigit()}
         # Resolve skill names to real files so prompts can point Claude at them;
         # warn loudly about any skill that doesn't exist anywhere.
         resolved, missing = {}, []
@@ -260,6 +266,18 @@ def channel_for(interaction_or_channel) -> dict | None:
         if names & c["_norm_names"]:
             return c
     return None
+
+
+def is_quiet_channel(chan: dict, discord_channel) -> bool:
+    """True if this Discord channel (or its parent forum) is in the business's
+    quiet_channels list — plain messages are ignored there so humans can talk;
+    slash commands still work."""
+    base = discord_channel
+    parent = getattr(discord_channel, "parent", None)
+    ids = {str(getattr(x, "id", "") or "") for x in (base, parent) if x is not None}
+    names = {_norm(getattr(x, "name", "") or "") for x in (base, parent) if x is not None}
+    ids.discard(""); names.discard("")
+    return bool(ids & chan.get("_quiet_ids", set()) or names & chan.get("_quiet_names", set()))
 
 
 # ─── SESSION MEMORY (per discord channel/thread, with TTL) ─────────────────
@@ -714,6 +732,8 @@ async def on_message(message: "discord.Message"):
         return
     if not channel_allows_user(chan, message.author.id):
         return
+    if is_quiet_channel(chan, message.channel):
+        return  # humans-only channel: the bot stays out of plain conversation
     content = (message.content or "").strip()
     if not content or content.startswith("/"):
         return  # let slash commands go through the normal command path

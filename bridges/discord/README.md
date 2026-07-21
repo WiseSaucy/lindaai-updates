@@ -31,6 +31,10 @@ against the 70% rule.
    after 12h of quiet (`SESSION_TTL_HOURS`), and `/reset` clears one on demand.
 4. **People** — the bot only answers Discord IDs in `DISCORD_ALLOWED_USER_IDS`; restrict
    a single channel further with `CHANNEL_ALLOWED_USERS_<KEY>=id1,id2` in `discord.env`.
+5. **Human-only channels** — channels not mapped to any business are always bot-silent
+   (make a "Team" category and chat freely). To mute plain-message replies in a mapped
+   channel, list it in that business's `quiet_channels` in `channels.json` — the bot
+   stays out of conversation there but still answers explicit slash commands.
 
 It's all driven by **`channels.json`** (next to `bot.py`). That one file controls which
 commands belong to which channel and which skills each may use. Add channels for your
