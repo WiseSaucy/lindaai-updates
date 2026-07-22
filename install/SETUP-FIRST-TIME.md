@@ -14,7 +14,7 @@ Howdy, partner. There are **TWO ways** to run LindaAI. Pick the one that fits yo
 
 **👉 Go to `CLAUDE-AI/START-HERE.md` for step-by-step.**
 
-This is the path Boss47 designed LindaAI around. It's the easy way. If you're not sure which path to pick — PICK THIS ONE.
+This is the path Daniel Wise designed LindaAI around. It's the easy way. If you're not sure which path to pick — PICK THIS ONE.
 
 ---
 
