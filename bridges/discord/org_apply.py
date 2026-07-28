@@ -145,16 +145,21 @@ def do(method, path, data):
     return {}
 
 
-def ensure_category(name, archive=False):
+def ensure_category(name, archive=False, private=False):
     cat = find_channel(name, types=[4])
     if cat:
         print(f"  ✓ category exists: {cat['name']}")
         return cat
-    act(f"create category '{name}'" + (" (send-muted archive)" if archive else ""))
+    act(f"create category '{name}'"
+        + (" (send-muted archive)" if archive else "")
+        + (" (PRIVATE — hidden from @everyone)" if private else ""))
     payload = {"name": name, "type": 4}
     if archive:
         payload["permission_overwrites"] = [
             {"id": everyone_role_id(), "type": 0, "allow": "0", "deny": str(SEND_MESSAGES)}]
+    if private:
+        payload["permission_overwrites"] = [
+            {"id": everyone_role_id(), "type": 0, "allow": "0", "deny": str(VIEW_CHANNEL)}]
     made = do("POST", f"/guilds/{GUILD}/channels", payload)
     if APPLY:
         refresh()
@@ -324,6 +329,7 @@ def role_view(category, role_name):
 OPS = {
     "category": lambda o: ensure_category(o["name"]),
     "archive_category": lambda o: ensure_category(o["name"], archive=True),
+    "private_category": lambda o: ensure_category(o["name"], private=True),
     "text": lambda o: ensure_channel(0, o["name"], o.get("category"), None, o.get("topic")),
     "forum": lambda o: ensure_channel(15, o["name"], o.get("category"), o.get("tags"), o.get("topic")),
     "tags": lambda o: merge_tags(o["channel"], o["add"]),
