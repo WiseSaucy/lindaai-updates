@@ -184,6 +184,13 @@ def ensure_channel(kind, name, category=None, tags=None, topic=None):
     payload = {"name": name, "type": kind}
     if parent:
         payload["parent_id"] = parent["id"]
+        # The API does NOT auto-sync a new channel to its category's permissions
+        # (the UI does). Copy the category's overwrites so a channel born under a
+        # private category is private from its first second.
+        live_parent = api("GET", f"/channels/{parent['id']}", quiet=True) or parent
+        parent_ow = live_parent.get("permission_overwrites") or []
+        if parent_ow:
+            payload["permission_overwrites"] = parent_ow
     if topic:
         payload["topic"] = topic[:1024]
     if kind == 15 and tags:
