@@ -595,8 +595,42 @@ Do this:
    ☠️ Dead with a one-line why (log 5 touches first).
 """
 
+# Locked Novation (Concierge) calculator — extracted from the owner's
+# Novation Sauce Calc sheet ('Wholesale' tab, Concierge/Novation block).
+NOVATION_PROMPT = """[CHANNEL: Deals — Real Estate]
+Run the LOCKED Novation (Concierge) calculator on the deal below — do NOT
+deviate from the formula.
+
+DEAL (from the user): {addr}
+
+Do this:
+0. If links are included, FETCH them (Drive: uc?export=download&id=<ID>). If
+   photos are attached, Read every image — they drive the CONDITION rating.
+1. Establish SOLD PRICE / AS-IS (what it sells for retail, cleaned up): use the
+   given number, else estimate from recent SOLD comps via web search and state
+   every assumption. Do NOT ask for numbers you can find.
+2. CONDITION rating 1-5 (5 = best) → Repairs to As Is:
+   (5) $0 · (4) $5,000 · (3) $10,000 · (2) $20,000 · (1) $30,000
+   If photos exist, justify the rating from what you SEE.
+3. LOCKED COSTS (each a % of the As-Is/Sold price):
+   - Commissions      = 5%  (2.5% buyer agent + 2.5%)
+   - Closing Costs    = 2%
+   - Market Variance  = 1%
+   - Repairs Cushion  = 0% unless the user gives one
+   - Repairs to As Is = from the condition scale
+   - COSTS TOTAL      = sum of the five lines
+4. THE ANSWER — run whichever direction the input allows (both if possible):
+   - Offer given:  PROJECTED REVENUE = As-Is − Offer − COSTS TOTAL
+   - Target revenue given (default $40,000 if unstated): MAX OFFER = As-Is − COSTS TOTAL − Target
+5. Output the table (As-Is, each cost line, COSTS total, Offer, Projected
+   Revenue), then Offer as % of As-Is, then verdict: GREEN revenue ≥ $30k ·
+   YELLOW $15-30k · RED < $15k (house defaults — owner can retune).
+6. End with ONE recommended next action.
+"""
+
 PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT,
-                    "underwrite_team": UNDERWRITE_TEAM_PROMPT}
+                    "underwrite_team": UNDERWRITE_TEAM_PROMPT,
+                    "novation": NOVATION_PROMPT}
 
 
 # ─── CLAUDE CLI CALL ───────────────────────────────────────────────────────

@@ -236,6 +236,23 @@ def merge_tags(channel_name, add):
     do("PATCH", f"/channels/{ch['id']}", {"available_tags": merged})
 
 
+def remove_tags(channel_name, drop):
+    ch = find_channel(channel_name, types=[15])
+    if not ch:
+        print(f"  ⚠️  forum #{channel_name} not found — skipping tag removal")
+        return
+    live = api("GET", f"/channels/{ch['id']}") or ch
+    existing = live.get("available_tags", []) or []
+    keys = {_tagkey(t) for t in drop}
+    keep = [t for t in existing if _tagkey(t["name"]) not in keys]
+    if len(keep) == len(existing):
+        print(f"  ✓ #{channel_name}: none of {drop} present (already removed)")
+        return
+    gone = [t["name"] for t in existing if _tagkey(t["name"]) in keys]
+    act(f"#{channel_name}: REMOVE tags {gone} (posts wearing them lose only that tag)")
+    do("PATCH", f"/channels/{ch['id']}", {"available_tags": keep})
+
+
 def ensure_topic(channel_name, text):
     ch = find_channel(channel_name, types=[0, 15])
     if not ch:
@@ -340,6 +357,7 @@ OPS = {
     "text": lambda o: ensure_channel(0, o["name"], o.get("category"), None, o.get("topic")),
     "forum": lambda o: ensure_channel(15, o["name"], o.get("category"), o.get("tags"), o.get("topic")),
     "tags": lambda o: merge_tags(o["channel"], o["add"]),
+    "tags_remove": lambda o: remove_tags(o["channel"], o["drop"]),
     "topic": lambda o: ensure_topic(o["channel"], o["text"]),
     "rename": lambda o: rename(o["from"], o["to"]),
     "move": lambda o: move(o["channel"], o["category"]),
