@@ -559,7 +559,44 @@ most ONE question, and only after showing best-estimate numbers.
 
 # Named prompt templates a quick_command can opt into via "template" in
 # channels.json (renaming the command no longer silently loses the template).
-PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT}
+# TEAM MODE — wholesale numbers only. For team-visible channels: no flip P&L,
+# no assignment-spread math, no owner economics. Select per channel with
+# "underwrite_template": "underwrite_team" in channels.json.
+UNDERWRITE_TEAM_PROMPT = """[CHANNEL: Wholesale Team]
+Run the Sauce Underwriter in TEAM MODE on the property below. Wholesale numbers
+ONLY — do NOT produce a flip P&L, assignment-spread math, or profit projections
+(owner economics never print in team channels).
+
+PROPERTY (from the rep): {addr}
+
+Do this:
+0. If links are included (Zillow, Google Drive, etc.), FETCH them (Drive:
+   drive.google.com/uc?export=download&id=<ID>). If photos are attached, Read
+   every image and set the repair level from what you SEE (room-by-room).
+1. Identify the subject address; use any given ask / sqft / repair level.
+2. Missing sqft or ARV? Web-search recent SOLD comps + county records and
+   estimate ARV = avg(comp $/sqft) x subject sqft. State every assumption.
+   Do NOT ask the rep for numbers you can find.
+3. Run the LOCKED Sauce formula (do NOT deviate):
+   - Selling Costs   = ARV * 7%
+   - Repair Cost     = sqft * repair_$psf  (Move-In Ready 8 / Cosmetic 15 / Regular 39 / Full 65 / Major 100)
+   - Investor Profit = MAX(20000, 0.57*RepairCost, 0.10*ARV)
+   - Holding Costs   = ARV * (MoveIn/Cosmetic 3% / Regular 4% / Full 5% / Major 6%)
+   - DISPO PRICE     = ARV - SellingCosts - RepairCost - InvestorProfit - HoldingCosts
+   - Wholesale Fee   = 15000
+   - MAO             = DISPO PRICE - Wholesale Fee
+   - ARV CHECK: All-In % of ARV = (MAO + RepairCost) / ARV * 100, and the 70%
+     Rule benchmark (0.70*ARV - RepairCost) with the over/under delta.
+   Verdict: GREEN MAO<70% ARV, YELLOW 70-80%, RED >80%.
+4. INTERNAL ONLY: the MAO is never quoted to a seller — the owner sets offer
+   numbers. Do not phrase anything as a price to give the seller.
+5. End with ONE next action for the rep: complete the /intake card, set a
+   /nudge touch, flip 🔥 Hot + @mention the owner (seller ready near MAO), or
+   ☠️ Dead with a one-line why (log 5 touches first).
+"""
+
+PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT,
+                    "underwrite_team": UNDERWRITE_TEAM_PROMPT}
 
 
 # ─── CLAUDE CLI CALL ───────────────────────────────────────────────────────
@@ -690,6 +727,75 @@ async def wrong_channel(interaction: discord.Interaction, expected: dict) -> boo
     return True
 
 
+# ─── LIVE BOARD CONTEXT ────────────────────────────────────────────────────
+# Quick commands can opt into REAL Discord state via "context" in channels.json:
+#   "context": "category"        → every forum post in this category: title, tags,
+#                                   days since last activity (powers /board, /intake
+#                                   dupe-checks, /nudge staleness sweeps)
+#   "context": "posts:<forum>"   → the named forum's posts WITH their first message
+#                                   (powers /blast reading buyer buy-boxes)
+async def category_digest(channel) -> str:
+    base = channel.parent if isinstance(channel, discord.Thread) else channel
+    cat = getattr(base, "category", None)
+    if cat is None:
+        return ""
+    now = discord.utils.utcnow()
+    lines = []
+    for f in cat.channels:
+        if not isinstance(f, discord.ForumChannel):
+            continue
+        threads = list(f.threads)
+        try:
+            async for th in f.archived_threads(limit=50):
+                threads.append(th)
+        except Exception:
+            pass
+        for th in threads:
+            tags = ", ".join(t.name for t in getattr(th, "applied_tags", []) or [])
+            try:
+                last = discord.utils.snowflake_time(th.last_message_id or th.id)
+                age = f"{(now - last).days}d"
+            except Exception:
+                age = "?"
+            lines.append(f"#{f.name} | {th.name} | tags: {tags or '-'} | last activity: {age} ago")
+            if len(lines) >= 200:
+                break
+    if not lines:
+        return ""
+    return ("\n\nLIVE BOARD (every post in this category, straight from Discord — "
+            "titles carry claims 🔒 and IDs):\n" + "\n".join(lines))
+
+
+async def forum_posts_digest(channel, forum_name: str) -> str:
+    base = channel.parent if isinstance(channel, discord.Thread) else channel
+    guild = getattr(base, "guild", None)
+    if guild is None:
+        return ""
+    target = next((f for f in guild.channels
+                   if isinstance(f, discord.ForumChannel) and _norm(f.name) == _norm(forum_name)), None)
+    if target is None:
+        return ""
+    threads = list(target.threads)
+    try:
+        async for th in target.archived_threads(limit=25):
+            threads.append(th)
+    except Exception:
+        pass
+    out = []
+    for th in threads[:25]:
+        tags = ", ".join(t.name for t in getattr(th, "applied_tags", []) or [])
+        body = ""
+        try:
+            starter = await th.fetch_message(th.id)
+            body = (starter.content or "").strip()[:400]
+        except Exception:
+            pass
+        out.append(f"— {th.name} [tags: {tags or '-'}]\n{body}")
+    if not out:
+        return ""
+    return f"\n\n#{target.name} DIRECTORY (live posts + their first message):\n" + "\n\n".join(out)
+
+
 # ─── DYNAMIC COMMAND REGISTRATION ──────────────────────────────────────────
 def make_ask_handler(chan: dict):
     async def handler(interaction: discord.Interaction, message: str):
@@ -728,12 +834,62 @@ def make_quick_handler(chan: dict, spec: dict):
         else:
             prompt = scoped_prompt(chan, value, skill_hint=spec.get("skill"))
         prompt += await drive_links_block(value, interaction.id)
+        ctx = (spec.get("context") or "").strip()
+        if ctx == "category":
+            prompt += await category_digest(interaction.channel)
+        elif ctx.startswith("posts:"):
+            prompt += await forum_posts_digest(interaction.channel, ctx.split(":", 1)[1])
         try:
             reply = await run_claude(prompt, session_key_for(chan, interaction.channel))
         except Exception as e:
             await interaction.followup.send(f"⚠️ LindaAI hit a snag: {e}")
             return
         await send_chunked(interaction, reply)
+    return handler
+
+
+def make_claim_handler(chan: dict):
+    """Native /dibs — claims live in the thread TITLE (🔒name), so they're visible
+    on the board, searchable, and physically enforced: the bot refuses a second
+    claim. No Claude call — this is instant."""
+    async def handler(interaction: discord.Interaction, value: str = "claim"):
+        if await deny_unauthorized(interaction):
+            return
+        if await wrong_channel(interaction, chan):
+            return
+        if await deny_channel_user(interaction, chan):
+            return
+        ch = interaction.channel
+        if not isinstance(ch, discord.Thread):
+            await interaction.response.send_message(
+                "Run this inside a lead's post — the claim lives on the post itself.", ephemeral=True)
+            return
+        me = re.sub(r"\s+", "-", interaction.user.display_name)[:20]
+        current = re.search(r"🔒(\S+)", ch.name)
+        try:
+            if value.strip().lower() in ("release", "drop", "unclaim"):
+                if not current:
+                    await interaction.response.send_message("No claim on this lead.", ephemeral=True)
+                    return
+                await ch.edit(name=re.sub(r"\s*🔒\S+", "", ch.name).strip()[:100])
+                await interaction.response.send_message(
+                    f"🔓 Claim released by {interaction.user.display_name} — lead is fair game.")
+                return
+            if current:
+                if current.group(1) == me:
+                    await interaction.response.send_message("Already yours. 🔒", ephemeral=True)
+                else:
+                    await interaction.response.send_message(
+                        f"⛔ Claimed by **{current.group(1)}** — pick another lead or have them `/dibs release`.",
+                        ephemeral=True)
+                return
+            base = ch.name[: 100 - len(me) - 2]
+            await ch.edit(name=f"{base} 🔒{me}")
+            await interaction.response.send_message(
+                f"🔒 **{interaction.user.display_name}** claimed this lead — nobody else dials this seller.")
+        except discord.Forbidden:
+            await interaction.response.send_message(
+                "⚠️ I need the **Manage Threads** permission to stamp claims on post titles.", ephemeral=True)
     return handler
 
 
@@ -754,6 +910,15 @@ def register_commands():
         # Quick one-shot commands unique to this channel.
         for spec in chan.get("quick_commands", []):
             arg_name = spec.get("arg", "input")
+            if spec.get("action") == "claim":
+                claim_cb = make_claim_handler(chan)
+                app_commands.describe(value=spec.get("arg_desc", "claim (default) or release")[:100])(claim_cb)
+                tree.add_command(app_commands.Command(
+                    name=spec["name"],
+                    description=spec["description"][:100],
+                    callback=claim_cb,
+                ))
+                continue
             quick_cb = make_quick_handler(chan, spec)
             app_commands.describe(value=spec.get("arg_desc", arg_name)[:100])(quick_cb)
             cmd = app_commands.Command(
@@ -863,7 +1028,8 @@ async def on_message(message: "discord.Message"):
     # Uploaded files (photos/PDFs) ride along as fetchable URLs either way.
     extra = await attachments_block(message) + await drive_links_block(content, message.id)
     if chan.get("auto_underwrite") and looks_like_bare_address(content):
-        prompt = UNDERWRITE_PROMPT.format(addr=content) + extra
+        uw = PROMPT_TEMPLATES.get(chan.get("underwrite_template") or "underwrite", UNDERWRITE_PROMPT)
+        prompt = uw.format(addr=content) + extra
     elif chan.get("auto_respond"):
         prompt = scoped_prompt(chan, content) + extra
     else:
