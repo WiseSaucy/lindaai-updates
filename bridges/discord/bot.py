@@ -628,9 +628,45 @@ Do this:
 6. End with ONE recommended next action.
 """
 
+# Locked Wholetail calculator — extracted from the owner's WHOLETAILS
+# CALCULATOR sheet (Calculator + Lookup tabs), including the YES/NO gates.
+WHOLETAIL_PROMPT = """[CHANNEL: Deals — Real Estate]
+Run the LOCKED Wholetail calculator on the deal below — do NOT deviate.
+
+DEAL (from the user): {addr}
+
+Do this:
+0. Links → FETCH them; photos → Read every image (they drive the rehab level
+   and Major-5 answers).
+1. Establish ARV / Market Value: given number, else recent SOLD comps via web
+   search (state assumptions). Also establish sqft and contract price to seller.
+2. REHAB (light by definition — this is a wholetail):
+   - Level $/sqft: Almost None $3 · Low $25 · Medium $35 · High $45
+   - Rehab = sqft x level rate + $10,000 per MAJOR-5 system needed
+     (Roof, Foundation, Plumbing, Electrical, AC — Yes/No each; judge from
+     photos if provided)
+3. LOCKED MATH:
+   - Closing + Holding Costs = ARV x 12%
+   - Buyer Contract Price    = Contract Price to Seller + Wholesale Fee (if any)
+   - POTENTIAL PROFIT        = ARV - Rehab - Closing/Holding - Buyer Contract Price
+   - Profit %                = Profit / ARV
+   - All In                  = Rehab + Closing/Holding + Buyer Contract Price
+4. THE GATES — "IS THIS A WHOLETAIL?" = YES only if ALL of:
+   - Will it sell in 60 days or less? (judge from comps/DOM; say your basis)
+   - Potential Profit >= $30,000
+   - Profit % >= 10% of ARV
+   - Rehab is light: level Almost None or Low, and no Major-5 systems needed
+   One NO anywhere = NOT A WHOLETAIL — say which gate failed and what price
+   to seller WOULD pass it (solve backwards).
+5. Output the table (ARV, rehab breakdown, 12% costs, buyer price, profit,
+   profit %, all-in), then the gate checklist with YES/NO each, then the
+   verdict, then ONE recommended next action.
+"""
+
 PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT,
                     "underwrite_team": UNDERWRITE_TEAM_PROMPT,
-                    "novation": NOVATION_PROMPT}
+                    "novation": NOVATION_PROMPT,
+                    "wholetail": WHOLETAIL_PROMPT}
 
 
 # ─── CLAUDE CLI CALL ───────────────────────────────────────────────────────
