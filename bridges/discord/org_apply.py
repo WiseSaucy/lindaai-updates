@@ -277,15 +277,22 @@ def rename(old, new):
         refresh()
 
 
-def move(channel_name, category):
+def move(channel_name, category, sync=False):
     ch = find_channel(channel_name)
     cat = find_channel(category, types=[4])
     if not ch or not cat:
         print(f"  ⚠️  move: #{channel_name} or '{category}' not found"); return
-    if ch.get("parent_id") == cat["id"]:
+    already = ch.get("parent_id") == cat["id"]
+    if already and not sync:
         print(f"  ✓ #{channel_name} already under '{category}'"); return
-    act(f"move #{channel_name} under '{category}'")
-    do("PATCH", f"/channels/{ch['id']}", {"parent_id": cat["id"]})
+    if not already:
+        act(f"move #{channel_name} under '{category}'")
+        do("PATCH", f"/channels/{ch['id']}", {"parent_id": cat["id"]})
+    if sync:
+        live_cat = api("GET", f"/channels/{cat['id']}", quiet=True) or cat
+        act(f"#{channel_name}: SYNC permissions to '{category}'")
+        do("PATCH", f"/channels/{ch['id']}",
+           {"permission_overwrites": live_cat.get("permission_overwrites") or []})
 
 
 def _forum_thread_names(forum_id):
@@ -360,7 +367,7 @@ OPS = {
     "tags_remove": lambda o: remove_tags(o["channel"], o["drop"]),
     "topic": lambda o: ensure_topic(o["channel"], o["text"]),
     "rename": lambda o: rename(o["from"], o["to"]),
-    "move": lambda o: move(o["channel"], o["category"]),
+    "move": lambda o: move(o["channel"], o["category"], o.get("sync", False)),
     "forum_pin": lambda o: forum_pin(o["forum"], o["title"], o["body"]),
     "text_pin": lambda o: text_pin(o["channel"], o["body"]),
     "role": lambda o: ensure_role(o["name"]),
