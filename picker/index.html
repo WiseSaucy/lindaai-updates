@@ -154,7 +154,7 @@ async function validateLicense() {
 function setupPicker(tier, key, email) {
   currentTier = tier;
   if (tier === "platinum") {
-    alert("Platinum gets EVERYTHING — 50+ skills, 19 agents, Voice Pack, Bridges. No picker needed. LindaAI has your back!");
+    alert("Platinum gets EVERYTHING — every skill, all 18 agents, Voice Pack, Bridges. No picker needed. LindaAI has your back!");
     return;
   }
 
@@ -180,7 +180,7 @@ function setupPicker(tier, key, email) {
   } else if (tier === "trial") {
     maxPicks = 3;
     pickPool = [...TIER_SKILLS.bronze, ...TIER_SKILLS.silver];
-    document.getElementById("tier-note").textContent = `7-day trial: pick any 3 skills to test. After 7 days, upgrade to keep them.`;
+    document.getElementById("tier-note").textContent = `30-day trial: full Silver ride — swap up to 3 skills from the Silver+Bronze pool. Upgrade anytime to keep it.`;
   }
 
   document.getElementById("max-picks").textContent = maxPicks;
