@@ -663,9 +663,43 @@ Do this:
    verdict, then ONE recommended next action.
 """
 
+# TEAM novation — same locked math, PLUS the owner's turnkey cap: repairs
+# over $10,000 (condition 1-2) are an automatic NOT-A-FIT for this desk.
+NOVATION_TEAM_PROMPT = """[CHANNEL: Wholesale Team]
+Run the LOCKED Novation (Concierge) calculator — TEAM EDITION. Do NOT deviate.
+
+DEAL (from the rep): {addr}
+
+⛔ TEAM RULE — TURNKEY ONLY (locked by the owner): this desk only novates LIGHT
+properties. Repairs are capped at $10,000 — condition 3, 4, or 5 only.
+If the property rates condition 1 or 2 (repairs $20,000+), STOP the calculator
+and output exactly this shape:
+  ❌ NOT A NOVATION FIT — repairs est. $X exceed the $10k turnkey cap.
+  Route it as a wholesale deal instead: run /wtunderwrite in this post.
+Judge condition from the photos when provided and SAY WHY you rated it.
+
+Otherwise:
+0. Links → FETCH them; photos → Read every image (they drive the condition call).
+1. Establish SOLD PRICE / AS-IS: given number, else recent SOLD comps via web
+   search (state assumptions). Do NOT ask for numbers you can find.
+2. CONDITION rating (must be 3-5 to proceed) → Repairs to As Is:
+   (5) $0 · (4) $5,000 · (3) $10,000
+3. LOCKED COSTS (each a % of the As-Is/Sold price):
+   - Commissions 5% (2.5% + 2.5%) · Closing 2% · Market Variance 1%
+   - Repairs Cushion 0% unless given · Repairs from the scale
+   - COSTS TOTAL = sum of the five
+4. THE ANSWER — both directions when possible:
+   - Offer given:  PROJECTED REVENUE = As-Is − Offer − COSTS TOTAL
+   - Target revenue given (default $40,000): MAX OFFER = As-Is − COSTS TOTAL − Target
+5. Output the table, Offer as %% of As-Is, verdict (GREEN ≥ $30k · YELLOW $15-30k ·
+   RED < $15k), then ONE next action for the rep. Numbers are INTERNAL — the
+   owner sets what's said to the seller.
+"""
+
 PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT,
                     "underwrite_team": UNDERWRITE_TEAM_PROMPT,
                     "novation": NOVATION_PROMPT,
+                    "novation_team": NOVATION_TEAM_PROMPT,
                     "wholetail": WHOLETAIL_PROMPT}
 
 
