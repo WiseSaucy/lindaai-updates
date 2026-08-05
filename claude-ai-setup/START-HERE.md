@@ -58,17 +58,17 @@ She'll greet you back. Now talk to her like you would a partner:
 
 - *"Linda, draft a follow-up email to a seller who ghosted me"*
 - *"Bandit, find me distressed properties under $200K"*
-- *"Inkslinger, write me 5 Instagram captions about credit repair"*
+- *"Inkslinger, write me 5 Instagram captions about my new service launch"*
 - *"Tally, build me a KPI dashboard"*
 - *"Linda, what's on my plate today?"*
 
 **Slash command-style prompts work too** — just type them as your message:
 
-- `/saddle-up` — daily CEO briefing
-- `/quill` — draft any email
-- `/deal-hawk` — analyze a real estate deal
-- `/dig-deep` — research any address
-- `/scout-enemy` — analyze a competitor
+- `/linda-brief` — daily CEO briefing
+- `/linda-mail` — draft any email
+- `/linda-invoice` — create an invoice
+- `/linda-capture` — capture an idea or note
+- `/linda-pulse` — project status check
 
 The full command list is in `LindaAI-Knowledge.md`.
 
@@ -98,7 +98,7 @@ For advanced workflows (running scripts, editing files, full agent automation), 
 → You didn't paste CLAUDE.md into Custom Instructions. Go back to Step 3.
 
 **"Commands don't work"**
-→ Make sure you're in your LindaAI Project (left sidebar), not a regular chat. Slash commands are just prompts in your message — type `/saddle-up` and hit Send.
+→ Make sure you're in your LindaAI Project (left sidebar), not a regular chat. Slash commands are just prompts in your message — type `/linda-brief` and hit Send.
 
 **"Can I drag the whole folder in?"**
 → Yes! In your Project, click "+ Add to project knowledge" → drag this whole `CLAUDE-AI` folder in. Done.
