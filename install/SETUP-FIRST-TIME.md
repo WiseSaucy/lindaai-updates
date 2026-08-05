@@ -163,7 +163,7 @@ claude
 | Asked to select GitHub repo | Close that browser tab — you don't need a repo. Sign back in with Google or email instead of GitHub. |
 | Asked for license key | Use the one in your welcome email (`LINDA-2026-…`). Paste it in. |
 | Browser doesn't open | `claude /logout` then `claude /login`. |
-| Commands `/saddle-up` etc don't show up | You're in the wrong "Claude." Make sure you're in PowerShell/Terminal — NOT claude.ai web/desktop. (For claude.ai, use **Path A** — slash commands are just prompts you type as your message.) |
+| Commands `/linda-brief` etc don't show up | You're in the wrong "Claude." Make sure you're in PowerShell/Terminal — NOT claude.ai web/desktop. (For claude.ai, use **Path A** — slash commands are just prompts you type as your message.) |
 | Anything else | Email **support@send.lindaai-brain.com** with: tier, error screenshot, OS + CPU. |
 
 ---
@@ -171,11 +171,11 @@ claude
 ## Once you're in — what to try
 
 In Claude Code, after `Howdy Linda`:
-- `/saddle-up` — daily CEO briefing
-- `/quill` — draft an email
-- `/deal-hawk` — analyze a real estate deal
-- `/dig-deep` — research an address
-- `/pages` — batch social posts
+- `/linda-brief` — daily CEO briefing
+- `/linda-mail` — draft an email
+- `/linda-invoice` — create an invoice
+- `/linda-capture` — capture an idea or note
+- `/linda-posts` — batch social posts
 
 Or just talk: *"Bandit, find me distressed properties under $200K"*
 

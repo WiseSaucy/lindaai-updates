@@ -38,61 +38,24 @@ LindaAI is a TEAM of specialists. Every response leads with the agent on the job
 
 In claude.ai, type these as your message. LindaAI recognizes the pattern and responds accordingly.
 
-### Essentials (all tiers)
-- `/saddle-up` — Daily CEO briefing
-- `/quill` — Draft a professional email
-- `/remember` — Write a follow-up message
-- `/ad-copy` — Create an ad
-- `/mail-sweep` — Process inbox priorities
-- `/stash` — Capture an idea
-- `/billbook` — Create an invoice
-- `/pages` — Batch social media posts
+### Your core skills (every tier ships these)
+- `/linda-brief` — Daily CEO briefing
+- `/linda-mail` — Draft a professional email
+- `/linda-followup` — Write a follow-up message
+- `/linda-inbox` — Process inbox priorities
+- `/linda-capture` — Capture an idea or note
+- `/linda-invoice` — Create an invoice
+- `/linda-leads` — Track and manage leads
+- `/linda-posts` — Batch social media posts
+- `/linda-post-walkthrough` — Publish finished content, step by step
+- `/linda-pulse` — Project status check
+- `/linda-weekly` — Weekly recap
+- `/linda-share` — Share a skill idea with the LindaAI community
+- `/linda-sync` — Pull the latest LindaAI updates
 
-### Growth (Silver+)
-- `/scout-enemy` — Analyze a competitor
-- `/survey` — Market research
-- `/remix` — Repurpose content
-- `/broadcast` — Plan a content calendar
-- `/pre-posse` — Pre-meeting intel
-- `/post-posse` — Meeting → action items
-- `/new-partner` — Onboard a new customer
-- `/pulse` — Project status check
-- `/sundown` — Weekly recap
-- `/deep-dive` — Research a topic
+Your industry pack adds more — check `packs/<your pack>/README.md` for its skill list.
 
-### Real Estate & Finance (Gold+)
-- `/deal-hawk` — Analyze a real estate deal
-- `/rent-hawk` — Rental market analysis
-- `/dig-deep` — Deep dive on an address
-- `/deal-wrap` — Pro forma + one-pager
-- `/smoke-signal` — Seller outreach letters/texts
-- `/money-math` — Financing math (all-cash, seller finance, etc.)
-- `/money-view` — Revenue/expenses summary
-- `/war-room` — Negotiation strategy
-- `/scorecard` — Cross-business KPI review
-- `/cattle-call` — Hiring package
-
-### Advanced Strategy (Gold+)
-- `/bearings` — SWOT analysis
-- `/handshake` — Contract review + red flags
-- `/launch-plan` — Product/service launch
-- `/pipe-check` — Pipeline status
-- `/brand-mirror` — Online presence audit
-- `/mingle-prep` — Pre-event person research
-- `/trail-ride` — Trip planning
-- `/playbook` — Build an SOP
-- `/wrangle` — Lead management
-
-### Platinum-Only Premium
-- `/pitch-deck` — Investor-ready pitch deck
-- `/revenue-forecast` — Financial projections
-- `/competitor-spy` — Deep competitor intelligence
-- `/ai-sales-closer` — AI chat-based deal closer
-- `/grant-draft` — Grant proposal writer
-- `/brand-voice` — Custom brand voice training
-- `/omni-content` — Multi-platform content engine
-- `/franchise-builder` — Franchise system builder
-- `/email-campaign` — Email drip campaigns
+Silver, Gold, and Platinum unlock bigger agent rosters, more packs, and premium skills — upgrade at lindaai-brain.com and `/linda-sync` pulls them in.
 
 ---
 
@@ -102,7 +65,7 @@ Three ways — all work:
 
 **By name** (most natural):
 > "Bandit, find me distressed properties under $200K"
-> "Inkslinger, write 5 Instagram captions about MHP investing"
+> "Inkslinger, write 5 Instagram captions about real estate investing"
 
 **By role**:
 > "Hey content team, give me a TikTok script"
