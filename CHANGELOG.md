@@ -90,7 +90,7 @@ Yeeee Hawww 🤠
 **What's new in your install:**
 
 - 🚀 **`Start-LindaAI.bat`** (Windows) and **`Start-LindaAI.command`** (Mac) — double-click installers. Auto-install Node, Git, Claude Code, then drop you straight into LindaAI. No PowerShell wrestling.
-- 📚 **`customer-guides/`** — 8-PDF library you can read anytime (Getting Started, Telegram, Email, Voice, SMS, Auto-Publish, Windows Quick Start, Library index).
+- 📚 **`customer-guides/`** — 8-PDF library you can read anytime (Getting Started, Discord, Email, Voice, SMS, Auto-Publish, Windows Quick Start, Library index).
 - 📱 **`CLAUDE-AI/`** folder — bonus claude.ai Projects bundle for iPhone, iPad, Android, or any browser. Same brain, anywhere you ride.
 - 🛡️ **`/audit22`** is now a hard gate before any update ships to you — Sentry leak-scans, audit-auditor reviews, Ranger visual-QAs. No more surprises in your inbox.
 
