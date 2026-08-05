@@ -1,167 +1,187 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-13",
+  "updated_at": "2026-08-05",
   "description": "Files/folders to DELETE from every customer's LindaAI folder on /linda-sync. Paths are relative to the customer's LindaAI-{Tier}/ folder root.",
   "remove": [
     {
       "path": "packs/credit-repair",
-      "reason": "Reserved \u2014 internal only",
+      "reason": "Reserved — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/mender.md",
-      "reason": "Credit Repair agent \u2014 internal only",
+      "reason": "Credit Repair agent — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/avatars/mender.png",
-      "reason": "Mender avatar \u2014 internal only",
+      "reason": "Mender avatar — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/ledger.md",
-      "reason": "Tax Filing agent \u2014 internal only (liability)",
+      "reason": "Tax Filing agent — internal only (liability)",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/avatars/ledger.png",
-      "reason": "Ledger avatar \u2014 internal only",
+      "reason": "Ledger avatar — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-taxprep",
-      "reason": "Tax prep \u2014 internal only (CPA liability)",
+      "reason": "Tax prep — internal only (CPA liability)",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-deductions",
-      "reason": "Tax deductions \u2014 internal only",
+      "reason": "Tax deductions — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-dispute",
-      "reason": "Credit dispute \u2014 internal only (FCRA)",
+      "reason": "Credit dispute — internal only (FCRA)",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-bureauping",
-      "reason": "Bureau response \u2014 internal only",
+      "reason": "Bureau response — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-creditcoach",
-      "reason": "Credit coaching \u2014 internal only",
+      "reason": "Credit coaching — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-creditclient",
-      "reason": "Credit client tracker \u2014 internal only",
+      "reason": "Credit client tracker — internal only",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-licenses",
-      "reason": "License administration tooling \u2014 operator-only, never customer-facing (Sentry leak removal)",
+      "reason": "License administration tooling — operator-only, never customer-facing (Sentry leak removal)",
       "deprecated_at": "2026-06-03"
     },
     {
       "path": "packs/grant-hunter",
-      "reason": "Grant tooling \u2014 internal only (liability)",
+      "reason": "Grant tooling — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-granthunt",
-      "reason": "Grant finder \u2014 internal only (liability)",
+      "reason": "Grant finder — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-grantfit",
-      "reason": "Grant eligibility \u2014 internal only (liability)",
+      "reason": "Grant eligibility — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-grantwrite",
-      "reason": "Grant writer \u2014 internal only (liability)",
+      "reason": "Grant writer — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-grantbudget",
-      "reason": "Grant budget \u2014 internal only (liability)",
+      "reason": "Grant budget — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-granttrack",
-      "reason": "Grant tracker \u2014 internal only (liability)",
+      "reason": "Grant tracker — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-samgov",
-      "reason": "SAM.gov registration \u2014 internal only (liability)",
+      "reason": "SAM.gov registration — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-writer",
-      "reason": "Grant writer (core) \u2014 internal only (liability)",
+      "reason": "Grant writer (core) — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-finder",
-      "reason": "Grant finder (core) \u2014 internal only (liability)",
+      "reason": "Grant finder (core) — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-eligibility",
-      "reason": "Grant eligibility (core) \u2014 internal only (liability)",
+      "reason": "Grant eligibility (core) — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-budget-builder",
-      "reason": "Grant budget (core) \u2014 internal only (liability)",
+      "reason": "Grant budget (core) — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-tracker",
-      "reason": "Grant tracker (core) \u2014 internal only (liability)",
+      "reason": "Grant tracker (core) — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/sam-gov-setup",
-      "reason": "SAM.gov registration (core) \u2014 internal only (liability)",
+      "reason": "SAM.gov registration (core) — internal only (liability)",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/rv-park-underwriting",
-      "reason": "RV park underwriting \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "RV park underwriting — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/rv-park-autofill",
-      "reason": "RV park workbook autofill \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "RV park workbook autofill — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/underwrite-deal",
-      "reason": "Underwriting pipeline \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "Underwriting pipeline — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/deal-report",
-      "reason": "Branded deal report engine \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "Branded deal report engine — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/video-scrape",
-      "reason": "Deal video scraper \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "Deal video scraper — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/linda-rvpark",
-      "reason": "RV park pack skill \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "RV park pack skill — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": "packs/real-estate-pro/skills/linda-rvpark",
-      "reason": "RV park pack skill \u2014 moved to private Sauce repo (owner IP)",
+      "reason": "RV park pack skill — moved to private Sauce repo (owner IP)",
       "deprecated_at": "2026-07-13"
+    },
+    {
+      "path": "linda-bridges/telegram",
+      "reason": "Telegram bridge retired 2026-07-13 — Discord is the one mobile bridge",
+      "deprecated_at": "2026-08-05"
+    },
+    {
+      "path": "bridges/telegram",
+      "reason": "Telegram bridge retired (pre-rename folder name)",
+      "deprecated_at": "2026-08-05"
+    },
+    {
+      "path": ".claude/skills/linda-telegram-setup",
+      "reason": "Telegram setup skill retired — use /linda-discord-setup",
+      "deprecated_at": "2026-08-05"
+    },
+    {
+      "path": "customer-guides/Let-Linda-Text-People-SMS.pdf",
+      "reason": "SMS guide pulled — capability not shipped yet",
+      "deprecated_at": "2026-08-05"
     }
   ],
   "notes_for_boss47": "Add new entries here whenever you want to retroactively remove something from customer installs. The customer's next /linda-sync will delete these paths. To restore, REMOVE the entry from here and re-sync."
