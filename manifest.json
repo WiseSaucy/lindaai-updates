@@ -1,6 +1,6 @@
 {
   "manifest_version": "1.13.0",
-  "generated": "2026-07-13",
+  "generated": "2026-08-08",
   "product": "LindaAI",
   "update_base_url": "https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main",
   "copyright": "\u00a9 2026 LindaAI \u2014 Built by Daniel Wise",
@@ -201,6 +201,10 @@
     "youtube-transcribe": {
       "version": "1.0.0",
       "min_tier": "silver"
+    },
+    "linda-autopilot": {
+      "version": "1.0.0",
+      "min_tier": "gold"
     }
   },
   "agents": {

@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-08-08 — 🤖 LindaAI Autopilot — she works while you sleep (Gold + Platinum)
+
+**NEW `/linda-autopilot`** — Linda now runs your routines on a schedule, no asking needed:
+- ☀️ **Morning Brief** waiting before you wake (daily) · 📊 **Weekly Review** every Friday — Gold + Platinum
+- 📬 **Automatic Inbox Triage** with reply drafts — Platinum
+- **Draft-only by design:** Linda never sends, posts, or spends on her own — anything outbound waits for YOUR go
+- Results land in `brain/autopilot/` with a Mac notification (macOS now, Windows next update)
+
+Run `/linda-sync` to grab it, then say "turn on autopilot."
+
+---
+
 ## 2026-07-13 — 🏠 Sauce Underwriter baked into Discord + Discord-only bridges
 
 **Your Discord just got a deal desk:**
