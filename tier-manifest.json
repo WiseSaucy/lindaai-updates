@@ -112,7 +112,8 @@
         "pipeline-sync",
         "discord-setup",
         "iron-horse",
-        "linda-autopilot"
+        "linda-autopilot",
+        "linda-approvals"
       ],
       "agents": [
         "ranger",

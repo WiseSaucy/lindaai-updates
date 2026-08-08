@@ -5,6 +5,18 @@
 
 ---
 
+## 2026-08-08 — 📬 Approval Queue — approve Linda's drafts from your phone (Gold + Platinum)
+
+**NEW `/linda-approvals`** + Autopilot v1.1.0 — the loop is closed:
+- Autopilot now files every draft it writes in `brain/autopilot/queue/` awaiting YOUR go — nothing sends itself, ever
+- Discord bridge connected? Linda **DMs you the moment drafts are waiting** — reply "show my approvals", then "approve 2", coffee in hand
+- Approve → she sends it exactly as drafted · Reject → she tears it up (or redrafts it your way)
+- Works in the terminal too — Discord is optional
+
+Run `/linda-sync` to grab both, then say "turn on autopilot."
+
+---
+
 ## 2026-08-08 — 🤖 LindaAI Autopilot — she works while you sleep (Gold + Platinum)
 
 **NEW `/linda-autopilot`** — Linda now runs your routines on a schedule, no asking needed:
