@@ -272,19 +272,15 @@
       "version": "1.0.0",
       "min_tier": "platinum"
     },
-    "mender": {
-      "version": "1.0.0",
-      "min_tier": "platinum"
-    },
-    "ledger": {
-      "version": "1.0.0",
-      "min_tier": "platinum"
-    },
     "bullhorn": {
       "version": "1.0.0",
       "min_tier": "platinum"
     },
     "rooster": {
+      "version": "1.0.0",
+      "min_tier": "platinum"
+    },
+    "forge": {
       "version": "1.0.0",
       "min_tier": "platinum"
     }
