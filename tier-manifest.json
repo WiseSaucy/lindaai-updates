@@ -111,7 +111,8 @@
         "hiring-screener",
         "pipeline-sync",
         "discord-setup",
-        "iron-horse"
+        "iron-horse",
+        "linda-autopilot"
       ],
       "agents": [
         "ranger",
