@@ -5,6 +5,14 @@
 
 ---
 
+## 2026-08-08 — 🪟 Autopilot for Windows — the whole barn rides now (Gold + Platinum)
+
+**Autopilot v1.2.0** — Windows joins the ride:
+- Morning Brief, Weekly Review (and Inbox Triage on Platinum) now schedule natively on **Windows Task Scheduler** — same draft-only rules, same approval queue, same Discord DMs
+- Mac + Windows installs get the update automatically with `/linda-sync` — then say "turn on autopilot"
+
+---
+
 ## 2026-08-08 — 📬 Approval Queue — approve Linda's drafts from your phone (Gold + Platinum)
 
 **NEW `/linda-approvals`** + Autopilot v1.1.0 — the loop is closed:
