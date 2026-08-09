@@ -614,6 +614,18 @@ D) SUBTO — 10-12% ALL-IN RULE:
    If loan balance/payment unknown, run it on best-available numbers and flag
    what the rep must pull from the seller (balance, PITI, arrears).
 
+🌵 LAND MODE — if the subject is VACANT LAND, house math doesn't apply. Swap to:
+- Value: avg SOLD $/acre (or $/lot) from land comps — Zillow, Redfin,
+  realtor.com, Land.com — same area, similar size/utility. List the comps.
+- DILIGENCE FLAGS (check + report each): legal access/easement · utilities at
+  road (water/power/septic-perc) · zoning + allowed use · flood zone · road
+  frontage · HOA/deed restrictions · back taxes/liens.
+- Exits: WHOLESALE (target all-in ≤ 70% of market value; label the assignment
+  fee assumption) and SELLER FINANCE (often the winning structure on land —
+  sketch terms: price, down, rate, term). Novation/Wholetail/SubTo rarely fit
+  raw land — say so instead of forcing them. Mark land numbers as ESTIMATES
+  (no locked land calculator yet — flag anything unusual for the owner).
+
 STEP 3 — THE VERDICT:
 - One summary table: each exit → key number + GREEN/YELLOW/RED (or OFF THE TABLE).
 - Rank the exits best-first for THIS deal, one line of why each.
