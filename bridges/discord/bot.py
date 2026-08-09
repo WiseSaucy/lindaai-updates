@@ -569,36 +569,57 @@ most ONE question, and only after showing best-estimate numbers.
 # no assignment-spread math, no owner economics. Select per channel with
 # "underwrite_template": "underwrite_team" in channels.json.
 UNDERWRITE_TEAM_PROMPT = """[CHANNEL: Wholesale Team]
-Run the Sauce Underwriter in TEAM MODE on the property below. Wholesale numbers
-ONLY — do NOT produce a flip P&L, assignment-spread math, or profit projections
-(owner economics never print in team channels).
+MULTI-EXIT UNDERWRITE — run EVERY exit strategy on the property below and
+return them ALL in ONE response: Wholesale, Novation, Wholetail, SubTo.
+No flip P&L, assignment-spread math, or owner profit projections — owner
+economics never print in team channels.
 
 PROPERTY (from the rep): {addr}
 
-Do this:
-0. If links are included (Zillow, Google Drive, etc.), FETCH them (Drive:
-   drive.google.com/uc?export=download&id=<ID>). If photos are attached, Read
-   every image and set the repair level from what you SEE (room-by-room).
-1. Identify the subject address; use any given ask / sqft / repair level.
-2. Missing sqft or ARV? Web-search recent SOLD comps + county records and
-   estimate ARV = avg(comp $/sqft) x subject sqft. State every assumption.
-   Do NOT ask the rep for numbers you can find.
-3. Run the LOCKED Sauce formula (do NOT deviate):
-   - Selling Costs   = ARV * 7%
-   - Repair Cost     = sqft * repair_$psf  (Move-In Ready 8 / Cosmetic 15 / Regular 39 / Full 65 / Major 100)
-   - Investor Profit = MAX(20000, 0.57*RepairCost, 0.10*ARV)
-   - Holding Costs   = ARV * (MoveIn/Cosmetic 3% / Regular 4% / Full 5% / Major 6%)
-   - DISPO PRICE     = ARV - SellingCosts - RepairCost - InvestorProfit - HoldingCosts
-   - Wholesale Fee   = 15000
-   - MAO             = DISPO PRICE - Wholesale Fee
-   - ARV CHECK: All-In % of ARV = (MAO + RepairCost) / ARV * 100, and the 70%
-     Rule benchmark (0.70*ARV - RepairCost) with the over/under delta.
-   Verdict: GREEN MAO<70% ARV, YELLOW 70-80%, RED >80%.
-4. INTERNAL ONLY: the MAO is never quoted to a seller — the owner sets offer
-   numbers. Do not phrase anything as a price to give the seller.
-5. End with ONE next action for the rep: complete the /intake card, set a
-   /nudge touch, flip 🔥 Hot + @mention the owner (seller ready near MAO), or
-   ☠️ Dead with a one-line why (log 5 touches first).
+STEP 1 — ESTABLISH THE FACTS (do NOT ask for numbers you can find):
+- Links included? FETCH them (Drive: drive.google.com/uc?export=download&id=<ID>).
+  Photos attached? Read every image — they set condition + repair level.
+- ARV + comps: recent SOLD comps via web search — Zillow, Redfin, realtor.com
+  (+ county records). ARV = avg(comp $/sqft) x subject sqft. LIST the comps you
+  used (address, sold price, $/sqft, date) — legit comps make or break this.
+- Repairs estimate from photos/details; rate condition 1-5. State every assumption.
+
+STEP 2 — RUN ALL FOUR LOCKED MODELS (no deviating, no improvising):
+
+A) WHOLESALE (Sauce, team mode):
+   Selling Costs = ARV*7% · Repairs = sqft x $psf (MoveIn 8/Cosmetic 15/Regular 39/Full 65/Major 100)
+   Investor Profit = MAX(20000, 0.57*Repairs, 0.10*ARV) · Holding = ARV*(3-6% by level)
+   DISPO = ARV - all four · MAO = DISPO - 15000 wholesale fee
+   70% check: 0.70*ARV - Repairs, with delta. GREEN MAO<70% ARV · YELLOW 70-80% · RED >80%.
+
+B) NOVATION — TURNKEY ONLY, repairs hard-capped at $10,000 (condition 3/4/5):
+   If repairs exceed $10k (condition 1-2): print "❌ NOVATION: OFF THE TABLE —
+   repairs est. $X > $10k turnkey cap" and skip its math. The easiest novations
+   are TURNKEY properties. Otherwise:
+   Costs = 5% commissions + 2% closing + 1% variance of As-Is + repairs ($0/$5k/$10k by condition)
+   Revenue = As-Is - Offer - Costs · Max Offer = As-Is - Costs - $40k target
+   GREEN ≥$30k · YELLOW $15-30k · RED <$15k.
+
+C) WHOLETAIL:
+   Costs = ARV*12% · Rehab = sqft x ($3 almost-none/$25 low/$35 med/$45 high)
+   + $10k per Major-5 needed (roof/foundation/plumbing/electrical/AC)
+   Profit = ARV - Rehab - Costs - Buyer Contract Price
+   Gates (ALL must pass): sells ≤60 days · profit ≥$30k · ≥10% of ARV · light
+   rehab only. Any NO = not a wholetail; say which gate failed.
+
+D) SUBTO — 10-12% ALL-IN RULE:
+   All-In Entry = down payment to seller + $1,500 TC + $5,000 assignment +
+   closing (est ~1% of price if unknown, labeled). All-In % = Entry / Purchase Price.
+   GREEN ≤10% · YELLOW 10-12% · RED >12%. Give max down at the 10% and 12% caps.
+   If loan balance/payment unknown, run it on best-available numbers and flag
+   what the rep must pull from the seller (balance, PITI, arrears).
+
+STEP 3 — THE VERDICT:
+- One summary table: each exit → key number + GREEN/YELLOW/RED (or OFF THE TABLE).
+- Rank the exits best-first for THIS deal, one line of why each.
+- INTERNAL ONLY: no number here is ever quoted to a seller — the owner sets offers.
+- End with ONE next action for the rep: /intake card, /nudge touch, flip 🔥 Hot
+  + @mention the owner, or ☠️ Dead with a one-line why (log 5 touches first).
 """
 
 # Locked Novation (Concierge) calculator — extracted from the owner's
