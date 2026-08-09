@@ -450,6 +450,12 @@ def scoped_prompt(chan: dict, user_text: str, skill_hint: str | None = None) -> 
         hint_path = paths.get(skill_hint)
         lines.append(f"  - Preferred skill for this request: {skill_hint}"
                      + (f" ({hint_path})." if hint_path else "."))
+    # Channel-locked formulas: plain questions must compute with the SAME math
+    # as the slash commands — never improvised numbers.
+    if chan.get("formulas"):
+        lines += ["", "LOCKED FORMULAS FOR THIS CHANNEL — any request for deal numbers "
+                      "MUST use these exactly (no improvising, no other formulas):",
+                  chan["formulas"]]
     lines += ["", "USER REQUEST:", user_text]
     return "\n".join(lines)
 
@@ -932,6 +938,15 @@ def make_quick_handler(chan: dict, spec: dict):
             return
         if await deny_channel_user(interaction, chan):
             return
+        # Per-command owner gate: "restrict_env" names an env var of allowed IDs
+        # (e.g. the family list) — anyone else gets a polite ephemeral refusal.
+        renv = spec.get("restrict_env")
+        if renv:
+            allowed = {x.strip() for x in os.environ.get(renv, "").split(",") if x.strip().isdigit()}
+            if allowed and str(interaction.user.id) not in allowed:
+                await interaction.response.send_message(
+                    "🔒 This command is owner-only.", ephemeral=True)
+                return
         await interaction.response.defer(thinking=True)
         if template:
             prompt = template.format(addr=value)
