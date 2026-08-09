@@ -702,11 +702,44 @@ Otherwise:
    owner sets what's said to the seller.
 """
 
+# SubTo — no spreadsheet calculator; underwrites on the owner's 10-12%
+# ALL-IN rule: total cash to enter the deal vs purchase price.
+SUBTO_PROMPT = """[CHANNEL: Wholesale Team]
+Underwrite this SUBJECT-TO deal on the LOCKED 10-12%% ALL-IN RULE. Do NOT deviate.
+
+DEAL (from the rep): {addr}
+
+0. Links → FETCH them; photos → Read every image. Hunt for numbers you weren't
+   given (loan balance, value, taxes) via web search — do NOT ask for what you
+   can find. State every assumption.
+1. Establish PURCHASE PRICE (what we're taking over: loan balance + any down
+   payment / arrears brought current). If only a loan balance is known, use it
+   and say so.
+2. LOCKED ALL-IN ENTRY COSTS (cash to get in):
+   - Down Payment to Seller = given number (else $0 — flag it as the lever)
+   - TC Fee                 = $1,500 (fixed)
+   - Wholesale/Assignment   = $5,000 (fixed)
+   - Closing Costs          = given number; if none, estimate ~1%% of purchase
+                              price and LABEL it an estimate
+   - ALL-IN ENTRY = sum of the four
+3. THE RULE:
+   - All-In %% = ALL-IN ENTRY / PURCHASE PRICE
+   - GREEN ≤ 10%% · YELLOW 10-12%% · RED > 12%% (over the cap = pass or renegotiate)
+4. Solve BACKWARDS too: MAX DOWN PAYMENT at the 10%% and 12%% caps
+   (cap x price − 1,500 − 5,000 − closing). If max down is negative, say the
+   deal can't carry ANY down payment at that cap.
+5. Sanity block: existing payment (PITI) vs market rent if findable — one line.
+6. Output the cost table, All-In %%, verdict, both max-down numbers, then ONE
+   next action for the rep. Numbers are INTERNAL — the owner sets what's said
+   to the seller.
+"""
+
 PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT,
                     "underwrite_team": UNDERWRITE_TEAM_PROMPT,
                     "novation": NOVATION_PROMPT,
                     "novation_team": NOVATION_TEAM_PROMPT,
-                    "wholetail": WHOLETAIL_PROMPT}
+                    "wholetail": WHOLETAIL_PROMPT,
+                    "subto": SUBTO_PROMPT}
 
 
 # ─── CLAUDE CLI CALL ───────────────────────────────────────────────────────
