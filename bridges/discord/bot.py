@@ -579,9 +579,16 @@ PROPERTY (from the rep): {addr}
 STEP 1 — ESTABLISH THE FACTS (do NOT ask for numbers you can find):
 - Links included? FETCH them (Drive: drive.google.com/uc?export=download&id=<ID>).
   Photos attached? Read every image — they set condition + repair level.
-- ARV + comps: recent SOLD comps via web search — Zillow, Redfin, realtor.com
-  (+ county records). ARV = avg(comp $/sqft) x subject sqft. LIST the comps you
-  used (address, sold price, $/sqft, date) — legit comps make or break this.
+- COMPS RULE (this is law): SOLD comps ONLY — sold in the last 6 months
+  (stretch to 12 max, and say so). Active/pending/for-sale listings are NOT
+  comps and never set ARV; they're only a sanity read on the market.
+- COMP SOURCES, in order: VFL is PRIMARY — if a VFL link/pId or a pasted VFL
+  comparables table is in the deal, use it as the ARV backbone. Then Zillow,
+  Redfin, realtor.com (+ county records) as cross-check or backup when VFL
+  isn't in the deal. ARV = avg(comp $/sqft) x subject sqft. LIST every comp
+  used (address, SOLD price, $/sqft, sold date, source) — legit comps make or
+  break this. No VFL in the deal? Say "VFL not provided — comped from
+  Zillow/Redfin/realtor sold data" so the rep knows to attach VFL next time.
 - Repairs estimate from photos/details; rate condition 1-5. State every assumption.
 
 STEP 2 — RUN ALL FOUR LOCKED MODELS (no deviating, no improvising):
@@ -615,8 +622,9 @@ D) SUBTO — 10-12% ALL-IN RULE:
    what the rep must pull from the seller (balance, PITI, arrears).
 
 🌵 LAND MODE — if the subject is VACANT LAND, house math doesn't apply. Swap to:
-- Value: avg SOLD $/acre (or $/lot) from land comps — Zillow, Redfin,
-  realtor.com, Land.com — same area, similar size/utility. List the comps.
+- Value: avg SOLD $/acre (or $/lot) from land comps sold in the last 6-12
+  months — VFL first if provided, then Zillow, Redfin, realtor.com, Land.com —
+  same area, similar size/utility. SOLD only; listings are not comps. List them.
 - DILIGENCE FLAGS (check + report each): legal access/easement · utilities at
   road (water/power/septic-perc) · zoning + allowed use · flood zone · road
   frontage · HOA/deed restrictions · back taxes/liens.
