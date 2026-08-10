@@ -783,12 +783,25 @@ DEAL (from the rep): {addr}
    to the seller.
 """
 
+# Owner → team broadcast: formats rough notes into a channel announcement.
+ANNOUNCE_PROMPT = """[TEAM ANNOUNCEMENT]
+Turn the owner's notes below into a Discord announcement for the acquisitions
+team. Style: one 🚨 bold headline, short punchy sections with an emoji lead
+each, plain language a rep skims in 30 seconds. UNDER 1800 characters total.
+Include ONLY what the notes say — never invent features, dates, or numbers,
+and NEVER include owner economics/flip P&L. Output ONLY the announcement text
+itself — no preamble, no "here's your announcement", no commentary after.
+
+OWNER'S NOTES: {addr}
+"""
+
 PROMPT_TEMPLATES = {"underwrite": UNDERWRITE_PROMPT, "flip": FLIP_PROMPT,
                     "underwrite_team": UNDERWRITE_TEAM_PROMPT,
                     "novation": NOVATION_PROMPT,
                     "novation_team": NOVATION_TEAM_PROMPT,
                     "wholetail": WHOLETAIL_PROMPT,
-                    "subto": SUBTO_PROMPT}
+                    "subto": SUBTO_PROMPT,
+                    "announce": ANNOUNCE_PROMPT}
 
 
 # ─── CLAUDE CLI CALL ───────────────────────────────────────────────────────
@@ -1029,7 +1042,10 @@ def make_quick_handler(chan: dict, spec: dict):
                 await interaction.response.send_message(
                     "🔒 This command is owner-only.", ephemeral=True)
                 return
-        await interaction.response.defer(thinking=True)
+        # "announce_to" commands publish to another channel — keep the
+        # invocation itself ephemeral so drafts never land in the room.
+        dest_name = (spec.get("announce_to") or "").strip()
+        await interaction.response.defer(thinking=True, ephemeral=bool(dest_name))
         if template:
             prompt = template.format(addr=value)
         else:
@@ -1044,6 +1060,21 @@ def make_quick_handler(chan: dict, spec: dict):
             reply = await run_claude(prompt, session_key_for(chan, interaction.channel))
         except Exception as e:
             await interaction.followup.send(f"⚠️ LindaAI hit a snag: {e}")
+            return
+        if dest_name:
+            target = None
+            if interaction.guild:
+                target = next((c for c in interaction.guild.text_channels
+                               if _norm(c.name) == _norm(dest_name)), None)
+            if target:
+                for c in chunk_text(reply):
+                    await target.send(c)
+                await interaction.followup.send(
+                    f"📣 Posted to #{target.name}.", ephemeral=True)
+            else:
+                await interaction.followup.send(
+                    f"⚠️ Couldn't find #{dest_name} — here's the draft:\n{reply[:1700]}",
+                    ephemeral=True)
             return
         await send_chunked(interaction, reply)
     return handler
@@ -1255,6 +1286,41 @@ HEARTBEAT_CHANNEL = os.environ.get("DISCORD_HEARTBEAT_CHANNEL", "").strip()
 _started_at = time.time()
 
 from discord.ext import tasks  # noqa: E402  (discord.py built-in)
+
+
+# ─── TAG PAPER TRAIL (opt-in per business via "tag_log": true) ─────────────
+# When a forum post's tags change, stamp one line in the thread — the same
+# dibs-style audit trail, but for structure/stage calls. Actor name comes from
+# the audit log when the bot has View Audit Log; otherwise the line still lands.
+@bot.event
+async def on_thread_update(before: "discord.Thread", after: "discord.Thread"):
+    chan = channel_for(after)
+    if not chan or not chan.get("tag_log"):
+        return
+    b = {t.id: t.name for t in (getattr(before, "applied_tags", None) or [])}
+    a = {t.id: t.name for t in (getattr(after, "applied_tags", None) or [])}
+    if b == a:
+        return
+    added = [n for i, n in a.items() if i not in b]
+    removed = [n for i, n in b.items() if i not in a]
+    actor = ""
+    try:
+        async for entry in after.guild.audit_logs(
+                limit=6, action=discord.AuditLogAction.thread_update):
+            tgt = getattr(entry, "target", None)
+            fresh = (discord.utils.utcnow() - entry.created_at).total_seconds() < 120
+            if tgt is not None and getattr(tgt, "id", None) == after.id and fresh:
+                who = getattr(entry.user, "display_name", None) or str(entry.user)
+                actor = f" — by {who}"
+                break
+    except Exception:
+        pass  # no View Audit Log permission → stamp without the name
+    parts = [f"+{n}" for n in added] + [f"−{n}" for n in removed]
+    stamp = discord.utils.utcnow().strftime("%b %d %H:%M")
+    try:
+        await after.send(f"🏷 {' '.join(parts)}{actor} · {stamp} UTC")
+    except Exception:
+        pass
 
 
 @tasks.loop(hours=24)
