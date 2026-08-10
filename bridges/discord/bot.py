@@ -476,8 +476,16 @@ Do this:
    Docs: /export?format=txt). If a Drive fetch fails the file is private — note it, ask for
    'Anyone with the link' sharing or a Discord upload, and continue with web estimates.
 1. Identify the subject address. If asking price / sqft / repair level were given, use them.
-2. If sqft or ARV is missing, pull what you can via web search (recent SOLD comps,
-   subject sqft, neighborhood) to estimate ARV = avg(comp $/sqft) x subject sqft.
+2. COMPS + ARV + DOM (this is law):
+   - SOLD comps ONLY — sold in the last 6 months (stretch to 12 max, and say
+     so). Active/pending/for-sale listings NEVER set ARV — market read only.
+   - If a comparables table/export/link came with the deal (e.g. from the
+     user's comps tool), it is PRIMARY. Otherwise web-search sold data on
+     Zillow, Redfin, realtor.com (+ county records).
+   - ARV = avg(comp $/sqft) x subject sqft. LIST every comp used: address,
+     SOLD price, $/sqft, sold date, DOM, source.
+   - DOM: report avg days-on-market across the comps + the subject's expected
+     DOM at ARV — it drives holding costs and the 60-day salability read.
    State every assumption you make.
 3. WHOLESALE — run the LOCKED Sauce formula (do NOT deviate):
    - Selling Costs   = ARV * 7%
