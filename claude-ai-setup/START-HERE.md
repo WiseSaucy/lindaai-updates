@@ -104,7 +104,7 @@ For advanced workflows (running scripts, editing files, full agent automation), 
 → Yes! In your Project, click "+ Add to project knowledge" → drag this whole `CLAUDE-AI` folder in. Done.
 
 **Anything else?**
-→ Email **support@send.lindaai-brain.com** with your tier (Platinum) + license key (`LINDA-2026-…` from your welcome email) + a screenshot. The crew will help fast.
+→ Email **support@lindaai-brain.com** with your tier (Platinum) + license key (`LINDA-2026-…` from your welcome email) + a screenshot. The crew will help fast.
 
 ---
 

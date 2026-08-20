@@ -58,7 +58,7 @@ Response shape:
 
 Error responses:
 - `401` → "Missing or invalid license key. Re-extract your delivery zip."
-- `403` → "License revoked. Email support@send.lindaai-brain.com to restore."
+- `403` → "License revoked. Email support@lindaai-brain.com to restore."
 - `404` → "License not found. Re-extract your delivery zip."
 
 ### Step 3 — Diff local vs server
@@ -180,4 +180,4 @@ If `locked: true` on the license response, tell the user: "Your skill selections
 ---
 
 © 2022-2026 Daniel Wise · LindaAI
-All rights reserved · support@send.lindaai-brain.com
+All rights reserved · support@lindaai-brain.com

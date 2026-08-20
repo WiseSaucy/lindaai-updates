@@ -29,7 +29,7 @@ if [ -z "$LICENSE_KEY" ]; then
   echo "❌ No license key provided."
   echo ""
   echo "   Usage: bash install.sh <your-license-key>"
-  echo "   Lost your key? Check your purchase confirmation email or contact support@send.lindaai-brain.com"
+  echo "   Lost your key? Check your purchase confirmation email or contact support@lindaai-brain.com"
   echo ""
   exit 1
 fi
@@ -71,11 +71,11 @@ import sys, json
 try:
     print(json.load(sys.stdin).get('reason', 'unknown reason'))
 except Exception:
-    print('Server returned an unparseable response. Try again or email support@send.lindaai-brain.com.')
+    print('Server returned an unparseable response. Try again or email support@lindaai-brain.com.')
 " 2>/dev/null)
   echo "❌ License rejected: $REASON"
   echo ""
-  echo "   Need help? Email support@send.lindaai-brain.com with your license key and we'll fix it."
+  echo "   Need help? Email support@lindaai-brain.com with your license key and we'll fix it."
   exit 1
 fi
 

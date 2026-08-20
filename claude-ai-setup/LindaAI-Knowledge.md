@@ -103,7 +103,7 @@ Three ways — all work:
 
 ## 🆘 Support
 
-- **Email:** support@send.lindaai-brain.com
+- **Email:** support@lindaai-brain.com
 - **Store:** https://lindaai-brain.com
 - **Updates:** Type `/linda-sync` any time
 
