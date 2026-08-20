@@ -16,13 +16,25 @@ Pulls the latest skills (and Platinum agents) from the LindaAI server and instal
 
 ## Workflow for the assistant
 
-### Step 1 — Read the local license
+### Step 1 — Find the license (self-healing — never dead-end the customer)
+
+Look for the license file in THIS ORDER (first hit wins):
 
 ```bash
-cat .lindaai/license.json 2>/dev/null || cat ~/.claude/lindaai/license.json
+cat .lindaai/license.json          # 1. project folder (where every baked zip puts it)
+cat ~/.claude/lindaai/license.json # 2. legacy home location (older installs)
 ```
 
-Extract the `key` field. If file missing or no key: tell user "No LindaAI license found. Re-extract your delivery zip and try again." STOP.
+Extract the key: accept EITHER the `key` field OR the legacy `license_key` field.
+
+**If NO license file exists anywhere** — do NOT stop. Self-heal:
+1. Ask the customer: "What's your LindaAI license key? It's in your purchase email — looks like `LINDA-2026-XXXX-XXXX`."
+2. Recreate the file from the server (the key itself is the auth):
+```bash
+mkdir -p .lindaai && curl -s "https://lindaai-api-production.up.railway.app/v1/licenses/download/$KEY" -o .lindaai/license.json
+```
+3. Confirm it landed (`cat .lindaai/license.json` shows their key + tier) and continue to Step 2.
+4. If the server returns 404: the key is wrong or revoked — have them double-check the purchase email, or contact support@lindaai-brain.com.
 
 ### Step 2 — Fetch the skill manifest (license-gated)
 
@@ -96,6 +108,28 @@ Returns the same shape as skills manifest. For each agent:
 curl -s "https://lindaai-api-production.up.railway.app/v1/sync/agent/$KEY/$agent_name" \
   > ".claude/agents/$agent_name.md"
 ```
+
+### Step 5.5 — Brain-file update (CLAUDE.md over sync — v1.8)
+
+The tier CLAUDE.md (first-run flow, Rooster's Daily Crow, agent rules) also updates
+over sync so product improvements reach existing installs:
+
+```bash
+curl -s "https://lindaai-api-production.up.railway.app/v1/sync/claudemd/$KEY"
+```
+
+Returns `{"tier", "sha256", "content", ...}`.
+
+1. Compute the sha256 of the local `CLAUDE.md`. If it MATCHES the server's → skip (up to date).
+2. If it DIFFERS:
+   - **Back up first:** copy the current file to `.lindaai/CLAUDE.md.bak-<YYYY-MM-DD>`.
+   - Write the server `content` to `CLAUDE.md` (full replace — personalization lives in
+     `license.json`, never in this file).
+   - Add to the report: *"🧠 Brain-file updated — restart me (fresh session) so the new
+     behavior loads, partner."*
+3. **Safety rails:** if the fetch fails, returns 404, or content is empty/suspiciously
+   small (< 2,000 chars) → change NOTHING, keep the local file, note it in the report.
+   Never leave the customer without a working CLAUDE.md.
 
 ### Step 6 — Report to user
 
