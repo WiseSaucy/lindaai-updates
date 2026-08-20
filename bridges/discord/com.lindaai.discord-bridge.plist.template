@@ -13,8 +13,8 @@
 
     3. Edit the plist below:
        - REPLACE PASTE_YOUR_OAUTH_TOKEN_HERE with token from `claude setup-token`
-       - REPLACE every `/Users/Saucy` with `/Users/yourname` (your macOS username)
-         (Tip: in TextEdit, Cmd+F → find `/Users/Saucy` → replace with your home dir)
+       - REPLACE every `/Users/Sauce` with `/Users/yourname` (your macOS username)
+         (Tip: in TextEdit, Cmd+F → find `/Users/Sauce` → replace with your home dir)
 
     4. Load it:
          launchctl load ~/Library/LaunchAgents/com.lindaai.discord-bridge.plist
@@ -40,24 +40,24 @@
 		<key>CLAUDE_CODE_OAUTH_TOKEN</key>
 		<string>PASTE_YOUR_OAUTH_TOKEN_HERE</string>
 
-		<!-- REPLACE /Users/Saucy with your macOS home directory -->
+		<!-- REPLACE /Users/Sauce with your macOS home directory -->
 		<key>HOME</key>
-		<string>/Users/Saucy</string>
+		<string>/Users/Sauce</string>
 
 		<key>PATH</key>
-		<string>/Users/Saucy/.npm-global/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+		<string>/Users/Sauce/.npm-global/bin:/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
 	</dict>
 
 	<!-- Uses the venv's python (which has discord.py installed) -->
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/Saucy/.claude/lindaai/discord-bridge/venv/bin/python3</string>
+		<string>/Users/Sauce/.claude/lindaai/discord-bridge/venv/bin/python3</string>
 		<string>-u</string>
-		<string>/Users/Saucy/.claude/lindaai/discord-bridge/bot.py</string>
+		<string>/Users/Sauce/.claude/lindaai/discord-bridge/bot.py</string>
 	</array>
 
 	<key>WorkingDirectory</key>
-	<string>/Users/Saucy/.claude/lindaai/discord-bridge</string>
+	<string>/Users/Sauce/.claude/lindaai/discord-bridge</string>
 
 	<key>RunAtLoad</key>
 	<true/>
@@ -77,9 +77,9 @@
 	<integer>15</integer>
 
 	<key>StandardOutPath</key>
-	<string>/Users/Saucy/.claude/lindaai/discord-bridge.out.log</string>
+	<string>/Users/Sauce/.claude/lindaai/discord-bridge.out.log</string>
 
 	<key>StandardErrorPath</key>
-	<string>/Users/Saucy/.claude/lindaai/discord-bridge.err.log</string>
+	<string>/Users/Sauce/.claude/lindaai/discord-bridge.err.log</string>
 </dict>
 </plist>
