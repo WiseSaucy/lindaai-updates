@@ -53,7 +53,7 @@ try {
 
 if (-not $ValidateResp.valid) {
     Write-Host "❌ License rejected: $($ValidateResp.reason)" -ForegroundColor Red
-    Write-Host "   Contact support@send.lindaai-brain.com"
+    Write-Host "   Contact support@lindaai-brain.com"
     exit 1
 }
 

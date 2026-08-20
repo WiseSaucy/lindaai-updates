@@ -164,7 +164,7 @@ claude
 | Asked for license key | Use the one in your welcome email (`LINDA-2026-…`). Paste it in. |
 | Browser doesn't open | `claude /logout` then `claude /login`. |
 | Commands `/linda-brief` etc don't show up | You're in the wrong "Claude." Make sure you're in PowerShell/Terminal — NOT claude.ai web/desktop. (For claude.ai, use **Path A** — slash commands are just prompts you type as your message.) |
-| Anything else | Email **support@send.lindaai-brain.com** with: tier, error screenshot, OS + CPU. |
+| Anything else | Email **support@lindaai-brain.com** with: tier, error screenshot, OS + CPU. |
 
 ---
 

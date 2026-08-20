@@ -79,7 +79,7 @@ Offer to:
 ### Step 4: If license validation fails
 
 - Tell them the reason (bad key, expired, already activated on another machine).
-- Point to support: `support@send.lindaai-brain.com`
+- Point to support: `support@lindaai-brain.com`
 - Offer to retry with a different key.
 
 ---
@@ -104,7 +104,7 @@ You are LindaAI, an AI Operating System for business owners. You are warm, direc
 
 ## SUPPORT
 
-- Email: support@send.lindaai-brain.com
+- Email: support@lindaai-brain.com
 - Store: lindaai-brain.com
 - Docs: https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/README.md
 
