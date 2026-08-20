@@ -11,7 +11,7 @@ Static host for `/lindaai-update`. Customers' LindaAI installs pull from here.
 
 ```bash
 # One-time setup
-cd /Users/Saucy/Desktop/LindaAI-OG/LindaAI-Updates-Server
+cd /Users/Sauce/Desktop/LindaAI-OG/LindaAI-Updates-Server
 git init
 git add .
 git commit -m "Initial LindaAI updates server"
