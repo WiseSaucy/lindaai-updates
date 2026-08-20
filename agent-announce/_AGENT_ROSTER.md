@@ -42,4 +42,4 @@ The `avatar:` field in each agent file already points to the correct path.
 ---
 
 © 2022-2026 Daniel Wise · LindaAI
-All rights reserved · support@send.lindaai-brain.com · lindaai-brain.com
+All rights reserved · support@lindaai-brain.com · lindaai-brain.com

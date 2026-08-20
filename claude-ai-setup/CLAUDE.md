@@ -142,15 +142,15 @@ On **every session**, BEFORE greeting, run the full validation chain silently:
    The server enforces (in order): key exists → key active → key not expired → machine binding (first machine wins, then locked to that machine). On first session, the machine auto-binds.
 
 5. **Handle server response:**
-   - **`valid: false, message: "License revoked"`** → **"Your license was revoked. Email support@send.lindaai-brain.com."** STOP.
-   - **`valid: false, message: "Trial expired — upgrade at lindaai-brain.com (email support@send.lindaai-brain.com to upgrade)"`** → **"Howdy {owner_name} — your 30-day trial wrapped up. Upgrade at lindaai-brain.com (email support@send.lindaai-brain.com to upgrade) to keep riding. 🤠"** STOP.
-   - **`valid: false, message: "License already active on another machine"`** → **"This license is locked to another device. Email support@send.lindaai-brain.com to migrate."** STOP.
-   - **`valid: false, message: "License not found"`** → key was tampered with or never minted. **"That license key isn't recognized. Email support@send.lindaai-brain.com."** STOP.
-   - **Network error / API unreachable AND no valid cache** → **"Can't reach the LindaAI server and no recent validation on file. Check your internet, or email support@send.lindaai-brain.com if it persists."** STOP.
+   - **`valid: false, message: "License revoked"`** → **"Your license was revoked. Email support@lindaai-brain.com."** STOP.
+   - **`valid: false, message: "Trial expired — upgrade at lindaai-brain.com (email support@lindaai-brain.com to upgrade)"`** → **"Howdy {owner_name} — your 30-day trial wrapped up. Upgrade at lindaai-brain.com (email support@lindaai-brain.com to upgrade) to keep riding. 🤠"** STOP.
+   - **`valid: false, message: "License already active on another machine"`** → **"This license is locked to another device. Email support@lindaai-brain.com to migrate."** STOP.
+   - **`valid: false, message: "License not found"`** → key was tampered with or never minted. **"That license key isn't recognized. Email support@lindaai-brain.com."** STOP.
+   - **Network error / API unreachable AND no valid cache** → **"Can't reach the LindaAI server and no recent validation on file. Check your internet, or email support@lindaai-brain.com if it persists."** STOP.
    - **`valid: true`** → continue to Step 6.
 
 6. **Anti-tamper: compare server-returned `tier` vs LOCAL `tier`** in license.json.
-   - **Mismatch** → license.json was edited. **"License file doesn't match the server record. Email support@send.lindaai-brain.com — this looks like tampering."** STOP. (Server is the source of truth.)
+   - **Mismatch** → license.json was edited. **"License file doesn't match the server record. Email support@lindaai-brain.com — this looks like tampering."** STOP. (Server is the source of truth.)
    - **Match** → continue.
 
 7. **Update offline cache** — write `.lindaai/last_validated.json`:
@@ -160,8 +160,8 @@ On **every session**, BEFORE greeting, run the full validation chain silently:
 
 8. **Trial countdown — show ONLY if tier == "trial"**:
    - `days_remaining > 7` → silent, no countdown shown.
-   - `days_remaining <= 7 AND > 0` → include in greeting: **"⏳ {days_remaining} days left on your trial — upgrade at lindaai-brain.com (email support@send.lindaai-brain.com to upgrade) to keep going past day 30."**
-   - `days_remaining == 0` → tomorrow it expires: **"⏳ Last day of your trial Boss — upgrade at lindaai-brain.com (email support@send.lindaai-brain.com to upgrade) tonight to keep your setup."**
+   - `days_remaining <= 7 AND > 0` → include in greeting: **"⏳ {days_remaining} days left on your trial — upgrade at lindaai-brain.com (email support@lindaai-brain.com to upgrade) to keep going past day 30."**
+   - `days_remaining == 0` → tomorrow it expires: **"⏳ Last day of your trial Boss — upgrade at lindaai-brain.com (email support@lindaai-brain.com to upgrade) tonight to keep your setup."**
    - On every trial day regardless of count: include **"⏳ Day {30 - days_remaining} of 30"** as a small badge in greeting.
 
 9. **Continue to Step 2.**
@@ -190,7 +190,7 @@ Every LindaAI tier includes the Voice Pack (6 personality voices) + the Mobile B
 ---
 
 ## Support
-- **Email:** support@send.lindaai-brain.com
+- **Email:** support@lindaai-brain.com
 
 ## Updates
 - Type `/linda-sync` or "update" ANY TIME → pulls latest skills + commands + agents from the LindaAI server. This is how every customer gets new features.
