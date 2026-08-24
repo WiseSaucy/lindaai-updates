@@ -23,7 +23,7 @@
       "bronze": 1,
       "silver": 2,
       "gold": 4,
-      "platinum": 9
+      "platinum": 8
     },
     "policy": "Customer picks packs to match their business. Picks lock at delivery; future swap may be offered via /linda-sync. Internal-only packs are reserved and never ship to customers."
   },
