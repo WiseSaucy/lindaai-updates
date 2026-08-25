@@ -5,6 +5,16 @@
 
 ---
 
+## 2026-08-25 — 🔧 Autopilot v1.2.1 — no more silent mornings (Gold + Platinum)
+
+**Autopilot v1.2.1** — a rare hiccup could save an error line as your morning brief, then skip the routine for the rest of the day. Fixed for good:
+- Errors are caught and never saved as your brief — the routine simply retries on its next scheduled run
+- Failed runs now leave a diagnostic file behind so support can see exactly what happened
+- More runway per run for busy installs (bigger thinking budget under the hood)
+- Mac + Windows both patched — run `/linda-sync` and you're set, nothing else to do
+
+---
+
 ## 2026-08-08 — 🪟 Autopilot for Windows — the whole barn rides now (Gold + Platinum)
 
 **Autopilot v1.2.0** — Windows joins the ride:
