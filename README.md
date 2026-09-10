@@ -32,10 +32,9 @@ gh repo create lindaai-updates --public --source=. --remote=origin --push
 ## Shipping an update
 
 1. Edit skill in `LindaAI-Master/skills/<name>/SKILL.md`
-2. Bump version in `LindaAI-Master/updates/manifest.json`
+2. Publish with `/custom-sync` from the Master (license-API delivery; the legacy `updates/manifest.json` + CDN publish path was retired 2026-09-10)
 3. Re-sync this folder:
    ```bash
-   cp LindaAI-Master/updates/manifest.json LindaAI-Updates-Server/manifest.json
    cp LindaAI-Master/skills/<name>/SKILL.md LindaAI-Updates-Server/skills/<name>.md
    ```
 4. `git add -A && git commit -m "skill: <name> v1.1.0" && git push`
