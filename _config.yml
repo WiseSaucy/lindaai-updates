@@ -20,7 +20,6 @@ exclude:
   - agents
   - agent-announce
   - packs
-  - bootstrap
   - install
   - claude-ai-setup
   - customer-guides
