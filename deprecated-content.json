@@ -1,166 +1,166 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-05",
+  "updated_at": "2026-09-23",
   "description": "Files/folders to DELETE from every customer's LindaAI folder on /linda-sync. Paths are relative to the customer's LindaAI-{Tier}/ folder root.",
   "remove": [
     {
       "path": "packs/credit-repair",
-      "reason": "Reserved — internal only",
+      "reason": "Pack retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/mender.md",
-      "reason": "Credit Repair agent — internal only",
+      "reason": "Agent retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/avatars/mender.png",
-      "reason": "Mender avatar — internal only",
+      "reason": "Avatar for a retired agent",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/ledger.md",
-      "reason": "Tax Filing agent — internal only (liability)",
+      "reason": "Agent retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/agents/avatars/ledger.png",
-      "reason": "Ledger avatar — internal only",
+      "reason": "Avatar for a retired agent",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-taxprep",
-      "reason": "Tax prep — internal only (CPA liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-deductions",
-      "reason": "Tax deductions — internal only",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-dispute",
-      "reason": "Credit dispute — internal only (FCRA)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-bureauping",
-      "reason": "Bureau response — internal only",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-creditcoach",
-      "reason": "Credit coaching — internal only",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-creditclient",
-      "reason": "Credit client tracker — internal only",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-05-20"
     },
     {
       "path": ".claude/skills/linda-licenses",
-      "reason": "License administration tooling — operator-only, never customer-facing (Sentry leak removal)",
+      "reason": "Admin tooling — not part of the customer product",
       "deprecated_at": "2026-06-03"
     },
     {
       "path": "packs/grant-hunter",
-      "reason": "Grant tooling — internal only (liability)",
+      "reason": "Pack retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-granthunt",
-      "reason": "Grant finder — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-grantfit",
-      "reason": "Grant eligibility — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-grantwrite",
-      "reason": "Grant writer — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-grantbudget",
-      "reason": "Grant budget — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-granttrack",
-      "reason": "Grant tracker — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/linda-samgov",
-      "reason": "SAM.gov registration — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-writer",
-      "reason": "Grant writer (core) — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-finder",
-      "reason": "Grant finder (core) — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-eligibility",
-      "reason": "Grant eligibility (core) — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-budget-builder",
-      "reason": "Grant budget (core) — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/grant-tracker",
-      "reason": "Grant tracker (core) — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/sam-gov-setup",
-      "reason": "SAM.gov registration (core) — internal only (liability)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-06-28"
     },
     {
       "path": ".claude/skills/rv-park-underwriting",
-      "reason": "RV park underwriting — moved to private Sauce repo (owner IP)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/rv-park-autofill",
-      "reason": "RV park workbook autofill — moved to private Sauce repo (owner IP)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/underwrite-deal",
-      "reason": "Underwriting pipeline — moved to private Sauce repo (owner IP)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/deal-report",
-      "reason": "Branded deal report engine — moved to private Sauce repo (owner IP)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/video-scrape",
-      "reason": "Deal video scraper — moved to private Sauce repo (owner IP)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": ".claude/skills/linda-rvpark",
-      "reason": "RV park pack skill — moved to private Sauce repo (owner IP)",
+      "reason": "Skill retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
       "path": "packs/real-estate-pro/skills/linda-rvpark",
-      "reason": "RV park pack skill — moved to private Sauce repo (owner IP)",
+      "reason": "Pack retired from the customer product",
       "deprecated_at": "2026-07-13"
     },
     {
@@ -184,5 +184,5 @@
       "deprecated_at": "2026-08-05"
     }
   ],
-  "notes_for_boss47": "Add new entries here whenever you want to retroactively remove something from customer installs. The customer's next /linda-sync will delete these paths. To restore, REMOVE the entry from here and re-sync."
+  "notes": "Each entry under remove[] is deleted from every LindaAI install on its next /linda-sync. Paths are relative to the LindaAI-{Tier}/ folder root."
 }
