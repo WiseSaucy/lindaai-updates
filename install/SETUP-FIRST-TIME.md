@@ -122,7 +122,10 @@ claude
 Browser pops open → log into your **Claude.ai Pro or Max** account → paste token back.
 
 > ⚠️ DO NOT log in with GitHub — Claude Code uses your **Anthropic** account.
-> ⚠️ If GitHub asks you to "select a repository" → ignore. Close that tab. You don't need a repo.
+>
+> ### 🛑 STOP — if a GitHub screen pops up asking you to "select" or "create" a repository:
+> **You do NOT need a repository. Do not create one. Do not select one.**
+> Just **close that browser tab** and go back to PowerShell — you're already logged in. Type `Howdy Linda` and keep going.
 
 **Step 5 — Open LindaAI**
 Type `cd ` (with a space), drag the LindaAI folder onto PowerShell, hit Enter. Then:
