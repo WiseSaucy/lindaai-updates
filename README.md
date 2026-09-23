@@ -1,44 +1,11 @@
-# LindaAI Updates Server
+# LindaAI Updates
 
-Static host for `/lindaai-update`. Customers' LindaAI installs pull from here.
+This is the update feed for LindaAI installs. Your LindaAI folder checks it
+automatically when you run `/linda-sync` — there is nothing to download or do here.
 
-## URLs customers will hit
-- `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/manifest.json` — the version ledger
-- `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/skills/<name>.md` — raw skill file
-- `GET https://raw.githubusercontent.com/WiseSaucy/lindaai-updates/main/agents/<name>.md` — raw agent file
-
-## How to publish this to GitHub Pages (free hosting)
-
-```bash
-# One-time setup
-cd /Users/Sauce/Desktop/LindaAI-OG/LindaAI-Updates-Server
-git init
-git add .
-git commit -m "Initial LindaAI updates server"
-
-# Create repo on GitHub (replace USERNAME with your GitHub handle)
-gh repo create lindaai-updates --public --source=. --remote=origin --push
-
-# Enable Pages: Settings -> Pages -> Deploy from branch: main / root
-# Your updates URL becomes: https://USERNAME.github.io/lindaai-updates/
-```
-
-## Custom domain (`updates.lindaai.com`)
-
-1. Buy `lindaai.com` if you don't have it yet
-2. In your DNS: `CNAME updates -> USERNAME.github.io`
-3. On GitHub repo: Settings -> Pages -> Custom domain -> `updates.lindaai.com`
-
-## Shipping an update
-
-1. Edit skill in `LindaAI-Master/skills/<name>/SKILL.md`
-2. Publish with `/custom-sync` from the Master (license-API delivery; the legacy `updates/manifest.json` + CDN publish path was retired 2026-09-10)
-3. Re-sync this folder:
-   ```bash
-   cp LindaAI-Master/skills/<name>/SKILL.md LindaAI-Updates-Server/skills/<name>.md
-   ```
-4. `git add -A && git commit -m "skill: <name> v1.1.0" && git push`
-5. Customers pull it on next `/lindaai-update`
+- Update feed: https://app.lindaai-brain.com
+- Store + docs: https://lindaai-brain.com
+- Support: support@lindaai-brain.com
 
 ---
 

@@ -24,13 +24,13 @@ SPEC = JSON list of ops, executed in order:
   {"op":"text",  "name":"briefs", "category":"Linda AI", "topic":"..."}
   {"op":"forum", "name":"buyers", "category":"Deals", "tags":["💵 Cash"], "topic":"..."}
   {"op":"tags",  "channel":"sfh", "add":["🆕 New","💀 Dead"]}       # MERGE into existing
-  {"op":"topic", "channel":"red-sauce", "text":"..."}               # forum topic = post guidelines
-  {"op":"rename","from":"gc", "to":"tg-gc"}
+  {"op":"topic", "channel":"buyers",    "text":"..."}               # forum topic = post guidelines
+  {"op":"rename","from":"general", "to":"team-general"}
   {"op":"move",  "channel":"content-alerts", "category":"Linda AI"}
-  {"op":"forum_pin","forum":"tg-wip","title":"📌 START HERE","body":"..."}   # pinned forum post
-  {"op":"text_pin", "channel":"mgl-general","body":"..."}                    # pinned message
-  {"op":"role",     "name":"truegrit"}
-  {"op":"role_view","category":"TrueGrit Flip","role":"truegrit"}   # role can View category
+  {"op":"forum_pin","forum":"wip","title":"📌 START HERE","body":"..."}   # pinned forum post
+  {"op":"text_pin", "channel":"announcements","body":"..."}                 # pinned message
+  {"op":"role",     "name":"partners"}
+  {"op":"role_view","category":"Partner Deals","role":"partners"}    # role can View category
 
 © 2026 LindaAI — Built by Daniel Wise
 """
