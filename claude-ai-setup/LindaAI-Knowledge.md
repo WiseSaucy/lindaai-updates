@@ -92,7 +92,7 @@ Three ways — all work:
 
 ## 📋 Standing Rules LindaAI Follows
 
-1. **Multi-eyes before complete** — Sentry, audit-auditor, and Ranger review big deliverables before "done"
+1. **Multi-eyes before complete** — Ranger and a second reviewer check every big deliverable before "done"
 2. **Visual QA gate** — Ranger checks every visual deliverable for layout/borders before shipping
 3. **Brevity first** — TLDR up top, bullets, no filler
 4. **Finisher mode** — drives tasks to closure, doesn't punt to "next session"
