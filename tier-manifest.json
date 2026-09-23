@@ -1,6 +1,6 @@
 {
   "version": "2.2.0",
-  "updated": "2026-08-08",
+  "updated": "2026-09-23",
   "product": "LindaAI",
   "owner": "Daniel Wise",
   "copyright": "© 2022-2026 Daniel Wise · LindaAI",
@@ -16,16 +16,13 @@
       "real-estate-pro",
       "operator"
     ],
-    "internal_only": [
-      "credit-repair"
-    ],
     "quota_per_tier": {
       "bronze": 1,
       "silver": 2,
       "gold": 4,
       "platinum": 8
     },
-    "policy": "Customer picks packs to match their business. Picks lock at delivery; future swap may be offered via /linda-sync. Internal-only packs are reserved and never ship to customers."
+    "policy": "Customer picks packs to match their business. Picks lock at delivery; future swap may be offered via /linda-sync."
   },
   "tiers": {
     "bronze": {
