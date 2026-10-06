@@ -277,7 +277,7 @@ Tier: Platinum
 
 Platinum agents:
 ✓ 17 agents up to date
-+ 1 new agent added: Bullhorn
++ 1 new agent added: Forge
 
 🐓 Rooster's runner updated — he crows on the same schedule as before.
 
