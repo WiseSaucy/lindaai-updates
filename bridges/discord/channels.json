@@ -54,7 +54,6 @@
         "real-estate",
         "realestate",
         "underwriting",
-        "sauce-deals",
         "sfh",
         "mfh",
         "properties"
@@ -102,9 +101,7 @@
       "category_names": [
         "deals",
         "real estate",
-        "real-estate",
-        "sauce deals",
-        "sauce-deals"
+        "real-estate"
       ],
       "auto_respond": true
     },
