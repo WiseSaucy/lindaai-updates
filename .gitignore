@@ -5,6 +5,3 @@ __pycache__/
 
 # Generated deal outputs (per-deal, not source)
 Deal - *.xlsx
-Wise Certified - *.xlsx
-Wise Certified - *.pdf
-Wise Certified - *.pptx
