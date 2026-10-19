@@ -5,6 +5,17 @@
 
 ---
 
+## 2026-10-19 — 🐓 Rooster v5 — he crows when your computer wakes up, not before (all tiers)
+
+**Rooster runner v5** (Mac, Windows + Linux) — if your morning holler was going quiet, this is why: a laptop that was asleep at holler time would fire Rooster during a brief wake, lose the network race, and give up. Fixed for good:
+- Rooster now waits for the network the right way — time spent asleep no longer counts against him, and he starts fresh after every wake
+- He holds the spoken holler until you're at the keyboard (Mac, up to 4 hours), and never reads yesterday's line today
+- If Claude Code is logged out, you get ONE plain notification telling you the fix (`claude` → `/login`) instead of a silent morning
+- Mac + Linux + Windows all patched — run `/linda-sync` and you're set
+- **Windows only:** run `/rooster-setup` once more so Task Scheduler picks up the new "run as soon as the PC is back" setting
+
+---
+
 ## 2026-08-25 — 🔧 Autopilot v1.2.1 — no more silent mornings (Gold + Platinum)
 
 **Autopilot v1.2.1** — a rare hiccup could save an error line as your morning brief, then skip the routine for the rest of the day. Fixed for good:
