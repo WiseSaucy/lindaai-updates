@@ -29,7 +29,7 @@
       "display_name": "LindaAI Bronze",
       "tagline": "Entry tier — the essentials",
       "price_hint": "Entry level",
-      "skill_count": 16,
+      "skill_count": 17,
       "skills": [
         "morning-briefing",
         "email-drafter",
@@ -46,7 +46,8 @@
         "rooster-setup",
         "linda-post-walkthrough",
         "linda-postiz-post",
-        "discord-setup"
+        "discord-setup",
+        "linda-sitewatch"
       ],
       "agents": [
         "ranger",
@@ -66,7 +67,7 @@
     "silver": {
       "display_name": "LindaAI Silver",
       "tagline": "Growth tier — scale your operation",
-      "skill_count": 29,
+      "skill_count": 30,
       "skills_include_bronze": true,
       "additional_skills": [
         "market-research",
@@ -106,7 +107,7 @@
     "gold": {
       "display_name": "LindaAI Gold",
       "tagline": "Pro tier — real estate + finance power",
-      "skill_count": 43,
+      "skill_count": 44,
       "skills_include_silver": true,
       "additional_skills": [
         "deal-analyzer",
@@ -149,7 +150,7 @@
     "platinum": {
       "display_name": "LindaAI Platinum ✦",
       "tagline": "Full access — every LindaAI skill + 17+ AI agents + Voice Pack included free",
-      "skill_count": 57,
+      "skill_count": 58,
       "bundled_addons": [
         "voice-pack",
         "bridges"
