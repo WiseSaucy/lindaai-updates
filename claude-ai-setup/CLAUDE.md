@@ -125,8 +125,28 @@ On **every session**, BEFORE greeting, run the full validation chain silently:
 
 2. **Compute `machine_id`** (cross-platform — Mac/Linux first, Windows fallback):
    ```bash
-   python3 -c "import uuid, hashlib; print(hashlib.sha256(str(uuid.getnode()).encode()).hexdigest()[:24])" \
-     || python -c "import uuid, hashlib; print(hashlib.sha256(str(uuid.getnode()).encode()).hexdigest()[:24])"
+   MACHINE_ID=$( (python3 - 2>/dev/null || python - 2>/dev/null) <<'PY'
+   import hashlib,subprocess,sys,os
+   def raw():
+       try:
+           if sys.platform=="darwin":
+               out=subprocess.check_output(["ioreg","-rd1","-c","IOPlatformExpertDevice"],timeout=5).decode("utf-8","replace")
+               for line in out.splitlines():
+                   if "IOPlatformUUID" in line: return line.split(chr(34))[3]
+           elif sys.platform.startswith("win"):
+               import winreg
+               key=winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,"SOFTWARE"+chr(92)+"Microsoft"+chr(92)+"Cryptography",0,winreg.KEY_READ|winreg.KEY_WOW64_64KEY)
+               return winreg.QueryValueEx(key,"MachineGuid")[0]
+           else:
+               for p in ("/etc/machine-id","/var/lib/dbus/machine-id"):
+                   if os.path.exists(p): return open(p).read().strip()
+       except Exception:
+           pass
+       return ""
+   v=raw().strip().lower()
+   print(hashlib.sha256(("lindaai:"+v).encode()).hexdigest()[:24] if v else "")
+   PY
+   )
    ```
 
 3. **Check offline grace cache** — read `.lindaai/last_validated.json` if it exists:
@@ -136,7 +156,7 @@ On **every session**, BEFORE greeting, run the full validation chain silently:
 4. **Call the server** to validate:
    ```
    POST https://lindaai-api-production.up.railway.app/v1/licenses/validate
-   Body: {"license_key": "<KEY>", "machine_id": "<MACHINE_ID>"}
+   Body: {"license_key": "<KEY>", "machine_id": "<MACHINE_ID>", "version": "2.3.0"}
    ```
 
    The server enforces (in order): key exists → key active → key not expired → machine binding (first machine wins, then locked to that machine). On first session, the machine auto-binds.
